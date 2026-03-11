@@ -20,4 +20,6 @@ const routeNames: { [key: string]: string } = {
   "know-more": "En apprendre plus",
 };
 
-export { routes, routeNames };
+const routesWithColoredHeader: [string] = ["/"];
+
+export { routes, routeNames, routesWithColoredHeader };

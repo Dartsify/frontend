@@ -2,10 +2,10 @@
 
 import NavBar from "@/components/nav/navBar";
 import VerticalSeparator from "@/components/verticalSeparator";
-import { routeNames } from "@/utils/routes";
+import { routeNames, routesWithColoredHeader } from "@/utils/routes";
 import { ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
-import { useSelectedLayoutSegments } from "next/navigation";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Footer from "./footer";
 
@@ -14,7 +14,7 @@ export default function NavWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const segments = useSelectedLayoutSegments();
   const [open, setOpen] = useState(true);
 
@@ -31,11 +31,15 @@ export default function NavWrapper({
     setOpen((prev) => !prev);
   };
 
+  const isRouteWithColoredHeader = routesWithColoredHeader.includes(pathname);
+
   return (
     <div className="flex h-screen">
       <NavBar isOpen={open} />
       <div className="overflow-scroll flex-1 min-h-screen flex flex-col">
-        <div className="w-full flex gap-3 items-center py-5 px-4 border-border sticky top-0 z-10 bg-background">
+        <div
+          className={`w-full flex gap-3 items-center py-5 px-4 border-border top-0 z-10 ${isRouteWithColoredHeader ? "fixed text-foreground-light" : "sticky bg-background text-foreground"}`}
+        >
           <button
             type="button"
             onClick={handleToggleOpenSidebar}
@@ -44,17 +48,15 @@ export default function NavWrapper({
             {open ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
           <VerticalSeparator />
-          {/* <h3 className="font-bold">{routes[pathname] || "Page Inconnue"}</h3> */}
-          {/* <h3 className="font-bold">
-            {segments.map((segment) => routeNames[segment]).join(" > ")}
-          </h3> */}
           <h3 className="text-text-secondary text-sm-2 flex items-center">
             {segments.map((segment, index) => (
               <React.Fragment key={segment}>
                 {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}
                 {index > 0 && <ChevronRight size={16} className="mx-3" />}
                 {index === segments.length - 1 ? (
-                  <span className="font-semibold text-foreground">
+                  <span
+                    className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
+                  >
                     {routeNames[segment] || "Page Inconnue"}
                   </span>
                 ) : (
@@ -62,23 +64,22 @@ export default function NavWrapper({
                     {routeNames[segment] || "Page Inconnue"}
                   </Link>
                 )}
-                {/* <span
-                  className={`${index === segments.length - 1 ? "font-semibold text-foreground" : "cursor-pointer"}`}
-                >
-                  {routeNames[segment]}
-                </span> */}
               </React.Fragment>
             ))}
             {segments.length === 0 && (
-              <span className="font-semibold text-foreground">
+              <span
+                className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
+              >
                 {/* Affiche "Accueil" si aucun segment */}
                 {routeNames[""]}
               </span>
             )}
           </h3>
         </div>
-        <div className="flex flex-col flex-1">
-          <div className="flex-1">{children}</div>
+        <div className={`flex flex-col flex-1`}>
+          <div className={`flex-1 ${isRouteWithColoredHeader ? "" : ""}`}>
+            {children}
+          </div>
           <Footer />
         </div>
       </div>

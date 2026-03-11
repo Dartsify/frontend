@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --foreground-light: #ffffff;
   --text-secondary: #545454;
   --border: #e1e1e1;
   --border-2: #f3f3f3;
@@ -13,6 +14,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-light: var(--foreground-light);
   --color-border: var(--border);
   --color-border-2: var(--border-2);
   --color-text-secondary: var(--text-secondary);
@@ -42,11 +44,11 @@ body {
 
 @layer base {
   h1 {
-    @apply font-satoshi text-3xl font-bold mb-4;
+    @apply font-satoshi text-5xl font-bold mb-5;
   }
 
   h2 {
-    @apply font-satoshi text-2xl font-semibold mb-2.5;
+    @apply font-satoshi text-3xl font-semibold mb-2.5;
   }
 }
 

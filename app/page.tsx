@@ -7,16 +7,16 @@ export default function Home() {
   return (
     <div>
       {/* Header -> image + CTA*/}
-      <header className="gradient-bg flex items-center min-h-[60vh] gap-0 text-white relative">
+      <header className="gradient-bg-reverse grid grid-rows-[clamp(320px,50%,600px)_1fr] sm:grid-rows-none sm:grid-cols-[clamp(200px,50%,600px)_1fr] pt-15 pb-20 sm:py-15 items-center min-h-[60vh] text-white relative overflow-x-hidden">
         <Image
           src={autodarts}
           height={600}
           alt="Cible de fléchettes"
-          className="-translate-x-1/5 "
+          className="translate-x-1/5 sm:-translate-x-1/5 w-[50vw] min-w-80 sm:min-w-50 max-w-150 justify-self-end sm:justify-normal"
         />
-        <div className="ml-4">
-          <h1 className="font-satoshi mb-2">Dartsify</h1>
-          <p className="font-medium leading-5">
+        <div className="flex-1 px-6 sm:pr-6 sm:pl-0 sm:-ml-5">
+          <h1 className="mb-5">Dartsify</h1>
+          <p className="font-medium leading-5 text-lg">
             Bienvenue sur Dartsify, votre compagnon ultime pour suivre vos
             performances au jeu de fléchettes !
           </p>
@@ -51,7 +51,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="default-p flex flex-col gap-10">
+      <main className="default-p flex flex-col gap-10 mt-10">
         {/* Section Qui-sommes-nous */}
         <section>
           <h2>Qui sommes-nous ?</h2>
