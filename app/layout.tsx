@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +11,35 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+});
+
+const satoshi = localFont({
+  src: [
+    {
+      path: "../public/fonts/Satoshi/Satoshi-Regular.woff2",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Satoshi/Satoshi-Italic.woff2",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Satoshi/Satoshi-Black.woff2",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Satoshi/Satoshi-BlackItalic.woff2",
+      weight: "900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-satoshi",
 });
 
 export const metadata: Metadata = {
@@ -23,9 +53,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.className} ${geistMono.variable} ${satoshi.variable} ${roboto.variable} antialiased`}
       >
         {children}
       </body>

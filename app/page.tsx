@@ -7,7 +7,7 @@ export default function Home() {
         quia unde sunt nam quod iste expedita nisi eum, ipsam magni maxime.
         Reiciendis sint aliquid ab! Eius nobis corporis iure?
       </p>
-      <div className="h-screen bg-amber-300"></div>
+      {/* <div className="h-screen bg-amber-300"></div> */}
     </div>
   );
 }

@@ -1,16 +1,15 @@
 import Image from "next/image";
 
-import logo from "../public/logo.png";
+import logo from "../public/logo.svg";
 import Link from "next/link";
 
 export default function LogoBanner() {
   return (
-    <Link href={"/"}>
-      <div className="flex items-center gap-2">
-        {/* <Image src={logo} alt="Logo" width={50} className="w-15" /> */}
-        <div className="bg-gray-400 aspect-square h-10"></div>
-        <b className="text-lg">Dartsify</b>
-      </div>
+    <Link href="/" className="flex items-center h-15 gap-1">
+      <Image src={logo} alt="Logo" width={50} className="h-15 object-contain" />
+      <b className="text-2xl mt-2 text-primary font-satoshi font-black italic">
+        Dartsify
+      </b>
     </Link>
   );
 }
