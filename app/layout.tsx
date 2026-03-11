@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import localFont from "next/font/local";
+import NavWrapper from "@/components/nav/navWrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -57,7 +58,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} ${geistMono.variable} ${satoshi.variable} ${roboto.variable} antialiased`}
       >
-        {children}
+        <NavWrapper>{children}</NavWrapper>
       </body>
     </html>
   );
