@@ -1,4 +1,4 @@
-import { Calendar, ChartLine, Play, Users } from "lucide-react";
+import { Calendar, ChartLine, Play, Swords, Users } from "lucide-react";
 import LogoBanner from "../logoBanner";
 import Link from "next/link";
 import Image from "next/image";
@@ -65,7 +65,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
             {routeItem(
               "/new-game",
               "Nouvelle Partie",
-              <Play size={iconSize} strokeWidth={iconStrokeWidth} />,
+              <Swords size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
           </ul>
         </div>

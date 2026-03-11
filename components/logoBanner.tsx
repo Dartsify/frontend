@@ -7,7 +7,7 @@ export default function LogoBanner({ isOpen }: { isOpen: boolean }) {
   return (
     <Link
       href="/"
-      className={`flex items-center h-15 transition-all duration-300 ease-in-out ${
+      className={`hover-anim flex items-center h-15 transition-all duration-300 ease-in-out ${
         isOpen ? "justify-start gap-1" : "justify-center gap-0"
       }`}
     >

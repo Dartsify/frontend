@@ -5,6 +5,7 @@
   --foreground: #171717;
   --text-secondary: #545454;
   --border: #e1e1e1;
+  --border-2: #f3f3f3;
   --primary: #565fe8;
   --secondary: #4652fb;
 }
@@ -13,6 +14,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
+  --color-border-2: var(--border-2);
   --color-text-secondary: var(--text-secondary);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
@@ -39,10 +41,50 @@ body {
 }
 
 @layer base {
+  h1 {
+    @apply font-satoshi text-3xl font-bold mb-4;
+  }
+
+  h2 {
+    @apply font-satoshi text-2xl font-semibold mb-2.5;
+  }
 }
 
 @layer components {
   .hover-anim {
     @apply hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out;
   }
+
+  .default-p {
+    @apply px-4 py-6
+  }
+
+  .gradient-bg {
+    @apply bg-radial-[at_25%_25%] from-primary to-secondary to-75%
+  }
+
+  .gradient-bg-reverse {
+    @apply bg-radial-[at_25%_25%] from-secondary to-primary to-75%
+  }
+}
+
+.custom-shape-divider-bottom-1773262308 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1773262308 svg {
+  position: relative;
+  display: block;
+  width: calc(134% + 1.3px);
+  height: 51px;
+}
+
+.custom-shape-divider-bottom-1773262308 .shape-fill {
+  fill: #FFFFFF;
 }
