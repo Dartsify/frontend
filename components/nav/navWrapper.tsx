@@ -48,7 +48,7 @@ export default function NavWrapper({
             {open ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
           <VerticalSeparator />
-          <h3 className="text-text-secondary text-sm-2 flex items-center">
+          <h3 className="text-foreground-dark text-sm-2 flex items-center">
             {segments.map((segment, index) => (
               <React.Fragment key={segment}>
                 {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}

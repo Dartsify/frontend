@@ -1,4 +1,4 @@
-import { Calendar, ChartLine, Play, Swords, Users } from "lucide-react";
+import { Calendar, ChartLine, House, Play, Swords, Users } from "lucide-react";
 import LogoBanner from "../logoBanner";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,7 +37,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
 
   return (
     <div
-      className={`flex flex-col py-2 h-screen border-r border-border bg-radial-[at_25%_25%] from-primary to-secondary to-75% text-white transition-all duration-300 ease-in-out ${
+      className={`gradient-bg flex flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${
         isOpen ? "w-60 px-4" : "w-20 px-2"
       }`}
     >
@@ -49,8 +49,22 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
         }`}
       >
         <div>
+          <ul
+            role="list"
+            className={`flex flex-col ${
+              isOpen ? "mt-3 gap-2.5" : "mt-0 gap-5 items-center"
+            }`}
+          >
+            {routeItem(
+              "/dashboard",
+              "Accueil",
+              <House size={iconSize} strokeWidth={iconStrokeWidth} />,
+            )}
+          </ul>
+        </div>
+        <div>
           <p
-            className={`text-sm font-semibold leading-none overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+            className={`text-foreground-light-soft text-sm font-semibold overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
               isOpen ? "opacity-100 max-h-6 mb-0" : "opacity-0 max-h-0"
             }`}
           >
@@ -59,11 +73,11 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-3 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
-              "/new-game",
+              "/dashboard/new-game",
               "Nouvelle Partie",
               <Swords size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
@@ -71,7 +85,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
         </div>
         <div>
           <p
-            className={`text-sm font-semibold leading-none overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+            className={`text-foreground-light-soft text-sm font-semibold overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
               isOpen ? "opacity-100 max-h-6 mb-0" : "opacity-0 max-h-0"
             }`}
           >
@@ -80,16 +94,16 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-3 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
-              "/stats",
+              "/dashboard/stats",
               "Statistiques",
               <ChartLine size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
             {routeItem(
-              "/my-games",
+              "/dashboard/my-games",
               "Mes Parties",
               <Calendar size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
@@ -97,7 +111,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
         </div>
         <div>
           <p
-            className={`text-sm font-semibold leading-none overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+            className={`text-foreground-light-soft text-sm font-semibold overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
               isOpen ? "opacity-100 max-h-6 mb-0" : "opacity-0 max-h-0"
             }`}
           >
@@ -106,11 +120,11 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-3 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
-              "/groups-players",
+              "/dashboard/groups-players",
               "Groupes de Joueurs",
               <Users size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
@@ -119,7 +133,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
       </div>
       <div className="flex-1" />
       <Link
-        href={"/account"}
+        href={"/dashboard/account"}
         className={`flex items-center hover-anim p-2 transition-all duration-300 ease-in-out ${
           isOpen ? "gap-2 justify-start" : "gap-0 justify-center"
         }`}
