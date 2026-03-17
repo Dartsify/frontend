@@ -1,6 +1,7 @@
 import HorizontalSeparator from "@/components/horizontalSeparator";
 import NotificationsSection from "@/components/sections/notificationsSection";
 import { games } from "@/utils/games";
+import { Play } from "lucide-react";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -11,14 +12,23 @@ export default function Dashboard() {
         <NotificationsSection />
         <section id="games-section" className="default-section">
           <h2>Jouer</h2>
-          <ul className="flex gap-5 mt-5 list-none">
+          <ul className="flex gap-4 list-none">
             {games.map((game, index) => (
+              // <li key={index}>
+              //   <Link
+              //     className="badge"
+              //     href={`/dashboard/new-game?game=${game.slug}`}
+              //   >
+              //     {game.name}
+              //   </Link>
+              // </li>
               <li key={index}>
                 <Link
-                  className="badge"
+                  className="badge hover-anim-badge group"
                   href={`/dashboard/new-game?game=${game.slug}`}
                 >
                   {game.name}
+                  <Play size={16} className="" />
                 </Link>
               </li>
             ))}
@@ -63,14 +73,14 @@ export default function Dashboard() {
                   </p>
                   <p>12/10/25 à 20:00</p>
                 </li>
-                <HorizontalSeparator />
+                <HorizontalSeparator bg="bg-background" />
                 <li>
                   <p>
                     <b>Victoire</b> à <b>Kickoff</b>
                   </p>
                   <p>10/10/25 à 22:15</p>
                 </li>
-                <HorizontalSeparator />
+                <HorizontalSeparator bg="bg-background" />
                 <li>
                   <p>
                     <b>Défaite</b> à <b>Kickoff</b>

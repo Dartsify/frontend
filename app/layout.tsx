@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import localFont from "next/font/local";
-// import NavWrapper from "@/components/nav/navWrapper";
+
+import moment from "moment";
+import "moment/locale/fr";
+
 import "./globals.css";
 
 const roboto = Roboto({
@@ -43,6 +46,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  moment.locale("fr");
+
   return (
     <html lang="fr">
       <body className={`${satoshi.variable} ${roboto.className} antialiased`}>

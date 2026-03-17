@@ -16,7 +16,10 @@
   --foreground-light: #f9fcffff;
   --foreground-light-soft: #f1f8ffff;
   /* Bordures / séparateurs */
-  --border: #e1e1e1ff;
+  /* --border: #e1e1e1ff; */
+  --border: #e5f2ff;
+  /* --border: #cce5ff; */
+  /* Full Spectrum Blue 50 */
   --border-2: #f3f3f3ff;
   /* Couleurs de marque / accent */
   --brand: #2454ffff;
@@ -165,13 +168,11 @@ body {
     @apply flex flex-col gap-10 mt-10;
   }
 
-  .hover-anim {
-    @apply hover:bg-white-50/10 rounded-lg transition-all duration-300 ease-in-out;
-  }
-
   .default-p {
     @apply px-4 py-6;
   }
+
+  /* Gradients */
 
   .gradient-bg {
     @apply bg-radial-[at_25%_25%] from-brand to-full-spectrum-blue-400 to-75%;
@@ -196,11 +197,20 @@ body {
   }
 
   .badge {
-    @apply rounded-full bg-background-dark p-3 font-bold hover:bg-background-dark/80 transition-colors duration-200 border border-border;
+    /* @apply inline-block rounded-full p-3 font-bold outline outline-border; */
+    @apply font-bold px-3.5 py-2 inline-block border border-border hover:border-highlight;
   }
 
   .btn {
-    @apply px-3 py-2 bg-alice-blue-400;
+    @apply px-2.5 py-1.25 cursor-pointer;
+  }
+
+  .btn-destructive {
+    @apply !bg-red-500 text-white hover:bg-red-600;
+  }
+
+  .btn-validate {
+    @apply !bg-green-500 text-white hover:bg-green-600;
   }
 
   /* .default-section {
@@ -209,6 +219,32 @@ body {
 
   .default-section h2 {
     @apply mb-3;
+  }
+
+  /* Anims */
+
+  .hover-anim {
+    @apply hover:bg-white-50/10 rounded-lg transition-all duration-300 ease-in-out;
+  }
+
+  .hover-anim-highlight,
+  .btn,
+  .badge {
+    @apply hover:bg-none hover:bg-highlight rounded-lg transition-all duration-300 ease-in-out;
+  }
+
+  .hover-anim-size,
+  .badge,
+  .btn {
+    @apply hover:scale-110 transition-all duration-300 ease-in-out;
+  }
+
+  .hover-anim-badge {
+    @apply flex items-center relative transition-all duration-300 ease-out hover:pr-8;
+  }
+
+  .hover-anim-badge svg {
+    @apply absolute right-3.5 opacity-0 rotate-180 group-hover:opacity-100 group-hover:rotate-360 group-hover:right-3 transition-all duration-300 delay-75 ease-out;
   }
 }
 
