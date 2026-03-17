@@ -5,5 +5,9 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <NavWrapper>{children}</NavWrapper>;
+  return (
+    <NavWrapper>
+      <div className="content testtt">{children}</div>
+    </NavWrapper>
+  );
 }

@@ -1,16 +1,21 @@
-import { Calendar, ChartLine, House, Play, Swords, Users } from "lucide-react";
+"use client";
+
+import { Calendar, ChartLine, House, Swords, Users } from "lucide-react";
 import LogoBanner from "../logoBanner";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function NavBar({ isOpen }: { isOpen: boolean }) {
+  const pathname: string = usePathname();
+
   const routeItem = (href: string, label: string, icon: React.ReactNode) => (
-    <li>
+    <li className={`$${pathname == href && "active-link"}`}>
       <Link
         href={href}
         className={`hover-anim flex p-2 items-center transition-all duration-300 ease-in-out ${
           isOpen ? "gap-2 justify-start" : "gap-0 justify-center"
-        }`}
+        } ${pathname == href && "active-link"}`}
       >
         <span
           className={`transition-transform duration-300 ease-in-out ${
@@ -34,6 +39,8 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
 
   const iconSize = 16;
   const iconStrokeWidth = 2.5;
+
+  // const isSegmentActive: boolean = segment == pathname;
 
   return (
     <div

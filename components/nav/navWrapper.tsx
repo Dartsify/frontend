@@ -31,14 +31,15 @@ export default function NavWrapper({
     setOpen((prev) => !prev);
   };
 
-  const isRouteWithColoredHeader = routesWithColoredHeader.includes(pathname);
+  const isRouteWithColoredHeader: boolean =
+    routesWithColoredHeader.includes(pathname);
 
   return (
     <div className="flex h-screen">
       <NavBar isOpen={open} />
       <div className="overflow-scroll flex-1 min-h-screen flex flex-col">
         <div
-          className={`w-full flex gap-3 items-center py-5 px-4 border-border top-0 z-10 ${isRouteWithColoredHeader ? "fixed text-foreground-light" : "sticky bg-background text-foreground"}`}
+          className={`horizontal-p vertical-p w-full flex gap-3 items-center border-border top-0 z-10 ${isRouteWithColoredHeader ? "fixed text-foreground-light" : "sticky bg-background text-foreground"}`}
         >
           <button
             type="button"
@@ -49,23 +50,25 @@ export default function NavWrapper({
           </button>
           <VerticalSeparator />
           <h3 className="text-foreground-dark text-sm-2 flex items-center">
-            {segments.map((segment, index) => (
-              <React.Fragment key={segment}>
-                {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}
-                {index > 0 && <ChevronRight size={16} className="mx-3" />}
-                {index === segments.length - 1 ? (
-                  <span
-                    className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
-                  >
-                    {routeNames[segment] || "Page Inconnue"}
-                  </span>
-                ) : (
-                  <Link href={`/${segment}`} className="cursor-pointer">
-                    {routeNames[segment] || "Page Inconnue"}
-                  </Link>
-                )}
-              </React.Fragment>
-            ))}
+            {segments.map((segment, index) => {
+              return (
+                <React.Fragment key={segment}>
+                  {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}
+                  {index > 0 && <ChevronRight size={16} className="mx-3" />}
+                  {index === segments.length - 1 ? (
+                    <span
+                      className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
+                    >
+                      {routeNames[segment] || "Page Inconnue"}
+                    </span>
+                  ) : (
+                    <Link href={`/${segment}`} className="cursor-pointer">
+                      {routeNames[segment] || "Page Inconnue"}
+                    </Link>
+                  )}
+                </React.Fragment>
+              );
+            })}
             {segments.length === 0 && (
               <span
                 className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}

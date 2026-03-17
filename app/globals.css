@@ -137,27 +137,78 @@ body {
   h2 {
     @apply font-satoshi text-3xl font-semibold mb-2.5;
   }
+
+  ul {
+    @apply m-0 p-0;
+  }
 }
 
 @layer components {
+  .content {
+    @apply mt-3 bg-none;
+  }
 
-  /* .hover-anim {
-    @apply hover:bg-white/10 rounded-lg transition-all duration-300 ease-in-out;
-  } */
+  .content,
+  .horizontal-p {
+    @apply px-4 lg:px-6 xl:px-10;
+  }
+
+  .vertical-p {
+    @apply py-5;
+  }
+
+  .active-link {
+    @apply text-highlight rounded-lg transition-all duration-100 ease-in-out;
+  }
+
+  .main-container {
+    @apply flex flex-col gap-10 mt-10;
+  }
+
   .hover-anim {
     @apply hover:bg-white-50/10 rounded-lg transition-all duration-300 ease-in-out;
   }
 
   .default-p {
-    @apply px-4 py-6
+    @apply px-4 py-6;
   }
 
   .gradient-bg {
-    @apply bg-radial-[at_25%_25%] from-brand to-full-spectrum-blue-400 to-75%
+    @apply bg-radial-[at_25%_25%] from-brand to-full-spectrum-blue-400 to-75%;
   }
 
   .gradient-bg-reverse {
-    @apply bg-radial-[at_25%_25%] from-full-spectrum-blue-400 to-brand to-75%
+    @apply bg-radial-[at_25%_25%] from-full-spectrum-blue-400 to-brand to-75%;
+  }
+
+  .gradient-bg-light,
+  .card,
+  .badge {
+    @apply bg-radial-[at_25%_25%] from-background-dark to-alice-blue-50 to-75%;
+  }
+
+  .card {
+    @apply mt-0 p-4 rounded-lg border border-border;
+  }
+
+  .card .title {
+    @apply text-lg leading-5 font-semibold mb-2;
+  }
+
+  .badge {
+    @apply rounded-full bg-background-dark p-3 font-bold hover:bg-background-dark/80 transition-colors duration-200 border border-border;
+  }
+
+  .btn {
+    @apply px-3 py-2 bg-alice-blue-400;
+  }
+
+  /* .default-section {
+    @apply flex flex-col gap-10;
+  } */
+
+  .default-section h2 {
+    @apply mb-3;
   }
 }
 
