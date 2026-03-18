@@ -124,6 +124,8 @@
   --color-mustard-800: #654c01;
   --color-mustard-900: #332600;
   --color-mustard-950: #241b00;
+
+  --animate-spin-alt: spin 1s cubic-bezier(0.25, 0.1, 0.15, 0.8) infinite;
 }
 
 body {
@@ -203,6 +205,10 @@ body {
 
   .btn {
     @apply px-2.5 py-1.25 cursor-pointer;
+  }
+
+  .btn-sm {
+    @apply text-sm px-2 py-1 cursor-pointer;
   }
 
   .btn-destructive {
@@ -287,4 +293,13 @@ body {
 
 .custom-shape-divider-top-1773601366 .shape-fill {
   fill: var(--color-background);
+}
+
+.loader-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 3px solid rgba(249, 252, 255, 0.28);
+  border-top-color: var(--color-foreground-light);
+  will-change: transform;
 }

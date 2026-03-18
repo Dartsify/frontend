@@ -16,6 +16,19 @@ const data: { title: string; description: string; date: Date; type: string }[] =
       type: "new-game",
     },
     {
+      title: "Invitation à rejoindre un groupe",
+      date: new Date("2026-02-01T15:48:00"),
+      description:
+        "Adrien (adri1) vous a invité à rejoindre le groupe Les Pros de Fléchettes.",
+      type: "group-invite",
+    },
+    {
+      title: "Demande d'ami",
+      date: new Date("2026-02-01T15:20:00"),
+      description: "Louis (llouis70) vous a envoyé une demande d'ami.",
+      type: "friend-request",
+    },
+    {
       title: "Nouvelle partie de groupe",
       date: new Date("2026-02-01T14:48:00"),
       description:
@@ -32,28 +45,80 @@ const listItem = (
 
   const fromNow = moment(item.date).fromNow();
 
+  const footer = () => {
+    switch (type) {
+      case "new-game":
+        return (
+          <>
+            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
+              Confirmez votre présence afin d'ajouter cette partie à vos
+              statistiques !
+            </p>
+
+            <div className="flex gap-2 self-end mt-4">
+              <button type="button" className="btn btn-sm btn-destructive">
+                Refuser
+              </button>
+              <button type="button" className="btn btn-sm btn-validate">
+                Valider
+              </button>
+            </div>
+          </>
+        );
+      case "group-invite":
+        return (
+          <>
+            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
+              Acceptez l'invitation pour rejoindre le groupe de joueurs. Les
+              groupes de joueurs permettent de démarrer rapidement une partie
+              avec vos amis !
+            </p>
+
+            <div className="flex gap-2 self-end mt-4">
+              <button type="button" className="btn btn-sm btn-destructive">
+                Supprimer
+              </button>
+              <button type="button" className="btn btn-sm btn-validate">
+                Rejoindre
+              </button>
+            </div>
+          </>
+        );
+      case "friend-request":
+        return (
+          <>
+            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
+              Acceptez l'invitation pour ajouter ce joueur à votre liste d'amis.
+              Les amis vous permettent de suivre leurs statistiques et de les
+              inviter rapidement à des parties !
+            </p>
+
+            <div className="flex gap-2 self-end mt-4">
+              <button type="button" className="btn btn-sm btn-destructive">
+                Supprimer
+              </button>
+              <button type="button" className="btn btn-sm btn-validate">
+                Accepter
+              </button>
+            </div>
+          </>
+        );
+    }
+  };
   return (
-    <li className="card flex-[0_0_100%] snap-start list-none" key={index}>
+    <li
+      className="card flex-[0_0_100%] snap-start list-none flex flex-col"
+      key={index}
+    >
       <div className="flex items-center justify-between">
         <h4 className="title">{title}</h4>
-        <p className="text-xs text-foreground-soft font-bold">
-          {fromNow[0].toUpperCase() + fromNow.slice(1)}
+        <p className="text-xs text-foreground-soft font-semibold">
+          {fromNow[0].toUpperCase() + fromNow.slice(1)} • Notification{" "}
+          {index + 1} sur {data.length}
         </p>
       </div>
-      <p>{description}</p>
-      {type == "new-game" && (
-        <div className="flex flex-col">
-          <p className="">
-            Confirmez votre présence afin d'ajouter cette partie à vos
-            statistiques !
-          </p>
-
-          <div className="flex gap-2 self-end">
-            <button className="btn btn-destructive">Refuser</button>
-            <button className="btn btn-validate">Valider</button>
-          </div>
-        </div>
-      )}
+      <p className="">{description}</p>
+      <div className="flex flex-col flex-1">{footer()}</div>
     </li>
   );
 };
@@ -61,9 +126,10 @@ const listItem = (
 export default function NotificationsSection() {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollRafRef = useRef<number | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // keep current index in state to manage button states and scroll position
 
   const scrollToIndex = (nextIndex: number) => {
+    // Scroll the list to the target index and update currentIndex state
     const list = listRef.current;
     if (!list) return;
 
@@ -81,6 +147,7 @@ export default function NotificationsSection() {
   const goNext = () => scrollToIndex(currentIndex + 1);
 
   const syncIndexFromScroll = () => {
+    // Determine the closest item index based on current scroll position and update currentIndex state
     const list = listRef.current;
     if (!list) return;
 
@@ -103,6 +170,7 @@ export default function NotificationsSection() {
   };
 
   const handleScroll = () => {
+    // Invoke at each scroll event, but debounce with requestAnimationFrame to avoid excessive updates
     if (scrollRafRef.current !== null) {
       cancelAnimationFrame(scrollRafRef.current);
     }

@@ -155,13 +155,13 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           />
         </div>
         <div
-          className={`*:leading-none overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+          className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
             isOpen
               ? "opacity-100 translate-x-0 max-w-40"
               : "opacity-0 -translate-x-2 max-w-0"
           }`}
         >
-          <p>Mathias Bartolas</p>
+          <p className="leading-3.5">Mathias Bartolas</p>
           <p className="text-xs opacity-75 mt-0.5">@mbartolas7</p>
         </div>
       </Link>
