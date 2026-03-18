@@ -1,8 +1,9 @@
 import LoginGate from "@/components/login/loginGate";
 import NavWrapper from "@/components/nav/navWrapper";
 import { getUserData } from "@/lib/fastapi/users";
-import { LoaderCircle } from "lucide-react";
 import { Suspense } from "react";
+import Providers from "./providers";
+import { User } from "@/utils/types";
 
 export default async function DashboardLayout({
   children,
@@ -15,14 +16,16 @@ export default async function DashboardLayout({
   // The solution is to create an inner async function (as a child) (i.e. content) that will be called in the main function, and that will contain the await for getting the data, so that the loading screen can be displayed while waiting for the data to be fetched
   //  => The data is loaded in the child (i.e. the content function) and not in the main function
   const content = async () => {
-    const user = await getUserData();
+    const user: User | boolean = await getUserData();
 
     return (
-      <LoginGate user={user}>
-        <NavWrapper>
-          <div className="content">{children}</div>
-        </NavWrapper>
-      </LoginGate>
+      <Providers user={user}>
+        <LoginGate user={user}>
+          <NavWrapper>
+            <div className="content">{children}</div>
+          </NavWrapper>
+        </LoginGate>
+      </Providers>
     );
   };
 
@@ -32,9 +35,5 @@ export default async function DashboardLayout({
     </div>
   );
 
-  return (
-    // <Providers>
-    <Suspense fallback={loading()}>{content()}</Suspense>
-    // </Providers>
-  );
+  return <Suspense fallback={loading()}>{content()}</Suspense>;
 }

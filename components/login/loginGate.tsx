@@ -8,8 +8,7 @@ export default function LoginGate({
   user,
 }: {
   children: React.ReactNode;
-  user: undefined | User | boolean;
-  // Undefined if currently loading user,
+  user: User | boolean;
   // User if User Data,
   // False if not authenticated
 }) {
