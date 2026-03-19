@@ -2,7 +2,7 @@
 
 import { User } from "@/utils/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function LoginGate({
   children,
@@ -13,22 +13,19 @@ export default function LoginGate({
   // User if User Data,
   // False if not authenticated
 }) {
-  const [isAuth, setIsAuth] = useState<boolean>(!!user); // If user data exists (e.g. data retrieve from server after getting the token from cookies), consider the user authenticated
+  const isAuth = !!user;
 
   const router = useRouter();
 
-  const toggleAuth = () => {
-    setIsAuth((prev) => !prev);
-  };
+  useEffect(() => {
+    if (!isAuth) {
+      // router.replace("/dashboard/new-game");
+    }
+  }, [isAuth, router]);
 
-  if (!isAuth) {
-    // router.push("/dashboard/new-game");
-    return (
-      <div>
-        You are not authenticated. Please log in to access the dashboard.
-      </div>
-    );
-  }
+  // if (!isAuth) {
+  //   return null;
+  // }
 
   return children;
 }
