@@ -17,7 +17,7 @@ export const getUserData = async () => {
   await new Promise((resolveOuter) => {
     resolveOuter(
       new Promise((resolveInner) => {
-        setTimeout(resolveInner, 2000); // Simulate a delay of 2 seconds for the API call
+        setTimeout(resolveInner, 5000); // Simulate a delay of 5 seconds for the API call
         console.log("Simulating API call to fetch user data...");
       }),
     );

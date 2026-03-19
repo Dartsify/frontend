@@ -1,6 +1,7 @@
 "use client";
 
 import { User } from "@/utils/types";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginGate({
@@ -14,21 +15,20 @@ export default function LoginGate({
 }) {
   const [isAuth, setIsAuth] = useState<boolean>(!!user); // If user data exists (e.g. data retrieve from server after getting the token from cookies), consider the user authenticated
 
+  const router = useRouter();
+
   const toggleAuth = () => {
     setIsAuth((prev) => !prev);
   };
 
-  if (user === undefined) {
-    return <div>Loading user data...</div>;
+  if (!isAuth) {
+    // router.push("/dashboard/new-game");
+    return (
+      <div>
+        You are not authenticated. Please log in to access the dashboard.
+      </div>
+    );
   }
-
-  //   if (!isAuth) {
-  //     return (
-  //       <div>
-  //         You are not authenticated. Please log in to access the dashboard.
-  //       </div>
-  //     );
-  //   }
 
   return children;
 }
