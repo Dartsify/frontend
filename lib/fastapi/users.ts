@@ -97,8 +97,6 @@ export const signup = async ({
   age: number;
   password: string;
 }) => {
-  // math123 / 12345
-
   const res = await fetch(buildApiUrl("/players/"), {
     method: "POST",
     headers: {
