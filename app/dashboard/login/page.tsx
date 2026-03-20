@@ -38,65 +38,63 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <main>
-        <section id="login-section" className="default-section">
-          <h2>Se connecter</h2>
-          <form onSubmit={handleSubmitLogin}>
-            <input
-              type="text"
-              name="username"
-              placeholder="Nom d'utilisateur"
-              autoComplete="username"
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Mot de passe"
-              autoComplete="current-password"
-              required
-            />
-            <button type="submit">Se connecter</button>
-          </form>
-        </section>
+    <div className="p-5 bg-background rounded-lg absolute w-60 self-center">
+      <section id="login-section" className="default-section">
+        <h2>Se connecter</h2>
+        <form onSubmit={handleSubmitLogin}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Nom d'utilisateur"
+            autoComplete="username"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mot de passe"
+            autoComplete="current-password"
+            required
+          />
+          <button type="submit">Se connecter</button>
+        </form>
+      </section>
 
-        <section id="signup-section" className="default-section">
-          <h2>Créer un compte</h2>
-          <form onSubmit={handleSubmitSignUp}>
-            <input
-              type="text"
-              name="username"
-              placeholder="Nom d'utilisateur"
-              autoComplete="username"
-              required
-            />
-            <input
-              type="text"
-              name="email"
-              placeholder="Adresse email"
-              autoComplete="email"
-              required
-            />
-            <input
-              type="text"
-              name="name"
-              placeholder="Nom complet"
-              autoComplete="name"
-              required
-            />
-            <input type="number" name="age" placeholder="Âge" required />
-            <input
-              type="password"
-              name="password"
-              placeholder="Mot de passe"
-              autoComplete="current-password"
-              required
-            />
-            <button type="submit">Créer un compte</button>
-          </form>
-        </section>
-      </main>
+      <section id="signup-section" className="default-section">
+        <h2>Créer un compte</h2>
+        <form onSubmit={handleSubmitSignUp}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Nom d'utilisateur"
+            autoComplete="username"
+            required
+          />
+          <input
+            type="text"
+            name="email"
+            placeholder="Adresse email"
+            autoComplete="email"
+            required
+          />
+          <input
+            type="text"
+            name="name"
+            placeholder="Nom complet"
+            autoComplete="name"
+            required
+          />
+          <input type="number" name="age" placeholder="Âge" required />
+          <input
+            type="password"
+            name="password"
+            placeholder="Mot de passe"
+            autoComplete="current-password"
+            required
+          />
+          <button type="submit">Créer un compte</button>
+        </form>
+      </section>
     </div>
   );
 }

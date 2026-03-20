@@ -10,7 +10,15 @@ type UserDataContextType = {
   setUserData: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
+type ShowLoginPanelContextType = {
+  showLoginPanel: boolean;
+  setShowLoginPanel: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 export const UserDataContext = createContext<UserDataContextType | null>(null);
+
+export const ShowLoginPanelContext =
+  createContext<ShowLoginPanelContextType | null>(null);
 
 export default function Providers({
   user,
@@ -22,6 +30,8 @@ export default function Providers({
   const [userData, setUserData] = useState<User | null>(
     typeof user === "object" ? user : null,
   ); // If user is a User object, set userData to it, otherwise set it to null
+
+  const [showLoginPanel, setShowLoginPanel] = useState(false); // State to control the visibility of the login panel
 
   useEffect(() => {
     console.log("UserData updated:", user);
@@ -39,7 +49,11 @@ export default function Providers({
 
   return (
     <UserDataContext.Provider value={{ userData, setUserData }}>
-      {children}
+      <ShowLoginPanelContext.Provider
+        value={{ showLoginPanel, setShowLoginPanel }}
+      >
+        {children}
+      </ShowLoginPanelContext.Provider>
     </UserDataContext.Provider>
   );
 }
