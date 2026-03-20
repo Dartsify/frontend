@@ -191,11 +191,15 @@ body {
   }
 
   .card {
-    @apply mt-0 p-4 rounded-lg border border-border;
+    @apply mt-0 p-4 rounded-lg border border-border flex flex-col;
   }
 
   .card .title {
     @apply text-lg leading-5 font-semibold mb-2;
+  }
+
+  .card .footer {
+    @apply flex gap-2 self-end mt-4;
   }
 
   .badge {
@@ -219,12 +223,36 @@ body {
     @apply !bg-green-500 text-white hover:bg-green-600;
   }
 
-  /* .default-section {
-    @apply flex flex-col gap-10;
-  } */
+  .btn-inverse {
+    @apply bg-foreground text-foreground-light
+  }
+
+  .btn-dark {
+    @apply bg-brand text-foreground-light
+  }
+
+  .default-section {
+    @apply flex flex-col;
+  }
 
   .default-section h2 {
     @apply mb-3;
+  }
+
+  .input-field {
+    @apply flex flex-col gap-1;
+  }
+
+  form {
+    @apply flex flex-col gap-4;
+  }
+
+  input {
+    @apply border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border focus:outline-offset-0;
+  }
+
+  label {
+    @apply font-medium;
   }
 
   /* Anims */

@@ -55,7 +55,7 @@ const listItem = (
               statistiques !
             </p>
 
-            <div className="flex gap-2 self-end mt-4">
+            <div className="footer">
               <button type="button" className="btn btn-sm btn-destructive">
                 Refuser
               </button>
@@ -74,7 +74,7 @@ const listItem = (
               avec vos amis !
             </p>
 
-            <div className="flex gap-2 self-end mt-4">
+            <div className="footer">
               <button type="button" className="btn btn-sm btn-destructive">
                 Supprimer
               </button>
@@ -93,7 +93,7 @@ const listItem = (
               inviter rapidement à des parties !
             </p>
 
-            <div className="flex gap-2 self-end mt-4">
+            <div className="footer">
               <button type="button" className="btn btn-sm btn-destructive">
                 Supprimer
               </button>
@@ -117,7 +117,7 @@ const listItem = (
           {index + 1} sur {data.length}
         </p>
       </div>
-      <p className="">{description}</p>
+      <p>{description}</p>
       <div className="flex flex-col flex-1">{footer()}</div>
     </li>
   );
