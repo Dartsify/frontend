@@ -1,4 +1,7 @@
+"use client";
+
 import { DialogControls } from "@/utils/types";
+import { gsap } from "gsap";
 import { useEffect, useLayoutEffect, useRef } from "react";
 
 export default function Dialog({
@@ -10,49 +13,65 @@ export default function Dialog({
   width?: string;
   dialogControls: DialogControls;
 }) {
+  // Overlay (voile) that darkens/blurs the page behind the dialog.
   const veil = useRef<HTMLDivElement | null>(null);
+  // Outer dialog container: this is the element whose height we animate.
   const dialogBody = useRef<HTMLDivElement | null>(null);
+  // Inner content wrapper: used only for accurate height measurement.
   const dialogContent = useRef<HTMLDivElement | null>(null);
 
+  // Dialog open state + close action come from parent controls.
   const { isOpen, close } = dialogControls;
 
-  const duration = 300;
+  // Shared animation duration in seconds for GSAP tweens.
+  const animationDuration = 0.3;
 
   useEffect(() => {
-    // Animate the veil when showDialog changes. We want to fade it in and out, and also toggle its display to avoid it being clickable when not shown.
-    // Hidden when not shown
+    // If the overlay element is not mounted yet, nothing to animate.
     if (!veil.current) return;
 
+    const veilElement = veil.current;
+
+    // Stop any running opacity animation before starting a new one.
+    // This avoids race conditions during rapid open/close interactions.
+    gsap.killTweensOf(veilElement);
+
     if (isOpen) {
-      veil.current.style.opacity = "0";
-      veil.current.style.display = "flex";
-
-      const frame = requestAnimationFrame(() => {
-        if (veil.current) {
-          veil.current.style.opacity = "1";
-        }
+      // Opening keeps the overlay fade animation.
+      // Only height animation is blocked on open (handled in the layout effect).
+      gsap.set(veilElement, { display: "flex", opacity: 0 });
+      gsap.to(veilElement, {
+        opacity: 1,
+        duration: animationDuration,
+        ease: "power2.out",
       });
-
-      return () => cancelAnimationFrame(frame);
+      return;
     }
 
-    veil.current.style.opacity = "0";
-    const hideTimeout = setTimeout(() => {
-      if (veil.current) {
-        // Remove inline display so Tailwind `hidden` applies again.
-        veil.current.style.display = "";
-      }
-    }, duration);
-
-    return () => clearTimeout(hideTimeout);
-  }, [isOpen]);
+    // Closing sequence:
+    // 1) Fade opacity to 0
+    // 2) Reset display so Tailwind's hidden class applies again
+    //    (prevents an invisible but clickable overlay)
+    gsap.to(veilElement, {
+      opacity: 0,
+      duration: animationDuration,
+      ease: "power2.out",
+      onComplete: () => {
+        gsap.set(veilElement, { display: "" });
+      },
+    });
+  }, [animationDuration, isOpen]);
 
   useLayoutEffect(() => {
+    // Height sync is only meaningful when the dialog is open and mounted.
     if (!isOpen || !dialogBody.current || !dialogContent.current) return;
 
     const body = dialogBody.current;
     const content = dialogContent.current;
 
+    // Compute the final dialog height:
+    // content height + top/bottom paddings of the outer container.
+    // Including paddings avoids clipping the bottom area (ex: button cut).
     const getTargetHeight = () => {
       const computedStyles = getComputedStyle(body);
       const paddingTop = Number.parseFloat(computedStyles.paddingTop) || 0;
@@ -61,46 +80,70 @@ export default function Dialog({
       return content.scrollHeight + paddingTop + paddingBottom;
     };
 
-    // Keep explicit heights so transitions can interpolate between values.
+    // Keep explicit heights so GSAP can animate between exact measured values.
+    // animate=false is used for immediate sync without tween.
     const syncHeight = (animate: boolean) => {
       const targetHeight = getTargetHeight();
 
-      if (!animate) {
-        body.style.transition = "none";
-        body.style.height = `${targetHeight}px`;
+      // Cancel a previous height tween before creating a new one.
+      gsap.killTweensOf(body, "height");
 
-        // Force reflow so the non-animated height is committed before restoring transition.
-        void body.offsetHeight;
-        body.style.transition = "";
+      if (!animate) {
+        // Immediate set: no animation for the first visible frame.
+        gsap.set(body, { height: targetHeight });
         return;
       }
 
-      body.style.height = `${targetHeight}px`;
+      // Smooth resize for all subsequent content changes.
+      gsap.to(body, {
+        height: targetHeight,
+        duration: animationDuration,
+        ease: "power2.out",
+      });
     };
 
-    // Do not animate on initial open to avoid a distracting first-time grow effect.
+    // On open, we always set the exact height immediately (no tween).
     syncHeight(false);
 
+    // Some environments can trigger an immediate ResizeObserver callback right after observe().
+    // Skip that first callback so opening never animates; only real content changes animate.
+    let skipNextResizeAnimation = true;
+
+    // Observe real content size changes (login <-> signup, validation messages, etc.)
+    // and animate the outer container to the new target height.
     const resizeObserver = new ResizeObserver(() => {
+      if (skipNextResizeAnimation) {
+        skipNextResizeAnimation = false;
+        syncHeight(false);
+        return;
+      }
+
       syncHeight(true);
     });
 
     resizeObserver.observe(content);
 
-    return () => resizeObserver.disconnect();
-  }, [isOpen]);
+    return () => {
+      // Cleanup when dialog closes/unmounts.
+      resizeObserver.disconnect();
+      gsap.killTweensOf(body);
+    };
+  }, [animationDuration, isOpen]);
 
   return (
     <div
       ref={veil}
-      className={`hidden absolute inset-0 z-10 opacity-0 backdrop-blur-xs bg-ink-black-950/30 transition-opacity items-center justify-center duration-${duration}`}
+      // Base hidden state is controlled by Tailwind class + GSAP display toggles.
+      className="hidden absolute inset-0 z-10 opacity-0 backdrop-blur-xs bg-ink-black-950/30 items-center justify-center"
     >
+      {/* Backdrop click closes the dialog. */}
       <div className="absolute inset-0" onClick={close} />
-      {/* Dialog style */}
+      {/* Outer dialog shell: style + animated height container. */}
       <div
         ref={dialogBody}
-        className={`p-5 bg-background rounded-lg absolute ${width} self-center border border-border shadow-xs h-0 overflow-hidden transition-[height] duration-3000 ease-in-out`}
+        className={`p-5 bg-background rounded-lg absolute ${width} self-center border border-border shadow-xs h-0 overflow-hidden`}
       >
+        {/* Inner content wrapper measured by ResizeObserver. */}
         <div ref={dialogContent}>{children}</div>
       </div>
     </div>
