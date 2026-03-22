@@ -99,7 +99,6 @@ export default function LoginDialog({
                 type="text"
                 name="username"
                 placeholder="johndoe"
-                autoComplete="username"
                 value={formValues.username}
                 onChange={handleFormInputChange}
                 required
@@ -199,7 +198,7 @@ export default function LoginDialog({
                 type="text"
                 name="username"
                 placeholder="johndoe"
-                autoComplete="username"
+                autoCorrect="false"
                 value={formValues.username}
                 onChange={handleFormInputChange}
                 required
