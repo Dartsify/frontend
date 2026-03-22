@@ -256,7 +256,7 @@ body {
   }
 
   input {
-    @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/40 focus:outline-offset-0 placeholder:text-foreground-soft;
+    @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
   }
 
   .input-field-invalid input {

@@ -1,8 +1,6 @@
 "use client";
 
-import { login, signup } from "@/lib/fastapi/users";
-import Link from "next/link";
-import { SubmitEvent, useContext } from "react";
+import { SubmitEvent, useContext, useEffect, useState } from "react";
 import { ShowLoginPanelContext, UserDataContext } from "../providers";
 
 export default function NewGame() {
@@ -14,6 +12,13 @@ export default function NewGame() {
   const { showLoginPanel, setShowLoginPanel } = showLoginPanelContext;
 
   const { userData } = userDataContext;
+
+  const [targetId, setTargetId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (targetId == null) {
+    }
+  }, [targetId]);
 
   return (
     <div>
@@ -75,15 +80,6 @@ export default function NewGame() {
             </ul>
           </div>
         </section>
-        {/* <button
-          type="button"
-          className="cursor-pointer"
-          onClick={() => setShowLoginPanel((prev) => !prev)}
-        >
-          {showLoginPanel
-            ? "Fermer le panneau de connexion"
-            : "Ouvrir le panneau de connexion"}
-        </button> */}
       </main>
     </div>
   );

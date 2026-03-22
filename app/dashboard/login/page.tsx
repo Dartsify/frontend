@@ -132,7 +132,9 @@ export default function Login() {
                 required
               />
             </div>
-            <div className="input-field">
+            <div
+              className={`input-field ${formValues.age.trim() !== "" && !isSignUpAgeValid && "input-field-invalid"}`}
+            >
               <label htmlFor="age">Âge</label>
               <input
                 type="number"
@@ -143,11 +145,9 @@ export default function Login() {
                 onChange={handleFormInputChange}
                 required
               />
-              {formValues.age.trim() !== "" && !isSignUpAgeValid ? (
-                <p className="text-sm text-red-500">
-                  L'âge doit être supérieur à 0.
-                </p>
-              ) : null}
+              {formValues.age.trim() !== "" && !isSignUpAgeValid && (
+                <p className="text-footer">L'âge doit être supérieur à 0.</p>
+              )}
             </div>
             <div
               className={`input-field ${formValues.password !== "" && !isSignUpPasswordValid && "input-field-invalid"}`}
