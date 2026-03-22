@@ -26,12 +26,15 @@ export default function LoginGate({
   const { showLoginPanel, setShowLoginPanel } = showLoginPanelContext;
 
   useEffect(() => {
+    // Redirect the unconnected user to the new game page so that he can join a game.
     if (!isAuth) {
       router.replace("/dashboard/new-game");
     }
   }, [isAuth, router]);
 
   useEffect(() => {
+    // Animate the veil when showLoginPanel changes. We want to fade it in and out, and also toggle its display to avoid it being clickable when not shown.
+    // Hidden when not shown
     if (!veil.current) return;
 
     if (showLoginPanel) {
@@ -59,13 +62,14 @@ export default function LoginGate({
   }, [showLoginPanel]);
 
   if (!isAuth) {
+    // If the user is not connected, we dont only show the children but also the login panel if showLoginPanel is true (with a clickable veil behind it)
     return (
       <div className="flex justify-center">
         <div className="flex-1">{children}</div>
         <div
           onClick={() => setShowLoginPanel(false)}
           ref={veil}
-          className="hidden opacity-0 absolute inset-0 bg-ink-black-950/60 z-10 transition-opacity duration-300"
+          className="hidden opacity-0 absolute inset-0 backdrop-blur-xs bg-ink-black-950/30 z-10 transition-opacity duration-300"
         ></div>
         {showLoginPanel && <Login />}
       </div>

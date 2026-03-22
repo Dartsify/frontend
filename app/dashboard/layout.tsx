@@ -1,9 +1,14 @@
+import { Suspense } from "react";
+
+import Providers from "./providers";
+
+import { User } from "@/utils/types";
+
+import { getUserData } from "@/lib/fastapi/users";
+
 import LoginGate from "@/components/login/loginGate";
 import NavWrapper from "@/components/nav/navWrapper";
-import { getUserData } from "@/lib/fastapi/users";
-import { Suspense } from "react";
-import Providers from "./providers";
-import { User } from "@/utils/types";
+import Loading from "../loading";
 
 export default async function DashboardLayout({
   children,
@@ -29,11 +34,11 @@ export default async function DashboardLayout({
     );
   };
 
-  const loading = () => (
-    <div className="h-screen w-screen gradient-bg flex items-center justify-center text-foreground-light">
-      <div className="loader-circle animate-spin-alt" />
-    </div>
-  );
+  // const loading = () => (
+  //   <div className="h-screen w-screen gradient-bg flex items-center justify-center text-foreground-light">
+  //     <div className="loader-circle animate-spin-alt" />
+  //   </div>
+  // );
 
-  return <Suspense fallback={loading()}>{content()}</Suspense>;
+  return <Suspense fallback={Loading()}>{content()}</Suspense>;
 }

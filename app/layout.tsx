@@ -6,6 +6,7 @@ import moment from "moment";
 import "moment/locale/fr";
 
 import "./globals.css";
+import Footer from "@/components/nav/footer";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -52,6 +53,8 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${satoshi.variable} ${roboto.className} antialiased`}>
         {children}
+        {/* <Footer />  */}
+        {/* !!!! Footer is also shown in sub folders ! Need to limit this to the main layout (not dashboard) */}
       </body>
     </html>
   );

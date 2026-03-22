@@ -197,7 +197,7 @@ export default function NotificationsSection() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className={`btn ${currentIndex === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`btn ${currentIndex === 0 ? "btn-invalid" : ""}`}
             onClick={goPrev}
             disabled={currentIndex === 0}
             aria-label="Notification précédente"
@@ -207,7 +207,7 @@ export default function NotificationsSection() {
           </button>
           <button
             type="button"
-            className={`btn ${currentIndex === data.length - 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`btn ${currentIndex === data.length - 1 ? "btn-invalid" : ""}`}
             onClick={goNext}
             disabled={currentIndex === data.length - 1}
             aria-label="Notification suivante"
