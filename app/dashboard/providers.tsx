@@ -10,15 +10,7 @@ type UserDataContextType = {
   setUserData: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
-type ShowLoginPanelContextType = {
-  showLoginPanel: boolean;
-  setShowLoginPanel: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
 export const UserDataContext = createContext<UserDataContextType | null>(null);
-
-export const ShowLoginPanelContext =
-  createContext<ShowLoginPanelContextType | null>(null);
 
 export default function Providers({
   user,
@@ -49,11 +41,7 @@ export default function Providers({
 
   return (
     <UserDataContext.Provider value={{ userData, setUserData }}>
-      <ShowLoginPanelContext.Provider
-        value={{ showLoginPanel, setShowLoginPanel }}
-      >
-        {children}
-      </ShowLoginPanelContext.Provider>
+      {children}
     </UserDataContext.Provider>
   );
 }

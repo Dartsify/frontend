@@ -243,6 +243,18 @@ body {
     @apply mb-3;
   }
 
+  .dialog {
+    @apply flex flex-col;
+  }
+
+  .dialog .header {
+    @apply flex justify-between items-center;
+  }
+
+  .dialog h2 {
+    @apply mb-3;
+  }
+
   .input-field {
     @apply flex flex-col gap-1;
   }

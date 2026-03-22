@@ -34,11 +34,5 @@ export default async function DashboardLayout({
     );
   };
 
-  // const loading = () => (
-  //   <div className="h-screen w-screen gradient-bg flex items-center justify-center text-foreground-light">
-  //     <div className="loader-circle animate-spin-alt" />
-  //   </div>
-  // );
-
   return <Suspense fallback={Loading()}>{content()}</Suspense>;
 }
