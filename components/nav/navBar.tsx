@@ -5,9 +5,17 @@ import LogoBanner from "../logoBanner";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { UserDataContext } from "@/app/dashboard/providers";
 
 export default function NavBar({ isOpen }: { isOpen: boolean }) {
   const pathname: string = usePathname();
+
+  const userDataContext = useContext(UserDataContext);
+
+  if (!userDataContext) return <div>Loading...</div>;
+
+  const { userData } = userDataContext;
 
   const routeItem = (href: string, label: string, icon: React.ReactNode) => (
     <li className={`$${pathname == href && "active-link"}`}>
@@ -147,7 +155,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
       >
         <div className="relative size-8.5 shrink-0 overflow-hidden rounded-md border border-border">
           <Image
-            src={`https://avatars.githubusercontent.com/${"mbartolas7"}`}
+            src={`https://avatars.githubusercontent.com/${userData?.username}`}
             alt="Avatar"
             fill
             sizes="100px"
@@ -161,8 +169,10 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
               : "opacity-0 -translate-x-2 max-w-0"
           }`}
         >
-          <p className="leading-3.5">Mathias Bartolas</p>
-          <p className="text-xs opacity-75 mt-0.5">@mbartolas7</p>
+          <p className="leading-3.5">{userData?.name || "Mathias Bartolas"}</p>
+          <p className="text-xs opacity-75 mt-0.5">
+            @{userData?.username || "mbartolas7"}
+          </p>
         </div>
       </Link>
     </div>
