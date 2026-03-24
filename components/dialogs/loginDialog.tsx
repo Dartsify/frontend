@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, SubmitEvent, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 
 import { login, signup } from "@/lib/fastapi/users";
@@ -15,9 +15,12 @@ import { DialogControls, FieldError } from "@/utils/types";
 
 export default function LoginDialog({
   dialogControls,
+  showHeader = true,
 }: {
   dialogControls: DialogControls;
+  showHeader?: boolean;
 }) {
+  const router = useRouter();
   const [showSignUp, setShowSignUp] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -84,6 +87,8 @@ export default function LoginDialog({
 
   const handleSubmitLogin = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // alert("submit the login");
+
     const username = formValues.username.trim();
     const password = formValues.password.trim();
 
@@ -95,11 +100,17 @@ export default function LoginDialog({
     const res = await login({ username, password });
     const { data, error } = res;
 
+    console.log("Login response:", res);
+
     if (error) {
       console.log(error);
       setSignInError(error);
     } else {
+      console.log("Login success");
+      // Refresh the server layout to re-fetch user data with the new token
+      router.refresh();
       // On ferme la dialog après une connexion réussie
+      // dialogControls.close();
       dialogControls.close();
     }
   };
@@ -129,6 +140,9 @@ export default function LoginDialog({
       setSignUpError(error);
       console.log("error : ", error);
     } else {
+      console.log("Signup success");
+      // Refresh the server layout to re-fetch user data with the new token
+      router.refresh();
       dialogControls.close();
     }
   };
@@ -150,12 +164,14 @@ export default function LoginDialog({
 
   return (
     <div className="dialog">
-      <div className="header">
-        <h2>{showSignUp ? "Créer un compte" : "Se connecter"}</h2>
-        <div className="btn btn-sm" onClick={dialogControls.close}>
-          <X size={22} />
+      {showHeader && (
+        <div className="header">
+          <h2>{showSignUp ? "Créer un compte" : "Se connecter"}</h2>
+          <div className="btn btn-sm" onClick={dialogControls.close}>
+            <X size={22} />
+          </div>
         </div>
-      </div>
+      )}
 
       {showSignUp ? (
         <form className="mt-2" onSubmit={handleSubmitSignUp}>
@@ -259,6 +275,15 @@ export default function LoginDialog({
           </p>
 
           <div className="footer">
+            {dialogControls.back && (
+              <button
+                className="btn btn-destructive-soft"
+                type="button"
+                onClick={dialogControls.back}
+              >
+                Retour
+              </button>
+            )}
             <button
               className={`btn btn-brand ${isSignUpSubmitDisabled ? "btn-invalid" : ""}`}
               type="submit"
@@ -326,6 +351,15 @@ export default function LoginDialog({
           </p>
 
           <div className="footer">
+            {dialogControls.back && (
+              <button
+                className="btn btn-destructive-soft"
+                type="button"
+                onClick={dialogControls.back}
+              >
+                Retour
+              </button>
+            )}
             <button
               className={`btn btn-brand ${isSignInSubmitDisabled ? "btn-invalid" : ""}`}
               type="submit"

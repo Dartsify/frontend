@@ -1,39 +1,71 @@
-import HorizontalSeparator from "@/components/horizontalSeparator";
-import NotificationsSection from "@/components/sections/notificationsSection";
-import { games } from "@/utils/games";
+"use client";
+
 import { Play } from "lucide-react";
 import Link from "next/link";
 
+import HorizontalSeparator from "@/components/horizontalSeparator";
+import NotificationsSection from "@/components/sections/notificationsSection";
+
+import { games } from "@/utils/games";
+import { useContext } from "react";
+import { UserDataContext } from "./providers";
+import PlayGameSection from "@/components/sections/playGameSection";
+import Dialog from "@/components/dialogs/dialog";
+import LoginDialog from "@/components/dialogs/loginDialog";
+import { useDialog } from "@/lib/hooks/useDialog";
+
 export default function Dashboard() {
+  const userDataContext = useContext(UserDataContext);
+  if (!userDataContext) return <div>Loading...</div>;
+  const { userData } = userDataContext;
+
+  const dialogControls = useDialog();
+
+  if (!userData) {
+    return (
+      <>
+        <div>
+          <h1>Bonjour 👋</h1>
+          <main className="main-container">
+            <div className="card">
+              <h4 className="title">Mode invité</h4>
+              <p>
+                Pas de panique, vous pouvez{" "}
+                <b>jouer sur nos cibles en tant qu'invité</b> !
+                <br />
+                Cependant, afin de profiter de nos fonctionnalités telles que la{" "}
+                <b>visualisation de vos statistiques</b> et la{" "}
+                <b>création de groupes d'amis</b>, veuillez vous connecter.
+              </p>
+              <div className="footer">
+                <button
+                  onClick={dialogControls.open}
+                  type="button"
+                  className="btn btn-sm btn-brand"
+                >
+                  Se connecter
+                </button>
+              </div>
+            </div>
+
+            <PlayGameSection />
+          </main>
+        </div>
+        <Dialog width="w-150" dialogControls={dialogControls}>
+          <LoginDialog dialogControls={dialogControls} />
+        </Dialog>
+      </>
+    );
+  }
+
+  const { name, username } = userData;
+
   return (
     <div>
-      <h1>Bonjour Mathias 👋</h1>
+      <h1>Bonjour {username} 👋</h1>
       <main className="main-container">
         <NotificationsSection />
-        <section id="games-section" className="default-section">
-          <h2>Jouer</h2>
-          <ul className="flex gap-4 list-none">
-            {games.map((game, index) => (
-              // <li key={index}>
-              //   <Link
-              //     className="badge"
-              //     href={`/dashboard/new-game?game=${game.slug}`}
-              //   >
-              //     {game.name}
-              //   </Link>
-              // </li>
-              <li key={index}>
-                <Link
-                  className="badge hover-anim-badge group"
-                  href={`/dashboard/new-game?game=${game.slug}`}
-                >
-                  {game.name}
-                  <Play size={16} className="" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <PlayGameSection />
 
         <section id="summary-section" className="default-section">
           <h2>Résumé de la semaine</h2>

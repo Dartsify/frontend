@@ -244,7 +244,7 @@ body {
   }
 
   .dialog .footer {
-    @apply flex mt-10 justify-end gap-3
+    @apply flex mt-8 justify-end gap-3
   }
 
   .input-field {

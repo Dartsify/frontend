@@ -1,30 +1,8 @@
 "use server";
 
+import { buildApiUrl, toFormUrlEncoded } from "@/utils/requests";
+import { getToken } from "@/lib/fastapi/auth";
 import { cookies } from "next/headers";
-
-const toFormUrlEncoded = (data: Record<string, string | number | boolean>) => {
-  const params = new URLSearchParams();
-
-  Object.entries(data).forEach(([key, value]) => {
-    params.append(key, String(value));
-  });
-
-  return params.toString();
-};
-
-const buildApiUrl = (path: string) => {
-  const baseUrl = process.env.BASE_URL?.trim();
-
-  if (!baseUrl) {
-    throw new Error("BASE_URL is not defined");
-  }
-
-  const normalizedBaseUrl = /^https?:\/\//i.test(baseUrl)
-    ? baseUrl
-    : `http://${baseUrl}`;
-
-  return new URL(path, normalizedBaseUrl).toString();
-};
 
 const userData = {
   username: "mbartolas7",
@@ -33,47 +11,43 @@ const userData = {
 };
 
 export const getUserData = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-
-  console.log("gettings token from cookies...");
-
-  // await new Promise((resolveOuter) => {
-  //   resolveOuter(
-  //     new Promise((resolveInner) => {
-  //       setTimeout(resolveInner, 500); // Simulate a delay of 2 seconds for the API call
-  //       console.log("Simulating API call to fetch user data...");
-  //     }),
-  //   );
-  // });
-
-  // return false;
+  const token = await getToken();
 
   if (!token) {
-    console.log("No auth token found in cookies.");
+    // throw new Error("No auth token found");
+    console.log("No auth token found");
     return false;
   }
 
-  console.log("Token from cookies:", token);
+  console.log("Token found:", token);
 
-  const res = await fetch(buildApiUrl("/players/me"), {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const res = await fetch(buildApiUrl("/players/me"), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
 
-  const resJson = await res.json();
-  console.log("Response from /players/me:", resJson);
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
 
-  if (res.ok) {
-    return resJson;
+    if (!res.ok) {
+      return {
+        error: data.detail || "Getting user data failed.",
+      };
+    }
+
+    return data;
+  } catch (error) {
+    return { error: "Erreur réseau" };
   }
-
-  console.error("Failed to fetch user data:", res.status, res.statusText);
-
-  return false;
 };
 
 export const login = async ({
@@ -104,12 +78,15 @@ export const login = async ({
     }
 
     if (!res.ok) {
+      console.log("Login failed:", data);
       return {
         error:
           data.detail ||
           "Login failed. Please check your credentials and try again.",
       };
     }
+
+    console.log(data);
 
     const { access_token } = data;
 
@@ -188,31 +165,8 @@ export const signup = async ({
     const loginResult = await login({ username, password });
 
     return loginResult;
-    // const { access_token } = data;
-
-    // console.log("data du signup", data);
-
-    // // Store the token in cookies if signup is successful
-    // if (access_token) {
-    //   const cookieStore = await cookies();
-    //   cookieStore.set("auth_token", access_token, {
-    //     httpOnly: true,
-    //     secure: process.env.NODE_ENV === "production",
-    //     // maxAge: 60 * 60 * 24 * 7, // 1 week
-    //     maxAge: 60 * 60, // 1 hour
-    //   });
-    //   console.log("Auth token saved in cookies.");
-    // }
-
-    // return data;
   } catch (error) {
     console.error("Error during signup:", error);
     return { error: "Erreur réseau" };
   }
-};
-
-export const logout = async () => {
-  const cookieStore = await cookies();
-  cookieStore.delete("auth_token");
-  console.log("Auth token removed from cookies.");
 };

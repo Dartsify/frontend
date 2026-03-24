@@ -1,9 +1,9 @@
 export const games = [
   {
-    name: "Cricket",
+    name: "Custom Dartsify",
     description:
-      "Un jeu de fléchettes populaire où les joueurs doivent marquer des points en visant des sections spécifiques du tableau.",
-    slug: "cricket",
+      "Un jeu de fléchettes spécialement conçu par Dartsify pour encore plus de fun !",
+    slug: "custom-dartsify",
   },
   {
     name: "501",
