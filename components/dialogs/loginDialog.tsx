@@ -87,7 +87,6 @@ export default function LoginDialog({
 
   const handleSubmitLogin = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // alert("submit the login");
 
     const username = formValues.username.trim();
     const password = formValues.password.trim();

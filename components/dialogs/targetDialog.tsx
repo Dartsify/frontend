@@ -1,17 +1,21 @@
 "use client";
 
-import { DialogControls, Target } from "@/utils/types";
+import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { OtpInput } from "../otpInput";
-import { useContext, useEffect, useState } from "react";
+
 import { useOtpInput } from "@/lib/hooks/useOtpInput";
-import { UserDataContext } from "@/app/dashboard/providers";
 import { getTargetData } from "@/lib/fastapi/targets";
-import Image from "next/image";
+import { createGame, joinGame } from "@/lib/fastapi/games";
+
+import { UserDataContext } from "@/app/dashboard/providers";
+
+import { DialogControls, Target } from "@/utils/types";
 
 import logo from "@/public/logo.svg";
-import { createGame, joinGame } from "@/lib/fastapi/games";
+
+import { OtpInput } from "../otpInput";
 import NeedToLoginDialog from "./needToLoginDialog";
 import NameInputDialog from "./nameInputDialog";
 
@@ -101,7 +105,23 @@ export default function TargetDialog({
       targetData.current_game_id
     ) {
       // If the target has a waiting game, we can join it
-      const { data, error } = await joinGame(targetData.current_game_id);
+      if (!userData) {
+        // If the user is not logged in, we need a username
+        //  -> show NameInputDialog to get the username and then join the game
+        setShowNameInput(true);
+        return;
+      }
+      // If the user is logged in, we can join the game directly with the username from the user data
+      await handleJoinGame();
+    }
+  };
+
+  const handleJoinGame = async (username?: string) => {
+    if (targetData?.current_game_id) {
+      const { data, error } = await joinGame(
+        targetData.current_game_id,
+        username || userData?.username,
+      );
       if (error) {
         if (typeof error === "string") {
           setTargetError(error);
@@ -127,16 +147,18 @@ export default function TargetDialog({
     );
   }
 
-  // if(showNameInput) {
-  //   return (
-  //     <NameInputDialog
-  //     dialogControls={{
-  //       ...dialogControls,
-  //       close: () => setShowNameInput(false), // If the user closes the NameInputDialog, we just hide it and show the TargetDialog again instead of going back to the dashboard
-
-  //     }}
-  //   )
-  // }
+  // Show NameInputDialog if the user is not logged in but tries to join a waiting game
+  if (showNameInput) {
+    return (
+      <NameInputDialog
+        dialogControls={{
+          ...dialogControls,
+          close: () => setShowNameInput(false), // If the user closes the NameInputDialog, we just hide it and show the TargetDialog again instead of going back to the dashboard
+          enter: (username) => handleJoinGame(username),
+        }}
+      />
+    );
+  }
 
   return (
     <div className="dialog">

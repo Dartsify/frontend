@@ -12,7 +12,7 @@ export type DialogControls = {
   close: () => void;
   toggleOpen: () => void;
   back?: () => void;
-  enter?: () => void;
+  enter?: (username?: string) => void;
 };
 
 export type FieldError = {

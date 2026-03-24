@@ -1,23 +1,24 @@
 "use client";
 
-import { DialogControls } from "@/utils/types";
-import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import { UserDataContext } from "@/app/dashboard/providers";
 import { X } from "lucide-react";
 
-import LoginDialog from "./loginDialog";
+import { DialogControls } from "@/utils/types";
 
 export default function NameInputDialog({
   dialogControls,
 }: {
   dialogControls: DialogControls;
 }) {
-  const userDataContext = useContext(UserDataContext);
-
-  if (!userDataContext) return <div>Loading...</div>;
-
-  const { userData } = userDataContext;
+  const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const username = formData.get("username")?.toString().trim();
+    if (username) {
+      // Execute enter function passed in dialogControls (which will join the game with the provided username) and close the dialog.
+      dialogControls.enter && dialogControls.enter(username);
+      dialogControls.close();
+    }
+  };
 
   return (
     <div className="dialog">
@@ -28,22 +29,22 @@ export default function NameInputDialog({
         </div>
       </div>
 
-      <div className="footer">
-        <button
-          className={`btn btn-destructive-soft`}
-          type="submit"
-          onClick={dialogControls.close}
-        >
-          Retour
-        </button>
-        <button
-          className={`btn btn-brand`}
-          type="submit"
-          onClick={dialogControls.close}
-        >
-          Rejoindre
-        </button>
-      </div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="username" placeholder="Entrez votre nom" />
+
+        <div className="footer">
+          <button
+            className={`btn btn-destructive-soft`}
+            type="button"
+            onClick={dialogControls.close}
+          >
+            Retour
+          </button>
+          <button className={`btn btn-brand`} type="submit">
+            Rejoindre
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
