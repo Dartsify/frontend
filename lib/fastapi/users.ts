@@ -29,7 +29,7 @@ const buildApiUrl = (path: string) => {
 const userData = {
   username: "mbartolas7",
   email: "85bmathias@gmail.com",
-  full_name: "Mathias Bartolas",
+  name: "Mathias Bartolas",
 };
 
 export const getUserData = async () => {

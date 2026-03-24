@@ -13,16 +13,6 @@ export type DialogControls = {
 
 export type FieldError = {
   field: string;
-  msg: string;
-  input: string;
-};
-
-export type FastAPIFieldError = {
-  input: string;
-  loc: [string];
-  msg: string;
-  type: string;
-  ctx: {
-    reason?: string;
-  };
+  message: string;
+  value: string;
 };

@@ -1,10 +1,11 @@
 "use client";
 
-import { SubmitEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../providers";
 import { useDialog } from "@/lib/hooks/useDialog";
 import Dialog from "@/components/dialogs/dialog";
 import LoginDialog from "@/components/dialogs/loginDialog";
+import TargetDialog from "@/components/dialogs/targetDialog";
 
 export default function NewGame() {
   const userDataContext = useContext(UserDataContext);
@@ -15,10 +16,12 @@ export default function NewGame() {
 
   const [targetId, setTargetId] = useState<number | null>(null);
 
-  const dialogControls = useDialog();
+  const dialogControls_target = useDialog();
+  const dialogControls_login = useDialog();
 
   useEffect(() => {
     if (targetId == null) {
+      dialogControls_target.open();
     }
   }, [targetId]);
 
@@ -38,9 +41,9 @@ export default function NewGame() {
                 </p>
                 <div className="footer">
                   <button
-                    onClick={dialogControls.open}
+                    onClick={dialogControls_login.open}
                     type="button"
-                    className="btn btn-sm btn-dark"
+                    className="btn btn-sm btn-brand"
                   >
                     Se connecter
                   </button>
@@ -86,8 +89,12 @@ export default function NewGame() {
         </main>
       </div>
 
-      <Dialog width="w-150" dialogControls={dialogControls}>
-        <LoginDialog dialogControls={dialogControls} />
+      <Dialog width="w-150" dialogControls={dialogControls_target}>
+        <TargetDialog dialogControls={dialogControls_target} />
+      </Dialog>
+
+      <Dialog width="w-150" dialogControls={dialogControls_login}>
+        <LoginDialog dialogControls={dialogControls_login} />
       </Dialog>
     </>
   );

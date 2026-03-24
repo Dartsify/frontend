@@ -215,22 +215,6 @@ body {
     @apply text-sm px-2 py-1 cursor-pointer;
   }
 
-  .btn-destructive {
-    @apply !bg-red-500 text-white hover:bg-red-600;
-  }
-
-  .btn-validate {
-    @apply !bg-green-500 text-white hover:bg-green-600;
-  }
-
-  .btn-inverse {
-    @apply bg-foreground text-foreground-light
-  }
-
-  .btn-dark {
-    @apply bg-brand text-foreground-light
-  }
-
   .btn-invalid {
     @apply opacity-50 cursor-not-allowed;
   }
@@ -247,12 +231,20 @@ body {
     @apply flex flex-col;
   }
 
+  .dialog p {
+    @apply leading-5;
+  }
+
   .dialog .header {
     @apply flex justify-between items-center;
   }
 
   .dialog h2 {
     @apply mb-3;
+  }
+
+  .dialog .footer {
+    @apply flex mt-10 justify-end gap-3
   }
 
   .input-field {
@@ -319,6 +311,28 @@ body {
 
   .hover-anim-badge svg {
     @apply absolute right-3.5 opacity-0 rotate-180 group-hover:opacity-100 group-hover:rotate-360 group-hover:right-3 transition-all duration-300 delay-75 ease-out;
+  }
+
+  /*  */
+
+  .btn-destructive {
+    @apply bg-red-500 text-foreground-light hover:bg-red-600;
+  }
+
+  .btn-destructive-soft {
+    @apply hover:bg-red-500 hover:text-foreground-light;
+  }
+
+  .btn-validate {
+    @apply bg-green-500 text-foreground-light hover:bg-green-600;
+  }
+
+  .btn-inverse {
+    @apply bg-foreground text-foreground-light;
+  }
+
+  .btn-brand {
+    @apply bg-brand text-foreground-light hover:text-foreground;
   }
 }
 

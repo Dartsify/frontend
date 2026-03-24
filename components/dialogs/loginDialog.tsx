@@ -5,12 +5,13 @@ import { ChangeEvent, SubmitEvent, useState } from "react";
 import { X } from "lucide-react";
 
 import { login, signup } from "@/lib/fastapi/users";
-import { DialogControls, FastAPIFieldError, FieldError } from "@/utils/types";
-import { createFieldError } from "@/utils/errors";
+import { DialogControls, FieldError } from "@/utils/types";
 
 // Notes sur les erreurs en retour de l'API :
 //  - Adrien retourne lui même les erreurs du login, il ne retourne qu'un string qui comprend un message d'erreur. Par exemple : "Invalid username" ou "Invalid password". Je crée donc moi même un objet FieldError qui contient le field ko, le message d'erreur à afficher ainsi que l'input qui a causé l'erreur.
 //  - Pour le signup, FastAPI retourne un message d'erreur plus générique avec une syntaxe bien précise. Il contient une liste d'erreurs avec pour chacune un loc qui contient le field concerné, un msg qui contient le message d'erreur à afficher et un type qui contient le type de l'erreur. Par exemple : {"detail":[{"loc":["body","email"],"msg":"value is not a valid email address","type":"value_error.email"}]}
+
+// Finalement => retour généralisé, retourne une liste de FieldError pour les deux endpoints
 
 export default function LoginDialog({
   dialogControls,
@@ -27,10 +28,24 @@ export default function LoginDialog({
     password: "",
   });
 
-  const [signInError, setSignInError] = useState<FieldError | null>(null);
-  const [signUpError, setSignUpError] = useState<FastAPIFieldError[] | null>(
-    null,
-  );
+  const [signInError, setSignInError] = useState<FieldError[] | null>(null);
+  const [signUpError, setSignUpError] = useState<FieldError[] | null>(null);
+
+  const hasBlockingErrorFromSameValue = (errors: FieldError[] | null) => {
+    if (!errors || errors.length === 0) {
+      return false;
+    }
+
+    return errors.some((error) => {
+      const currentValue = formValues[error.field as keyof typeof formValues];
+
+      if (currentValue === undefined) {
+        return false;
+      }
+
+      return String(error.value ?? "").trim() === String(currentValue).trim();
+    });
+  };
 
   const handleFormInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     // name correspond to the field name (i.e. username, email, name, age, password) and value correspond to the field value.
@@ -44,30 +59,9 @@ export default function LoginDialog({
   const isLoginFormValid =
     formValues.username.trim() !== "" && formValues.password.trim() !== "";
 
-  // Login: on bloque le submit tant que l'utilisateur n'a pas modifie
-  // la valeur du champ qui a provoque la derniere erreur API.
-  const hasBlockingSignInError = (() => {
-    if (!signInError) {
-      return false;
-    }
+  const hasBlockingSignInError = hasBlockingErrorFromSameValue(signInError);
 
-    const currentFieldValueByErrorField: Record<string, string> = {
-      username: formValues.username,
-      password: formValues.password,
-    };
-
-    const currentValue = currentFieldValueByErrorField[signInError.field];
-
-    if (currentValue === undefined) {
-      return false;
-    }
-
-    return (
-      String(signInError.input ?? "").trim() === String(currentValue).trim()
-    );
-  })();
-
-  // Le bouton login est desactive si le form est incomplet
+  // Le bouton login est desactivé si le form est incomplet
   // ou si on est encore sur la meme valeur en erreur.
   const isSignInSubmitDisabled = !isLoginFormValid || hasBlockingSignInError;
 
@@ -82,29 +76,7 @@ export default function LoginDialog({
   const isSignUpFormValid =
     isSignUpFormComplete && isSignUpPasswordValid && isSignUpAgeValid;
 
-  // Signup: FastAPI renvoie une liste d'erreurs. Pour chaque erreur,
-  // on recupere le champ cible (loc) puis on compare l'input en erreur
-  // avec la valeur courante du champ correspondant.
-  const hasBlockingSignUpErrors = (signUpError ?? []).some((error) => {
-    const fieldName = error.loc[error.loc.length - 1];
-
-    const currentFieldValueByErrorField: Record<string, string> = {
-      username: formValues.username,
-      email: formValues.email,
-      name: formValues.name,
-      full_name: formValues.name,
-      age: formValues.age,
-      password: formValues.password,
-    };
-
-    const currentValue = currentFieldValueByErrorField[fieldName];
-
-    if (currentValue === undefined) {
-      return false;
-    }
-
-    return String(error.input ?? "").trim() === String(currentValue).trim();
-  });
+  const hasBlockingSignUpErrors = hasBlockingErrorFromSameValue(signUpError);
 
   // Le bouton signup est desactive si le form est invalide
   // ou si au moins une erreur API correspond encore a la valeur actuelle.
@@ -124,7 +96,8 @@ export default function LoginDialog({
     const { data, error } = res;
 
     if (error) {
-      setSignInError(createFieldError(error, formValues));
+      console.log(error);
+      setSignInError(error);
     } else {
       // On ferme la dialog après une connexion réussie
       dialogControls.close();
@@ -160,11 +133,19 @@ export default function LoginDialog({
     }
   };
 
-  const getErrorFromSignUpError = (fieldName: string): string | null => {
-    if (!signUpError) return null;
-    const fieldError = signUpError.find((e) => e.loc.includes(fieldName));
-    return fieldError ? fieldError.ctx?.reason || fieldError.msg : null;
-    // return null;
+  const getErrorFromFieldsError = (
+    fieldName: string,
+    type: "signin" | "signup",
+  ): string | null => {
+    let fieldError;
+    if (type == "signin") {
+      if (!signInError) return null;
+      fieldError = signInError.find((e) => e.field === fieldName);
+    } else if (type == "signup") {
+      if (!signUpError) return null;
+      fieldError = signUpError.find((e) => e.field === fieldName);
+    }
+    return fieldError ? fieldError.message : null;
   };
 
   return (
@@ -193,7 +174,7 @@ export default function LoginDialog({
             </div>
           </div>
           <div
-            className={`input-field ${getErrorFromSignUpError("email") && "input-field-invalid"}`}
+            className={`input-field ${getErrorFromFieldsError("email", "signup") && "input-field-invalid"}`}
           >
             <label htmlFor="email">Adresse email</label>
             <input
@@ -205,8 +186,10 @@ export default function LoginDialog({
               onChange={handleFormInputChange}
               required
             />
-            {getErrorFromSignUpError("email") && (
-              <p className="text-footer">{getErrorFromSignUpError("email")}</p>
+            {getErrorFromFieldsError("email", "signup") && (
+              <p className="text-footer">
+                {getErrorFromFieldsError("email", "signup")}
+              </p>
             )}
           </div>
           <div className="input-field">
@@ -239,7 +222,7 @@ export default function LoginDialog({
             )}
           </div>
           <div
-            className={`input-field ${((formValues.password !== "" && !isSignUpPasswordValid) || getErrorFromSignUpError("password")) && "input-field-invalid"}`}
+            className={`input-field ${((formValues.password !== "" && !isSignUpPasswordValid) || getErrorFromFieldsError("password", "signup")) && "input-field-invalid"}`}
           >
             <label htmlFor="password">Mot de passe</label>
             <input
@@ -256,9 +239,9 @@ export default function LoginDialog({
                 Le mot de passe doit contenir au moins 6 caractères.
               </p>
             )}
-            {getErrorFromSignUpError("password") && (
+            {getErrorFromFieldsError("password", "signup") && (
               <p className="text-footer">
-                {getErrorFromSignUpError("password")}
+                {getErrorFromFieldsError("password", "signup")}
               </p>
             )}
           </div>
@@ -275,9 +258,9 @@ export default function LoginDialog({
             .
           </p>
 
-          <div className="mt-6 justify-end flex">
+          <div className="footer">
             <button
-              className={`btn btn-dark ${isSignUpSubmitDisabled ? "btn-invalid" : ""}`}
+              className={`btn btn-brand ${isSignUpSubmitDisabled ? "btn-invalid" : ""}`}
               type="submit"
               disabled={isSignUpSubmitDisabled}
             >
@@ -288,7 +271,7 @@ export default function LoginDialog({
       ) : (
         <form className="mt-2" onSubmit={handleSubmitLogin}>
           <div
-            className={`input-field pre-text ${signInError?.field === "username" && "input-field-invalid"}`}
+            className={`input-field pre-text ${getErrorFromFieldsError("username", "signin") && "input-field-invalid"}`}
           >
             <label htmlFor="username">Nom d'utilisateur</label>
             <div>
@@ -303,12 +286,14 @@ export default function LoginDialog({
               />
               <p>@</p>
             </div>
-            {signInError?.field === "username" && (
-              <p className="text-footer">{signInError.msg}</p>
+            {getErrorFromFieldsError("username", "signin") && (
+              <p className="text-footer">
+                {getErrorFromFieldsError("username", "signin")}
+              </p>
             )}
           </div>
           <div
-            className={`input-field ${signInError?.field === "password" && "input-field-invalid"}`}
+            className={`input-field ${getErrorFromFieldsError("password", "signin") && "input-field-invalid"}`}
           >
             <label htmlFor="password">Mot de passe</label>
             <input
@@ -321,8 +306,10 @@ export default function LoginDialog({
               onChange={handleFormInputChange}
               required
             />
-            {signInError?.field === "password" && (
-              <p className="text-footer">{signInError.msg}</p>
+            {getErrorFromFieldsError("password", "signin") && (
+              <p className="text-footer">
+                {getErrorFromFieldsError("password", "signin")}
+              </p>
             )}
           </div>
 
@@ -338,9 +325,9 @@ export default function LoginDialog({
             .
           </p>
 
-          <div className="mt-6 justify-end flex">
+          <div className="footer">
             <button
-              className={`btn btn-dark ${isSignInSubmitDisabled ? "btn-invalid" : ""}`}
+              className={`btn btn-brand ${isSignInSubmitDisabled ? "btn-invalid" : ""}`}
               type="submit"
               disabled={isSignInSubmitDisabled}
             >

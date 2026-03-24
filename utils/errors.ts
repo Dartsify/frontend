@@ -1,18 +1,19 @@
 import { FieldError } from "./types";
 
+// PLUS UTILISÉ
 export const createFieldError = (error: string, formValues: any) => {
   let errorData: FieldError = {
     field: "",
-    msg: error,
-    input: "",
+    message: error,
+    value: "",
   };
 
   if (error.toLowerCase().includes("username")) {
     errorData.field = "username";
-    errorData.input = formValues.username;
+    errorData.value = formValues.username;
   } else if (error.toLowerCase().includes("password")) {
     errorData.field = "password";
-    errorData.input = formValues.password;
+    errorData.value = formValues.password;
   } else {
     errorData.field = "unknown";
   }
