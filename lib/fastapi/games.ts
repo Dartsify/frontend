@@ -2,7 +2,7 @@
 
 import { getToken } from "@/lib/fastapi/auth";
 import { buildApiUrl } from "@/utils/requests";
-import { Game, GameDetail } from "@/utils/types";
+import { Game, GameDetail, GameStatus } from "@/utils/types";
 
 export const createGame = async (target_id: string, mode: string) => {
   const token = await getToken();
@@ -87,7 +87,7 @@ export const addPlayer = async (game_id: number, username?: string) => {
   }
 };
 
-export const getGames = async () => {
+export const getGames = async (status?: GameStatus) => {
   const token = await getToken();
 
   if (!token) {
@@ -95,13 +95,17 @@ export const getGames = async () => {
   }
 
   try {
-    const res = await fetch(buildApiUrl("/games/"), {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        authorization: `Bearer ${token}`,
+    const res = await fetch(
+      // If a status is provided, we add it as a query parameter to filter games by status, otherwise we get all games
+      buildApiUrl(`/games/${status && `?status=${status}`}`),
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     let data;
     try {

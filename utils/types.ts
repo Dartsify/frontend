@@ -12,7 +12,7 @@ export type DialogControls = {
   close: () => void;
   toggleOpen: () => void;
   back?: () => void;
-  enter?: (username?: string) => void;
+  enter?: ({ username, id }: { username?: string; id?: number }) => void;
 };
 
 export type FieldError = {
@@ -43,6 +43,7 @@ export type Game = {
 
 export type Participant = {
   player_username: string;
+  player_name: string;
   current_score: number;
   position: number | null;
   status: "validated" | "pending" | "rejected";
@@ -55,5 +56,6 @@ export type GameDetail = {
   start_date: Date;
   status: GameStatus;
   target_id: string;
+  target_description?: string;
   participations: Participant[];
 };

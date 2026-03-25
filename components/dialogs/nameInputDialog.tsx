@@ -15,7 +15,7 @@ export default function NameInputDialog({
     const username = formData.get("username")?.toString().trim();
     if (username) {
       // Execute enter function passed in dialogControls (which will join the game with the provided username) and close the dialog.
-      dialogControls.enter && dialogControls.enter(username);
+      dialogControls.enter && dialogControls.enter({ username });
       dialogControls.close();
     }
   };

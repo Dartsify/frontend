@@ -1,8 +1,9 @@
-import { Game } from "@/utils/types";
 import moment from "moment";
 import Link from "next/link";
 
-export default function MyGamesSection({ myGames }: { myGames: Game[] }) {
+import { Game } from "@/utils/types";
+
+export default function CurrentGamesSection({ games }: { games: Game[] }) {
   const listItem = (game: Game, index: number) => {
     const { id, status, target_id, start_date } = game;
     return (
@@ -17,10 +18,10 @@ export default function MyGamesSection({ myGames }: { myGames: Game[] }) {
 
   return (
     <section id="my-games-section" className="default-section">
-      {/* <h2>Parties en cours</h2> */}
-      {myGames.length === 0 && <p>Aucune partie</p>}
+      <h2>Parties en cours</h2>
+      {games.length === 0 && <p>Aucune partie</p>}
       <ul className="flex gap-4 list-none">
-        {myGames.map((game, index) => listItem(game, index))}
+        {games.map((game, index) => listItem(game, index))}
       </ul>
     </section>
   );

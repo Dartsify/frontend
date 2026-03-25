@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -42,7 +42,7 @@ export default function TargetDialog({
   const otpInput = useOtpInput();
   const { otp, setOtp } = otpInput;
 
-  const target_id = otp.join("");
+  const target_id = useCallback(() => otp.join(""), [otp])();
 
   // Executes on otp changes (when user types or deletes a digit)
   useEffect(() => {
@@ -98,8 +98,17 @@ export default function TargetDialog({
       }
       // If the user is logged in, we can create the game
       // We create a game with a default mode ("501")
-      await createGame(target_id, "501");
-      dialogControls.close();
+      const res = await createGame(target_id, "501");
+      const { data, error } = res;
+
+      if (error || !data?.id) {
+        setTargetError(
+          "Une erreur est survenue lors de la création de la partie. Veuillez réessayer.",
+        );
+        return;
+      }
+
+      handleFinish(data.id);
     } else if (
       targetData?.current_game_status === "waiting" &&
       targetData.current_game_id
@@ -116,10 +125,19 @@ export default function TargetDialog({
     }
   };
 
+  // Execute this function after successfully creating or joining a game to close the dialog and save the target id in the parent component (NewGame)
+  const handleFinish = (gameId: number) => {
+    if (dialogControls.enter) {
+      dialogControls.enter({ id: gameId });
+    }
+    dialogControls.close();
+  };
+
   const handleJoinGame = async (username?: string) => {
-    if (targetData?.current_game_id) {
+    const current_game_id = targetData?.current_game_id;
+    if (current_game_id) {
       const { data, error } = await joinGame(
-        targetData.current_game_id,
+        current_game_id,
         username || userData?.username,
       );
       if (error) {
@@ -129,8 +147,10 @@ export default function TargetDialog({
           setTargetError("Une erreur est survenue. Veuillez réessayer.");
         }
       } else {
-        dialogControls.close();
+        handleFinish(current_game_id);
       }
+    } else {
+      setTargetError("Aucun jeu en attente trouvé pour cette cible.");
     }
   };
 
@@ -154,7 +174,7 @@ export default function TargetDialog({
         dialogControls={{
           ...dialogControls,
           close: () => setShowNameInput(false), // If the user closes the NameInputDialog, we just hide it and show the TargetDialog again instead of going back to the dashboard
-          enter: (username) => handleJoinGame(username),
+          enter: ({ username }) => handleJoinGame(username),
         }}
       />
     );
