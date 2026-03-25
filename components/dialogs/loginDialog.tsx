@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 
 import { login, signup } from "@/lib/fastapi/users";
 import { DialogControls, FieldError } from "@/utils/types";
+import { testIfErrorMatchesFieldErrorType } from "@/utils/requests";
 
 // Notes sur les erreurs en retour de l'API :
 //  - Adrien retourne lui même les erreurs du login, il ne retourne qu'un string qui comprend un message d'erreur. Par exemple : "Invalid username" ou "Invalid password". Je crée donc moi même un objet FieldError qui contient le field ko, le message d'erreur à afficher ainsi que l'input qui a causé l'erreur.
@@ -99,17 +100,18 @@ export default function LoginDialog({
     const res = await login({ username, password });
     const { data, error } = res;
 
-    console.log("Login response:", res);
-
     if (error) {
-      console.log(error);
-      setSignInError(error);
+      if (testIfErrorMatchesFieldErrorType(error)) {
+        setSignInError(error);
+      } else {
+        alert(
+          "Une erreur est survenue lors de la connexion. Veuillez réessayer.",
+        );
+      }
     } else {
-      console.log("Login success");
       // Refresh the server layout to re-fetch user data with the new token
       router.refresh();
       // On ferme la dialog après une connexion réussie
-      // dialogControls.close();
       dialogControls.close();
     }
   };
@@ -136,10 +138,14 @@ export default function LoginDialog({
     const { data, error } = res;
 
     if (error) {
-      setSignUpError(error);
-      console.log("error : ", error);
+      if (testIfErrorMatchesFieldErrorType(error)) {
+        setSignUpError(error);
+      } else {
+        alert(
+          "Une erreur est survenue lors de la inscription. Veuillez réessayer.",
+        );
+      }
     } else {
-      console.log("Signup success");
       // Refresh the server layout to re-fetch user data with the new token
       router.refresh();
       dialogControls.close();

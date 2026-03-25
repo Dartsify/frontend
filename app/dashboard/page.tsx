@@ -1,66 +1,19 @@
 "use client";
 
-import { Play } from "lucide-react";
-import Link from "next/link";
+import { useContext } from "react";
 
 import HorizontalSeparator from "@/components/horizontalSeparator";
 import NotificationsSection from "@/components/sections/notificationsSection";
-
-import { games } from "@/utils/games";
-import { useContext } from "react";
-import { UserDataContext } from "./providers";
 import PlayGameSection from "@/components/sections/playGameSection";
-import Dialog from "@/components/dialogs/dialog";
-import LoginDialog from "@/components/dialogs/loginDialog";
-import { useDialog } from "@/lib/hooks/useDialog";
+
+import { UserDataContext } from "./providers";
 
 export default function Dashboard() {
   const userDataContext = useContext(UserDataContext);
   if (!userDataContext) return <div>Loading...</div>;
   const { userData } = userDataContext;
 
-  const dialogControls = useDialog();
-
-  if (!userData) {
-    return (
-      <>
-        <div>
-          <header>
-            <h1>Bonjour 👋</h1>
-          </header>
-          <main className="main-container">
-            <div className="card">
-              <h4 className="title">Mode invité</h4>
-              <p>
-                Pas de panique, vous pouvez{" "}
-                <b>jouer sur nos cibles en tant qu'invité</b> !
-                <br />
-                Cependant, afin de profiter de nos fonctionnalités telles que la{" "}
-                <b>visualisation de vos statistiques</b> et la{" "}
-                <b>création de groupes d'amis</b>, veuillez vous connecter.
-              </p>
-              <div className="footer">
-                <button
-                  onClick={dialogControls.open}
-                  type="button"
-                  className="btn btn-sm btn-brand"
-                >
-                  Se connecter
-                </button>
-              </div>
-            </div>
-
-            <PlayGameSection />
-          </main>
-        </div>
-        <Dialog width="w-150" dialogControls={dialogControls}>
-          <LoginDialog dialogControls={dialogControls} />
-        </Dialog>
-      </>
-    );
-  }
-
-  const { name, username } = userData;
+  const { name, username } = userData ?? {};
 
   return (
     <div>

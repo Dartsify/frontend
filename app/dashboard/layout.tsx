@@ -9,6 +9,7 @@ import { getUserData } from "@/lib/fastapi/users";
 import LoginGate from "@/components/login/loginGate";
 import NavWrapper from "@/components/nav/navWrapper";
 import Loading from "../loading";
+import NoConnectedContentWrapper from "@/components/NoConnectedContentWrapper";
 
 export default async function DashboardLayout({
   children,
@@ -27,7 +28,9 @@ export default async function DashboardLayout({
       <Providers user={user}>
         <LoginGate user={user}>
           <NavWrapper>
-            <div className="content">{children}</div>
+            <div className="content">
+              <NoConnectedContentWrapper>{children}</NoConnectedContentWrapper>
+            </div>
           </NavWrapper>
         </LoginGate>
       </Providers>

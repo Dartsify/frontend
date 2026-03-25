@@ -6,15 +6,18 @@ import { useDialog } from "@/lib/hooks/useDialog";
 import Dialog from "@/components/dialogs/dialog";
 import LoginDialog from "@/components/dialogs/loginDialog";
 import TargetDialog from "@/components/dialogs/targetDialog";
+import { useRouter } from "next/navigation";
 
 export default function NewGame() {
   const userDataContext = useContext(UserDataContext);
-
   if (!userDataContext) return <div>Loading...</div>;
-
   const { userData } = userDataContext;
 
+  const router = useRouter();
+
   const [targetId, setTargetId] = useState<number | null>(null);
+
+  const [mounted, setMounted] = useState<boolean>(false);
 
   const dialogControls_target = useDialog();
   const dialogControls_login = useDialog();
@@ -22,8 +25,15 @@ export default function NewGame() {
   useEffect(() => {
     if (targetId == null) {
       dialogControls_target.open();
+      setMounted(true);
     }
   }, [targetId]);
+
+  useEffect(() => {
+    if (!dialogControls_target.isOpen && targetId == null && mounted) {
+      router.push("/dashboard");
+    }
+  }, [dialogControls_target.isOpen, mounted]);
 
   return (
     <>

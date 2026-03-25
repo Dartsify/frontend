@@ -10,8 +10,6 @@ export default async function MyGames() {
     return <div>Error: {error}</div>;
   }
 
-  const finishedGames = data.filter((game) => game.status === "finished");
-
   return (
     <div>
       <h1>Mes Parties</h1>
