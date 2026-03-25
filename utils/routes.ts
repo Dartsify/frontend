@@ -7,6 +7,7 @@ const routes: { [key: string]: string } = {
   "/dashboard/account": "Mon Compte",
   "/dashboard/groups-players/create": "Créer un Groupe de Joueurs",
   "/know-more": "En apprendre plus",
+  // "/dashboard/my-games/[id]": "Partie [id]",
 };
 
 const routeNames: { [key: string]: string } = {

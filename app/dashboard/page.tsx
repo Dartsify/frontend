@@ -25,7 +25,9 @@ export default function Dashboard() {
     return (
       <>
         <div>
-          <h1>Bonjour 👋</h1>
+          <header>
+            <h1>Bonjour 👋</h1>
+          </header>
           <main className="main-container">
             <div className="card">
               <h4 className="title">Mode invité</h4>
@@ -62,7 +64,9 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Bonjour {username} 👋</h1>
+      <header>
+        <h1>Bonjour {username} 👋</h1>
+      </header>
       <main className="main-container">
         <NotificationsSection />
         <PlayGameSection />

@@ -2,7 +2,7 @@
 
 import { getToken } from "@/lib/fastapi/auth";
 import { buildApiUrl } from "@/utils/requests";
-import { Game } from "@/utils/types";
+import { Game, GameDetail } from "@/utils/types";
 
 export const createGame = async (target_id: string, mode: string) => {
   const token = await getToken();
@@ -43,7 +43,7 @@ export const createGame = async (target_id: string, mode: string) => {
   }
 };
 
-export const joinGame = async (game_id: number, username?: string) => {
+export const addPlayer = async (game_id: number, username?: string) => {
   const token = await getToken();
 
   if (!token && !username) {
@@ -83,6 +83,121 @@ export const joinGame = async (game_id: number, username?: string) => {
     return { data };
   } catch (error) {
     console.error("Error during adding player to game:", error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const getGames = async () => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl("/games/"), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    console.log(data);
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to fetch games. Please try again.",
+      };
+    }
+
+    return { data: data as Game[] };
+  } catch (error) {
+    console.error("Error during fetching games:", error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const getGame = async (game_id: number) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/games/${game_id}`), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to fetch game. Please try again.",
+      };
+    }
+
+    return { data: data as GameDetail };
+  } catch (error) {
+    console.error("Error during fetching game:", error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const joinGame = async (game_id: number, name?: string) => {
+  const token = await getToken();
+
+  if (!token && !name) {
+    return { error: "No auth token found and no name" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/games/${game_id}/join`), {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: token ? `Bearer ${token}` : "",
+      },
+      body: token ? "" : JSON.stringify({ name }),
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to join game. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
     return { error: "Erreur réseau" };
   }
 };

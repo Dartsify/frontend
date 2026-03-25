@@ -40,3 +40,20 @@ export type Game = {
   status: GameStatus;
   target_id: string;
 };
+
+export type Participant = {
+  player_username: string;
+  current_score: number;
+  position: number | null;
+  status: "validated" | "pending" | "rejected";
+  checkout_suggestion: string[];
+};
+
+export type GameDetail = {
+  id: number;
+  mode: GameMode;
+  start_date: Date;
+  status: GameStatus;
+  target_id: string;
+  participations: Participant[];
+};

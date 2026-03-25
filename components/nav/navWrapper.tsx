@@ -62,7 +62,10 @@ export default function NavWrapper({
                       {routeNames[segment] || "Page Inconnue"}
                     </span>
                   ) : (
-                    <Link href={`/${segment}`} className="cursor-pointer">
+                    <Link
+                      href={`/dashboard/${segment}`}
+                      className="cursor-pointer"
+                    >
                       {routeNames[segment] || "Page Inconnue"}
                     </Link>
                   )}
