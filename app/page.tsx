@@ -51,7 +51,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="default-p px-25 flex flex-col gap-10 mt-10">
+      <main className="default-p px-25 flex flex-col gap-10 my-10">
         {/* Section Qui-sommes-nous */}
         <section>
           <h2>Qui sommes-nous ?</h2>

@@ -186,7 +186,7 @@ body {
 
   .gradient-bg-light,
   .card,
-  .badge {
+  .game-badge {
     @apply bg-radial-[at_25%_25%] from-background-dark to-alice-blue-50 to-75%;
   }
 
@@ -203,6 +203,26 @@ body {
   }
 
   .badge {
+    @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5;
+  }
+
+  .badge p {
+    @apply leading-none
+  }
+
+  .badge-neutral {
+    @apply bg-background;
+  }
+
+  .badge-brand {
+    @apply bg-brand text-foreground-light;
+  }
+
+  .badge-disc {
+    @apply h-2.5 w-2.5 rounded-full;
+  }
+
+  .game-badge {
     /* @apply inline-block rounded-full p-3 font-bold outline outline-border; */
     @apply font-bold px-3.5 py-2 inline-block border border-border hover:border-highlight;
   }
@@ -287,6 +307,22 @@ body {
     @apply text-foreground-soft absolute left-2.5 font-medium;
   }
 
+  .table {
+    @apply flex flex-col gap-2 outline outline-border-2 rounded-lg overflow-hidden w-full;
+  }
+
+  .table .table-line {
+    @apply grid w-full px-3 py-1 gap-x-4 items-center grid-cols-6 transition-[font-weight];
+  }
+
+  .table .table-line:hover:not(.table-header) {
+    @apply font-medium;
+  }
+
+  .table .table-header {
+    @apply bg-border py-2 font-bold border-b border-b-border-2;
+  }
+
   /* Anims */
 
   .hover-anim {
@@ -295,14 +331,18 @@ body {
 
   .hover-anim-highlight,
   .btn,
-  .badge {
+  .game-badge {
     @apply hover:bg-none hover:bg-highlight rounded-lg transition-all duration-300 ease-in-out;
   }
 
   .hover-anim-size,
-  .badge,
+  .game-badge,
   .btn {
     @apply hover:scale-110 transition-all duration-300 ease-in-out;
+  }
+
+  .hover-anim-size-soft {
+    @apply hover:scale-101 transition-all duration-300 ease-in-out;
   }
 
   .hover-anim-badge {
@@ -313,7 +353,7 @@ body {
     @apply absolute right-3.5 opacity-0 rotate-180 group-hover:opacity-100 group-hover:rotate-360 group-hover:right-3 transition-all duration-300 delay-75 ease-out;
   }
 
-  /*  */
+  /* Button Colors */
 
   .btn-destructive {
     @apply bg-red-500 text-foreground-light hover:bg-red-600;

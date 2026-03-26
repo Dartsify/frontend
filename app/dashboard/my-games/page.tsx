@@ -1,11 +1,10 @@
 import CurrentGamesSection from "@/components/sections/currentGamesSection";
-import MyGamesSection from "@/components/sections/currentGamesSection";
 import FinishedGamesSection from "@/components/sections/finishedGamesSection";
 import { getGames } from "@/lib/fastapi/games";
 
 export default async function MyGames() {
-  const currentGames = await getGames("waiting");
-  const finishedGames = await getGames("finished");
+  const currentGames = await getGames(["waiting", "in_progress"]);
+  const finishedGames = await getGames(["finished"]);
 
   const { data: currentData, error: currentError } = currentGames;
   const { data: finishedData, error: finishedError } = finishedGames;
@@ -30,7 +29,8 @@ export default async function MyGames() {
 
       <main className="main-container">
         <CurrentGamesSection games={currentData} />
-        <FinishedGamesSection games={finishedData} />
+        {/* <FinishedGamesSection games={finishedData} /> */}
+        <FinishedGamesSection games={currentData} />
       </main>
     </div>
   );

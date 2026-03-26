@@ -169,9 +169,11 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
               : "opacity-0 -translate-x-2 max-w-0"
           }`}
         >
-          <p className="leading-3.5">{userData?.name || "Mathias Bartolas"}</p>
+          <p className="leading-3.5">
+            {userData?.name || "Utilisateur Invité"}
+          </p>
           <p className="text-xs opacity-75 mt-0.5">
-            @{userData?.username || "mbartolas7"}
+            @{userData?.username || "invite"}
           </p>
         </div>
       </Link>

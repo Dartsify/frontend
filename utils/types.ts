@@ -48,6 +48,7 @@ export type Participant = {
   position: number | null;
   status: "validated" | "pending" | "rejected";
   checkout_suggestion: string[];
+  is_host: boolean;
 };
 
 export type GameDetail = {
@@ -56,6 +57,8 @@ export type GameDetail = {
   start_date: Date;
   status: GameStatus;
   target_id: string;
+  target_name?: string;
+  target_location?: string;
   target_description?: string;
   participations: Participant[];
 };

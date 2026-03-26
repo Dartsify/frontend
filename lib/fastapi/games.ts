@@ -87,7 +87,7 @@ export const addPlayer = async (game_id: number, username?: string) => {
   }
 };
 
-export const getGames = async (status?: GameStatus) => {
+export const getGames = async (status?: GameStatus[]) => {
   const token = await getToken();
 
   if (!token) {
@@ -97,7 +97,9 @@ export const getGames = async (status?: GameStatus) => {
   try {
     const res = await fetch(
       // If a status is provided, we add it as a query parameter to filter games by status, otherwise we get all games
-      buildApiUrl(`/games/${status && `?status=${status}`}`),
+      buildApiUrl(
+        `/games/?limit=10${status && `&status=${status.join("&status=")}`}`,
+      ),
       {
         method: "GET",
         headers: {

@@ -19,7 +19,7 @@ export default function PlayGameSection() {
           // </li>
           <li key={index}>
             <Link
-              className="badge hover-anim-badge group"
+              className="game-badge hover-anim-badge group"
               href={`/dashboard/new-game?game=${game.slug}`}
             >
               {game.name}
