@@ -30,7 +30,7 @@ export default async function MyGames() {
       <main className="main-container">
         <CurrentGamesSection games={currentData} />
         {/* <FinishedGamesSection games={finishedData} /> */}
-        <FinishedGamesSection games={currentData} />
+        <FinishedGamesSection games={finishedData} />
       </main>
     </div>
   );

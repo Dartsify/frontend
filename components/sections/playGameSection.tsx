@@ -23,7 +23,7 @@ export default function PlayGameSection() {
               href={`/dashboard/new-game?game=${game.slug}`}
             >
               {game.name}
-              <Play size={16} className="" />
+              <Play size={16} />
             </Link>
           </li>
         ))}

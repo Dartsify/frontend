@@ -15,6 +15,15 @@ export type DialogControls = {
   enter?: ({ username, id }: { username?: string; id?: number }) => void;
 };
 
+export type SelectorControls = {
+  open: () => void;
+  close: () => void;
+  isOpen: boolean;
+  selectedIndex: number | null;
+  setSelectedIndex: (index: number | null) => void;
+  handleToggleOpen: () => void;
+};
+
 export type FieldError = {
   field: string;
   message: string;

@@ -18,6 +18,7 @@ import logo from "@/public/logo.svg";
 import { OtpInput } from "../otpInput";
 import NeedToLoginDialog from "./needToLoginDialog";
 import NameInputDialog from "./nameInputDialog";
+import { games } from "@/utils/games";
 
 export default function TargetDialog({
   dialogControls,
@@ -97,8 +98,8 @@ export default function TargetDialog({
         return;
       }
       // If the user is logged in, we can create the game
-      // We create a game with a default mode ("501")
-      const res = await createGame(target_id, "501");
+      // We create a game with a default mode (normally "501", we retrieve the first game from the games array in utils/games.ts) but it can be changed later in the game settings
+      const res = await createGame(target_id, games[0].slug);
       const { data, error } = res;
 
       if (error || !data?.id) {

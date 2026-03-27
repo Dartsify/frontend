@@ -207,7 +207,7 @@ body {
   }
 
   .badge p {
-    @apply leading-none
+    @apply leading-none;
   }
 
   .badge-neutral {

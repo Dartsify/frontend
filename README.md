@@ -1,4 +1,14 @@
+# Dartsify Frontend <!-- omit in toc -->
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Table des Matières <!-- omit in toc -->
+
+- [Getting Started](#getting-started)
+- [Learn More](#learn-more)
+- [Deploy on Vercel](#deploy-on-vercel)
+- [Notes Perso](#notes-perso)
+  - [Icônes](#icônes)
 
 ## Getting Started
 
@@ -34,3 +44,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Notes Perso
+
+### Icônes
+
+Pour les icônes de taille moyenne affichées tout le long du site, les tailles sont :
+
+- 14 (e.g. icône de timer dans un badge) ;
+- 16 (e.g. moveLeft & moveRight dans la sectionNotifications de la page d'accueil, play icon dans la même page) ;
+- 22 (e.g. X icons dans les dialogs).

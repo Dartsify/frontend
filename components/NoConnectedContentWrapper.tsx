@@ -10,7 +10,6 @@ import {
   useSelectedLayoutSegment,
   useSelectedLayoutSegments,
 } from "next/navigation";
-import { usePathname } from "next/navigation";
 import PlayGameSection from "./sections/playGameSection";
 import { routeNames } from "@/utils/routes";
 
