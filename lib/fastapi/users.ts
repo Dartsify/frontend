@@ -1,7 +1,7 @@
 "use server";
 
 import { buildApiUrl, toFormUrlEncoded } from "@/utils/requests";
-import { getToken } from "@/lib/fastapi/auth";
+import { getToken, logout } from "@/lib/fastapi/auth";
 import { cookies } from "next/headers";
 
 const userData = {
@@ -39,6 +39,7 @@ export const getUserData = async () => {
     }
 
     if (!res.ok) {
+      await logout(); // Logout user, we don't want to keep an invalid token in cookies
       return {
         error: data.detail || "Getting user data failed.",
       };

@@ -1,21 +1,22 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { UserDataContext } from "../providers";
 
 import { useDialog } from "@/lib/hooks/useDialog";
-import { getGame, setGameMode } from "@/lib/fastapi/games";
+import { getGame } from "@/lib/fastapi/games";
 
 import Dialog from "@/components/dialogs/dialog";
 import LoginDialog from "@/components/dialogs/loginDialog";
 import TargetDialog from "@/components/dialogs/targetDialog";
-import Selector from "@/components/selector";
+import ConfigCard from "@/components/cards/newGame/configCard";
+import TargetCard from "@/components/cards/newGame/targetCard";
 
-import { GameDetail, Participant } from "@/utils/types";
-import { gameNames, games } from "@/utils/games";
-import { useSelector } from "@/lib/hooks/useSelector";
+import { GameDetail } from "@/utils/types";
+import { isHost } from "@/utils/games";
+import PlayersCard from "@/components/cards/newGame/playersCard";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
   "Êtes-vous sûr de vouloir quitter cette page ? Vous devrez rejoindre la partie depuis la page Mes Parties.";
@@ -36,6 +37,7 @@ export default function NewGame() {
   const router = useRouter();
 
   const [gameId, setGameId] = useState<number | undefined>(undefined);
+  const [loadingGameData, setLoadingGameData] = useState<boolean>(false);
   const [gameData, setGameData] = useState<GameDetail | null>(null);
   const [gameError, setGameError] = useState<string | null>(null);
 
@@ -43,10 +45,6 @@ export default function NewGame() {
 
   const dialogControls_target = useDialog();
   const dialogControls_login = useDialog();
-
-  // Set the default selected index of the game mode selector to 0 (which corresponds to the first game mode in the list) when the component is mounted
-  const selectorControls = useSelector(0);
-  const { selectedIndex } = selectorControls;
 
   // We want to execute this effect only once on mount to show the target dialog
   useEffect(() => {
@@ -60,17 +58,14 @@ export default function NewGame() {
     }
   }, []);
 
-  // This function checks if the user is the host of the game, it will be used to show a different warning message when the user tries to leave the page
-  const isHost = useCallback(() => {
-    const host = gameData?.participations.find((p) => p.is_host);
-    return userData?.username === host?.player_username && host;
-  }, [gameData, userData]);
-
   // Prevent accidental leave while a game is active (reload/close/navigation).
   useEffect(() => {
     if (gameId == null) {
       return;
     }
+
+    // We calculate once the userIsHost variable to avoid calling the isHost function multiple times in the event listeners
+    const userIsHost = isHost(gameData?.participations || [], userData);
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
@@ -111,7 +106,7 @@ export default function NewGame() {
       }
 
       const shouldLeave = window.confirm(
-        isHost() ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
+        userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
       );
       if (!shouldLeave) {
         event.preventDefault();
@@ -121,7 +116,7 @@ export default function NewGame() {
 
     const handlePopState = () => {
       const shouldLeave = window.confirm(
-        isHost() ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
+        userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
       );
       if (!shouldLeave) {
         window.history.pushState(null, "", window.location.href);
@@ -159,6 +154,8 @@ export default function NewGame() {
 
   // Handle get the data of the game and set the data (& error if it occurs)
   const handleGetGame = async () => {
+    // Start the loading
+    setLoadingGameData(true);
     // The "!" means we are sure that gameId is not undefined here because this function is only called if gameId is set
     const res = await getGame(gameId!);
 
@@ -175,12 +172,16 @@ export default function NewGame() {
     } else {
       setGameData(data);
     }
+    // End the loading if error or data is set
+    setLoadingGameData(false);
   };
 
   // Cancel the active game -> show a prevent message and go back if the user confirms
   const handleCancel = () => {
     const shouldLeave = window.confirm(
-      isHost() ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
+      isHost(gameData?.participations || [], userData)
+        ? LEAVE_PAGE_WARNING_HOST
+        : LEAVE_PAGE_WARNING_DEFAULT,
     );
     if (shouldLeave) {
       router.push("/dashboard");
@@ -191,55 +192,18 @@ export default function NewGame() {
     // Implementation for starting the game
   };
 
-  const listItem = (item: Participant, index: number) => {
-    const {
-      player_name,
-      player_username,
-      status,
-      checkout_suggestion,
-      position,
-    } = item;
-    return (
-      <li key={index}>
-        <b>
-          {player_name} ({player_username})
-        </b>{" "}
-        - Score: {item.current_score} - Position: {position || "N/A"} - Status:{" "}
-        {status} - Checkout suggestion:{" "}
-        {item.checkout_suggestion.join(", ") || "None"}
-      </li>
-    );
-  };
+  if (loadingGameData) {
+    return <p>Chargement en cours...</p>;
+  }
 
-  if (gameError || !gameData) {
+  // If an error has been set show error
+  // If gameId is set but we don't have gameData and the loading is complete, it means we are still loading the data of the game, so we show a loading message
+  if (gameError || (gameId && !loadingGameData && !gameData)) {
     if (typeof gameError === "string") {
       return <p>Erreur : {gameError}</p>;
     }
     return <p>Erreur</p>;
   }
-
-  useEffect(() => {
-    // Each time the user changes the selected game mode, we update the game data to show the corresponding target data of the selected game mode for all the users in the lobby
-    // updateGameMode();
-    alert("test");
-  }, [selectedIndex]);
-
-  const updateGameMode = async () => {
-    // ! bc we are sure that gameId is defined when we can change the game mode (the selector is only shown when gameData is loaded, which means gameId is set)
-    const res = await setGameMode(gameId!, games[selectedIndex!].slug);
-
-    const { data, error } = res;
-
-    if (error || !data) {
-      console.error("Error updating game mode:", error);
-      if (typeof error === "string") {
-        setGameError(
-          "Une erreur est survenue lors de la mise à jour du mode de jeu. Veuillez réessayer.",
-        );
-      }
-      return;
-    }
-  };
 
   return (
     <>
@@ -287,50 +251,20 @@ export default function NewGame() {
           </section>
           <section className="default-section">
             <div className="grid grid-cols-2 gap-3">
-              <div className="card">
-                <h4 className="title">Configuration</h4>
-                <ul>
-                  <li>
-                    <b>Chef de partie :</b> Mathias
-                  </li>
-                  <li className="flex gap-1.5 items-center">
-                    <b>Mode de jeu :</b>{" "}
-                    <Selector
-                      options={gameNames}
-                      selectorControls={selectorControls}
-                    />
-                  </li>
-                </ul>
-              </div>
-              <div className="card">
-                <h4 className="title">{gameData?.target_name || "Cible"}</h4>
-                <ul>
-                  <li>
-                    <b>Identifiant :</b> {gameData?.target_id || "N/A"}
-                  </li>
-                  <li>
-                    <b>Lieu :</b> {gameData?.target_location || "N/A"}
-                  </li>
-                  <li>
-                    <b>Description :</b> {gameData?.target_description || "N/A"}
-                  </li>
-                </ul>
-              </div>
+              {/* We pass the userData props to prevent getting data from the providers again */}
+              <ConfigCard
+                gameId={gameId}
+                gameData={gameData}
+                userData={userData}
+                // gameId={undefined}
+                // gameData={null}
+                // userData={null}
+              />
+              <TargetCard gameData={gameData} />
             </div>
           </section>
           <section className="default-section">
-            <div className="card">
-              <h4 className="title">Joueurs</h4>
-              {gameData?.participations ? (
-                <ul>
-                  {gameData?.participations.map((item, index) =>
-                    listItem(item, index),
-                  )}
-                </ul>
-              ) : (
-                <p>Aucun joueur pour le moment</p>
-              )}
-            </div>
+            <PlayersCard gameData={gameData} userData={userData} />
           </section>
         </main>
       </div>

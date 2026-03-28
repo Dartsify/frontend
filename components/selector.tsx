@@ -68,7 +68,7 @@ export default function Selector({
     return (
       <li className="" key={index}>
         <button
-          className="font-medium text-sm leading-none w-full text-left cursor-pointer transition-colors px-1.5 py-1 rounded-md flex justify-between items-center hover:bg-alice-blue-50"
+          className="font-medium text-sm leading-none w-full text-left cursor-pointer transition-colors px-1.5 py-1 rounded-md flex justify-between items-center hover:bg-highlight"
           type="button"
           onClick={() => handleSelectOption(index)}
         >

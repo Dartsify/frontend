@@ -2,11 +2,12 @@ import moment from "moment";
 import Link from "next/link";
 import { TimerIcon } from "lucide-react";
 
-import { Game } from "@/utils/types";
+import { Game, Participant } from "@/utils/types";
 
 import { getGame } from "@/lib/fastapi/games";
 
 import Timer from "../timer";
+import { gameHostName } from "@/utils/games";
 
 const listItem = async (game: Game, index: number) => {
   // const { id, status, target_id, start_date, participants } = game;
@@ -44,17 +45,9 @@ const listItem = async (game: Game, index: number) => {
     }
   };
 
-  // Return the name of the host of the game
-  const gameHostName = () => {
-    const host = participations.find((p) => p.is_host == true);
-
-    return host
-      ? { name: host.player_name, username: host.player_username }
-      : { name: "Inconnu", username: "N/A" };
-  };
-
   const { text: statusText, color: statusColor } = statusBadge();
-  const { name: hostName, username: hostUsername } = gameHostName();
+  const { name: hostName, username: hostUsername } =
+    gameHostName(participations);
 
   return (
     <li key={index}>

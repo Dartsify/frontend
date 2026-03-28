@@ -35,9 +35,7 @@ export default function TargetDialog({
   const [showNameInput, setShowNameInput] = useState<boolean>(false);
 
   const userDataContext = useContext(UserDataContext);
-
   if (!userDataContext) return <div>Loading...</div>;
-
   const { userData } = userDataContext;
 
   const otpInput = useOtpInput();

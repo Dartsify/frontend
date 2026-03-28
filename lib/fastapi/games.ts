@@ -135,9 +135,9 @@ export const getGames = async (status?: GameStatus[]) => {
 export const getGame = async (game_id: number) => {
   const token = await getToken();
 
-  if (!token) {
-    return { error: "No auth token found" };
-  }
+  // if (!token) {
+  //   return { error: "No auth token found" };
+  // }
 
   try {
     const res = await fetch(buildApiUrl(`/games/${game_id}`), {
@@ -217,11 +217,11 @@ export const setGameMode = async (game_id: number, mode: string) => {
 
   try {
     const res = await fetch(buildApiUrl(`/games/${game_id}/mode`), {
-      method: "POST",
+      method: "PATCH",
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
-        authorization: token ? `Bearer ${token}` : "",
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ mode }),
     });
@@ -234,9 +234,57 @@ export const setGameMode = async (game_id: number, mode: string) => {
       throw new Error("Failed to parse response from server.");
     }
 
+    console.log(data);
+
     if (!res.ok) {
       return {
         error: data.detail || "Failed to change game mode. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const removePlayer = async (
+  game_id: number,
+  player_username: string,
+) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(
+      buildApiUrl(`/games/${game_id}/participants/${player_username}`),
+      {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    console.log(data);
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to remove player. Please try again.",
       };
     }
 

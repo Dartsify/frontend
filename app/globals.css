@@ -198,6 +198,10 @@ body {
     @apply text-lg leading-5 font-semibold mb-2;
   }
 
+  .card b {
+    @apply font-medium;
+  }
+
   .card .footer {
     @apply flex gap-2 self-end mt-4;
   }
@@ -218,8 +222,16 @@ body {
     @apply bg-brand text-foreground-light;
   }
 
+  .badge-outline-brand {
+    @apply bg-background outline outline-brand;
+  }
+
   .badge-disc {
     @apply h-2.5 w-2.5 rounded-full;
+  }
+
+  .badge-sm {
+    @apply px-2 py-0.5;
   }
 
   .game-badge {
@@ -228,11 +240,15 @@ body {
   }
 
   .btn {
-    @apply px-2.5 py-1.25 cursor-pointer;
+    @apply px-2.5 py-1.25 cursor-pointer flex gap-1 items-center font-medium;
   }
 
   .btn-sm {
     @apply text-sm px-2 py-1 cursor-pointer;
+  }
+
+  .btn-xs {
+    @apply text-xs p-1 cursor-pointer;
   }
 
   .btn-invalid {
@@ -338,7 +354,7 @@ body {
   .hover-anim-size,
   .game-badge,
   .btn {
-    @apply hover:scale-110 transition-all duration-300 ease-in-out;
+    @apply hover:scale-105 transition-all duration-300 ease-in-out;
   }
 
   .hover-anim-size-soft {
@@ -371,8 +387,20 @@ body {
     @apply bg-foreground text-foreground-light;
   }
 
+  .btn-neutral {
+    @apply bg-background outline outline-border-2;
+  }
+
+  .btn-ghost {
+    @apply bg-none text-foreground hover:bg-highlight;
+  }
+
   .btn-brand {
     @apply bg-brand text-foreground-light hover:text-foreground;
+  }
+
+  .btn-destructive-hover {
+    @apply hover:bg-red-600 hover:stroke-foreground-light hover:text-foreground-light;
   }
 }
 
