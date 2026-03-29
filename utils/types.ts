@@ -71,3 +71,19 @@ export type GameDetail = {
   target_description?: string;
   participations: Participant[];
 };
+
+export type JoinGameResponse = {
+  // "message": "Bienvenue Alex Invité, vous avez rejoint la partie !",
+  // "game_id": 1,
+  // "username": "guest_27948",
+  // "starting_score": 501,
+  // "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJndWVzdF8yNzk0OCIsImV4cCI6MTc3NDc4NzE1OH0.HhBX-BIGnwNYu5q2ogiz80RKv0rFH9PpKW4Z7av9ie4",
+  // "token_type": "bearer"
+  message: string;
+  game_id: number;
+  username: string;
+  starting_score: number;
+  // Received if the user has joined the game as guest
+  access_token?: string;
+  token_type?: string;
+};

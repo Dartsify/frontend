@@ -2,7 +2,7 @@
 
 import { getToken } from "@/lib/fastapi/auth";
 import { buildApiUrl } from "@/utils/requests";
-import { Game, GameDetail, GameStatus } from "@/utils/types";
+import { Game, GameDetail, GameStatus, JoinGameResponse } from "@/utils/types";
 
 export const createGame = async (target_id: string, mode: string) => {
   const token = await getToken();
@@ -201,7 +201,7 @@ export const joinGame = async (game_id: number, name?: string) => {
       };
     }
 
-    return { data };
+    return { data: data as JoinGameResponse };
   } catch (error) {
     console.log(error);
     return { error: "Erreur réseau" };
