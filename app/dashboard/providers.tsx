@@ -24,7 +24,6 @@ export default function Providers({
   ); // If user is a User object, set userData to it, otherwise set it to null
 
   useEffect(() => {
-    console.log("UserData updated:", user);
     setUserData(typeof user === "object" ? user : null);
   }, [user]);
 

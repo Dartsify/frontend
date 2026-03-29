@@ -117,7 +117,7 @@ export const getGames = async (status?: GameStatus[]) => {
       throw new Error("Failed to parse response from server.");
     }
 
-    console.log(data);
+    // console.log(data);
 
     if (!res.ok) {
       return {
@@ -241,7 +241,7 @@ export const setGameMode = async (game_id: number, mode: string) => {
       throw new Error("Failed to parse response from server.");
     }
 
-    console.log(data);
+    // console.log(data);
 
     if (!res.ok) {
       return {
@@ -287,7 +287,7 @@ export const removePlayer = async (
       throw new Error("Failed to parse response from server.");
     }
 
-    console.log(data);
+    // console.log(data);
 
     if (!res.ok) {
       return {

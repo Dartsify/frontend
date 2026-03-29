@@ -98,7 +98,6 @@ export type JoinGameResponse = {
 
 export type StartGameStreamOptions = {
   gameId: number;
-  token: string;
   signal?: AbortSignal;
   onOpen?: () => void;
   onMessage: (payload: string) => void;

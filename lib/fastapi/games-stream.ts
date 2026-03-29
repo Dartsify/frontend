@@ -2,24 +2,18 @@ import { StartGameStreamOptions } from "@/utils/types";
 
 export const startGameSseStream = async ({
   gameId,
-  token,
   signal,
   onOpen,
   onMessage,
   onClose,
 }: StartGameStreamOptions) => {
   try {
-    const res = await fetch(
-      `http://100.117.205.35:8000/games/${gameId}/stream`,
-      {
-        method: "GET",
-        headers: {
-          accept: "text/event-stream",
-          authorization: `Bearer ${token}`,
-        },
-        signal,
-      },
-    );
+    // Get data from the stream endpoint of the game
+    // There we are able to get the token from the cookie
+    const res = await fetch(`/api/games/${gameId}/stream`, {
+      method: "GET",
+      signal,
+    });
 
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);

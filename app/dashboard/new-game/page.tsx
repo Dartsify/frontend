@@ -15,8 +15,8 @@ import ConfigCard from "@/components/cards/newGame/configCard";
 import TargetCard from "@/components/cards/newGame/targetCard";
 import PlayersCard from "@/components/cards/newGame/playersCard";
 
-import { GameDetail } from "@/utils/types";
 import { isHost } from "@/utils/games";
+import { useGameStream } from "@/lib/hooks/useGameStream";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
   "Êtes-vous sûr de vouloir quitter cette page ? Vous devrez rejoindre la partie depuis la page Mes Parties.";
@@ -37,22 +37,28 @@ export default function NewGame() {
   const router = useRouter();
 
   const [gameId, setGameId] = useState<number | undefined>(undefined);
-  const [loadingGameData, setLoadingGameData] = useState<boolean>(false);
-  const [gameData, setGameData] = useState<GameDetail | null>(null);
-  const [gameError, setGameError] = useState<string | null>(null);
 
   const [mounted, setMounted] = useState<boolean>(false);
 
   const dialogControls_target = useDialog();
   const dialogControls_login = useDialog();
 
+  const {
+    gameData,
+    loading: loadingGameData,
+    error: gameError,
+    isConnected,
+  } = useGameStream(gameId);
+
   // We want to execute this effect only once on mount to show the target dialog
   useEffect(() => {
     if (gameId == null && !game) {
+      // Show the target dialog to let the user create or join a game if we don't have a game id
       dialogControls_target.open();
       setMounted(true);
     }
     if (game) {
+      // If we have a game id in the query params, it means we come from the "Mes Parties" page and we want to show the lobby of this game, so we set the game id to fetch the data of the game and show the lobby page
       setGameId(parseInt(game));
       setMounted(true);
     }
@@ -115,6 +121,7 @@ export default function NewGame() {
     };
 
     const handlePopState = () => {
+      // 2 messages according to the user role
       const shouldLeave = window.confirm(
         userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
       );
@@ -144,40 +151,8 @@ export default function NewGame() {
     }
   }, [dialogControls_target.isOpen, mounted]);
 
-  // gameId is set after successfully creating or joining a game in the TargetDialog
-  // We want to get the data of the party
-  useEffect(() => {
-    if (gameId) {
-      handleGetGame();
-    }
-  }, [gameId]);
-
   // Store if the user is the host of the game in a variable to avoid calling the isHost function multiple times
   const userIsHost = isHost(gameData?.participations || [], userData);
-
-  // Handle get the data of the game and set the data (& error if it occurs)
-  const handleGetGame = async () => {
-    // Start the loading
-    setLoadingGameData(true);
-    // The "!" means we are sure that gameId is not undefined here because this function is only called if gameId is set
-    const res = await getGame(gameId!);
-
-    const { data, error } = res;
-
-    if (error || !data) {
-      if (typeof error === "string") {
-        setGameError(error);
-      } else {
-        setGameError(
-          "Une erreur est survenue en récupérant les données de la partie.",
-        );
-      }
-    } else {
-      setGameData({ ...data, id: gameId! });
-    }
-    // End the loading if error or data is set
-    setLoadingGameData(false);
-  };
 
   const handleCancel = () => {
     const shouldLeave = window.confirm(
@@ -217,8 +192,7 @@ export default function NewGame() {
   }
 
   // If an error has been set show error
-  // If gameId is set but we don't have gameData and the loading is complete, it means we are still loading the data of the game, so we show a loading message
-  if (gameError || (gameId && !loadingGameData && !gameData)) {
+  if (gameError) {
     if (typeof gameError === "string") {
       return <p>Erreur : {gameError}</p>;
     }

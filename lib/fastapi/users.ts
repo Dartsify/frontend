@@ -88,7 +88,7 @@ export const login = async ({
       };
     }
 
-    console.log(data);
+    // console.log(data);
 
     const { access_token } = data;
 
