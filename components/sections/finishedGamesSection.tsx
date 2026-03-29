@@ -1,7 +1,7 @@
-import moment from "moment";
 import Link from "next/link";
 
 import { Game } from "@/utils/types";
+import { utcConvert } from "@/utils/dates";
 
 const tableFields = ["Lieu", "Cible", "Mode", "Gagnant", "Joueurs", "Date"];
 
@@ -52,7 +52,7 @@ const listItem = async (game: Game, index: number) => {
         <p>{mode}</p>
         <p>Vous</p>
         <p>{1}</p>
-        <p>{moment(start_date).format("DD/MM/YYYY HH:mm")}</p>
+        <p>{utcConvert(start_date).format("DD/MM/YYYY HH:mm")}</p>
       </Link>
     </li>
   );

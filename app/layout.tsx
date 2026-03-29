@@ -6,7 +6,6 @@ import moment from "moment";
 import "moment/locale/fr";
 
 import "./globals.css";
-import Footer from "@/components/nav/footer";
 
 const roboto = Roboto({
   variable: "--font-roboto",

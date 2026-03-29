@@ -1,8 +1,9 @@
-import moment from "moment";
 import Link from "next/link";
 import { TimerIcon } from "lucide-react";
+import moment from "moment-timezone";
 
-import { Game, Participant } from "@/utils/types";
+import { calendarConvert } from "@/utils/dates";
+import { Game } from "@/utils/types";
 
 import { getGame } from "@/lib/fastapi/games";
 
@@ -49,6 +50,8 @@ const listItem = async (game: Game, index: number) => {
   const { name: hostName, username: hostUsername } =
     gameHostName(participations);
 
+  const date = moment(start_date);
+
   return (
     <li key={index}>
       <Link
@@ -66,7 +69,7 @@ const listItem = async (game: Game, index: number) => {
                 : "en solo"}
             </h4>
             <p className="text-foreground-soft text-sm-2 font-medium">
-              {moment(start_date).calendar()}
+              {calendarConvert(start_date)}
             </p>
           </div>
           <div className="flex gap-2 items-center">
