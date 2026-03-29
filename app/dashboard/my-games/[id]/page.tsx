@@ -19,7 +19,8 @@ export default async function Game({
     return <div>Error</div>;
   }
 
-  const { participations, mode, start_date } = data;
+  const { participations, mode, start_date, target_location, target_name } =
+    data;
 
   return (
     <div>
@@ -34,6 +35,12 @@ export default async function Game({
           <li>
             <b>Créé le : </b>{" "}
             {utcConvert(start_date).format("DD/MM/YYYY HH:mm")}
+          </li>
+          <li>
+            <b>Localisation : </b> {target_location || "Inconnu"}
+          </li>
+          <li>
+            <b>Cible : </b> {target_name || "Inconnue"}
           </li>
         </ul>
 

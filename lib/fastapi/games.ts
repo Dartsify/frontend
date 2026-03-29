@@ -1,6 +1,6 @@
 "use server";
 
-import { getToken } from "@/lib/fastapi/auth";
+import { getToken, saveToken } from "@/lib/fastapi/auth";
 import { buildApiUrl } from "@/utils/requests";
 import { Game, GameDetail, GameStatus, JoinGameResponse } from "@/utils/types";
 
@@ -201,7 +201,14 @@ export const joinGame = async (game_id: number, name?: string) => {
       };
     }
 
-    return { data: data as JoinGameResponse };
+    const { access_token } = data as JoinGameResponse;
+
+    // If the user has joined the game as a guest, we need to save the token to cookies
+    if (name && access_token) {
+      await saveToken(access_token);
+    }
+
+    return { data };
   } catch (error) {
     console.log(error);
     return { error: "Erreur réseau" };

@@ -1,44 +1,33 @@
+"use client";
+
 import Link from "next/link";
+import { useContext } from "react";
 
 import { Game } from "@/utils/types";
 import { utcConvert } from "@/utils/dates";
 
+import { UserDataContext } from "@/app/dashboard/providers";
+
 const tableFields = ["Lieu", "Cible", "Mode", "Gagnant", "Joueurs", "Date"];
 
-const listItem = async (game: Game, index: number) => {
-  // const { id, status, target_id, start_date, participants } = game;
-  const { id, status, target_id, mode, start_date } = game;
+const listItem = async (
+  game: Game,
+  index: number,
+  username: string | undefined,
+) => {
+  const {
+    id,
+    status,
+    target_id,
+    mode,
+    start_date,
+    target_name,
+    target_location,
+    winner_username,
+    player_count,
+  } = game;
 
-  // const { data, error } = await getGame(id);
-
-  // if (error || !data) {
-  //   if (typeof error === "string") {
-  //     return <div>Error: {error}</div>;
-  //   }
-  //   return <div>Error: Erreur Inconnue</div>;
-  // }
-
-  // const {
-  //   status,
-  //   target_id,
-  //   participations,
-  //   target_description,
-  //   target_location,
-  //   target_name,
-  //   start_date,
-  //   mode,
-  // } = data;
-
-  // Return the name of the host of the game
-  // const gameHostName = () => {
-  //   const host = participations.find((p) => p.is_host == true);
-
-  //   return host
-  //     ? { name: host.player_name, username: host.player_username }
-  //     : { name: "Inconnu", username: "N/A" };
-  // };
-
-  // const { name: hostName, username: hostUsername } = gameHostName();
+  const isMe = winner_username === username;
 
   return (
     <li key={index}>
@@ -46,23 +35,30 @@ const listItem = async (game: Game, index: number) => {
         className={`table-line ${index % 2 === 0 ? "bg-background" : "bg-background-dark"}`}
         href={`/dashboard/my-games/${id}`}
       >
-        <p>Chez Cabu, Gerpinnes</p>
-        <p>Cible Bar</p>
-        {/* <p>{id}</p> */}
+        <p>{target_name || "Inconnue"}</p>
+        <p>{target_location || "Inconnu"}</p>
         <p>{mode}</p>
-        <p>Vous</p>
-        <p>{1}</p>
+        <p>
+          {winner_username && username
+            ? isMe
+              ? "Moi"
+              : winner_username
+            : "Inconnu"}
+        </p>
+        <p>{player_count || "N/A"}</p>
         <p>{utcConvert(start_date).format("DD/MM/YYYY HH:mm")}</p>
       </Link>
     </li>
   );
 };
 
-export default async function FinishedGamesSection({
-  games,
-}: {
-  games: Game[];
-}) {
+export default function FinishedGamesSection({ games }: { games: Game[] }) {
+  const userDataContext = useContext(UserDataContext);
+  if (!userDataContext) return <div>Loading...</div>;
+  const { userData } = userDataContext;
+
+  const { username } = userData ?? {};
+
   return (
     <section id="my-games-section" className="default-section">
       <h2>Parties terminées</h2>
@@ -79,7 +75,7 @@ export default async function FinishedGamesSection({
                 <p key={index}>{field}</p>
               ))}
             </li>
-            {games.map((game, index) => listItem(game, index))}
+            {games.map((game, index) => listItem(game, index, username))}
           </ul>
         </>
       )}

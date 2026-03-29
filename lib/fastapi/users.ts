@@ -1,8 +1,7 @@
 "use server";
 
 import { buildApiUrl, toFormUrlEncoded } from "@/utils/requests";
-import { getToken, logout } from "@/lib/fastapi/auth";
-import { cookies } from "next/headers";
+import { getToken, logout, saveToken } from "@/lib/fastapi/auth";
 
 const userData = {
   username: "mbartolas7",
@@ -12,6 +11,8 @@ const userData = {
 
 export const getUserData = async () => {
   const token = await getToken();
+
+  console.log("Getting user data with token:", token);
 
   if (!token) {
     // throw new Error("No auth token found");
@@ -45,7 +46,7 @@ export const getUserData = async () => {
       };
     }
 
-    return data;
+    return { ...data, guest: data.username.includes("guest_") }; // We add a guest property to the user data to know if the user is a guest or not (we consider that if the username contains "guest_" then it's a guest user)
   } catch (error) {
     return { error: "Erreur réseau" };
   }
@@ -93,14 +94,7 @@ export const login = async ({
 
     // Save the token in cookies if login is successful
     if (access_token) {
-      const cookieStore = await cookies();
-      cookieStore.set("auth_token", access_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        // maxAge: 60 * 60 * 24 * 7, // 1 week
-        maxAge: 60 * 60, // 1 hour
-      });
-      console.log("Auth token saved in cookies.");
+      await saveToken(access_token);
     }
 
     return { data };

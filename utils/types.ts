@@ -1,10 +1,4 @@
-export type GameMode = "501" | "custom-dartsify" | "301";
-
-export type User = {
-  username: string;
-  email: string;
-  name: string;
-};
+// Hooks
 
 export type DialogControls = {
   isOpen: boolean;
@@ -24,10 +18,17 @@ export type SelectorControls = {
   handleToggleOpen: () => void;
 };
 
-export type FieldError = {
-  field: string;
-  message: string;
-  value: string;
+// Data
+
+export type GameMode = "501" | "custom-dartsify" | "301";
+
+export type User = {
+  username: string;
+  email: string;
+  name: string;
+  age: number;
+  creation_date: Date;
+  guest?: boolean; // We add a guest property to the user data to know if the user is a guest or not (we consider that if the username contains "guest_" then it's a guest user)
 };
 
 export type GameStatus = "waiting" | "in_progress" | "finished";
@@ -48,6 +49,11 @@ export type Game = {
   start_date: Date;
   status: GameStatus;
   target_id: string;
+  target_name: string;
+  target_location: string;
+  player_count: number;
+  winner_username: string;
+  winner_name: string;
 };
 
 export type Participant = {
@@ -66,19 +72,21 @@ export type GameDetail = {
   start_date: Date;
   status: GameStatus;
   target_id: string;
-  target_name?: string;
-  target_location?: string;
+  target_name: string;
+  target_location: string;
   target_description?: string;
   participations: Participant[];
 };
 
+// Requests
+
+export type FieldError = {
+  field: string;
+  message: string;
+  value: string;
+};
+
 export type JoinGameResponse = {
-  // "message": "Bienvenue Alex Invité, vous avez rejoint la partie !",
-  // "game_id": 1,
-  // "username": "guest_27948",
-  // "starting_score": 501,
-  // "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJndWVzdF8yNzk0OCIsImV4cCI6MTc3NDc4NzE1OH0.HhBX-BIGnwNYu5q2ogiz80RKv0rFH9PpKW4Z7av9ie4",
-  // "token_type": "bearer"
   message: string;
   game_id: number;
   username: string;
@@ -86,4 +94,13 @@ export type JoinGameResponse = {
   // Received if the user has joined the game as guest
   access_token?: string;
   token_type?: string;
+};
+
+export type StartGameStreamOptions = {
+  gameId: number;
+  token: string;
+  signal?: AbortSignal;
+  onOpen?: () => void;
+  onMessage: (payload: string) => void;
+  onClose?: () => void;
 };

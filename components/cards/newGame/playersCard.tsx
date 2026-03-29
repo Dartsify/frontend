@@ -1,8 +1,11 @@
-import HorizontalSeparator from "@/components/horizontalSeparator";
-import { removePlayer } from "@/lib/fastapi/games";
+import { Crown, Plus, X } from "lucide-react";
+
 import { isHost } from "@/utils/games";
 import { GameDetail, Participant, User } from "@/utils/types";
-import { Crown, Plus, X } from "lucide-react";
+
+import HorizontalSeparator from "@/components/horizontalSeparator";
+
+import { removePlayer } from "@/lib/fastapi/games";
 
 export default function PlayersCard({
   gameData,
@@ -28,12 +31,8 @@ export default function PlayersCard({
   };
 
   const handleRemovePlayer = async (username: string) => {
-    if (id === undefined) {
-      alert("ID de la partie non défini. Veuillez réessayer.");
-
-      return;
-    }
-    const { data, error } = await removePlayer(id, username);
+    // We are sure that id is defined bc we get the gameData from the gameId (and we set it in the gameData state in case of success)
+    const { data, error } = await removePlayer(id!, username); // Remove player from the game with his username
 
     if (error) {
       if (typeof error === "string") {
@@ -45,6 +44,8 @@ export default function PlayersCard({
       );
       return;
     }
+
+    // We dont show success message bc the change is directly visible in the UI with the update of the participations
   };
 
   const listItem = (item: Participant, index: number) => {

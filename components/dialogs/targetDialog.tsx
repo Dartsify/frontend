@@ -124,20 +124,13 @@ export default function TargetDialog({
     }
   };
 
-  // Execute this function after successfully creating or joining a game to close the dialog and save the target id in the parent component (NewGame)
-  const handleFinish = (gameId: number) => {
-    if (dialogControls.enter) {
-      dialogControls.enter({ id: gameId });
-    }
-    dialogControls.close();
-  };
-
+  // Join the game (available for guests and logged in users)
   const handleJoinGame = async (username?: string) => {
     const current_game_id = targetData?.current_game_id;
     if (current_game_id) {
       const { data, error } = await joinGame(
         current_game_id,
-        username || userData?.username,
+        username, // username is required if the user is not logged in, so if not given in params its not a problem
       );
       if (error) {
         if (typeof error === "string") {
@@ -146,11 +139,23 @@ export default function TargetDialog({
           setTargetError("Une erreur est survenue. Veuillez réessayer.");
         }
       } else {
+        // If the user joined as a guest, we save the access token in the local storage to authenticate the user in the game
+
         handleFinish(current_game_id);
       }
     } else {
       setTargetError("Aucun jeu en attente trouvé pour cette cible.");
     }
+  };
+
+  // Execute this function after successfully creating or joining a game to close the dialog and save the target id in the parent component (NewGame)
+  const handleFinish = (gameId: number) => {
+    if (dialogControls.enter) {
+      // If a dialogControls enter function is provided, we call it (here we would want to save the game id in the parent component to show the lobby and then the game page with the right game id)
+      dialogControls.enter({ id: gameId });
+    }
+    // Close the dialog (enter function doesn't close the dialog)
+    dialogControls.close();
   };
 
   // Show NeedToLoginDialog if the user is not logged in but tries to create a game

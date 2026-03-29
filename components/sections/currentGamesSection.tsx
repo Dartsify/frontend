@@ -50,8 +50,6 @@ const listItem = async (game: Game, index: number) => {
   const { name: hostName, username: hostUsername } =
     gameHostName(participations);
 
-  const date = moment(start_date);
-
   return (
     <li key={index}>
       <Link

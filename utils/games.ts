@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Participant, User } from "./types";
 
 export const games = [

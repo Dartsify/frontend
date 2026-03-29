@@ -198,6 +198,10 @@ body {
     @apply text-lg leading-5 font-semibold mb-2;
   }
 
+  .card .subtitle {
+    @apply text-sm-2 text-foreground-soft font-medium -mt-1 mb-2;
+  }
+
   .card b {
     @apply font-medium;
   }
@@ -205,6 +209,8 @@ body {
   .card .footer {
     @apply flex gap-2 self-end mt-4;
   }
+
+
 
   .badge {
     @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5;

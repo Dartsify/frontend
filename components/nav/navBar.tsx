@@ -1,11 +1,13 @@
 "use client";
 
+import { useContext } from "react";
 import { Calendar, ChartLine, House, Swords, Users } from "lucide-react";
-import LogoBanner from "../logoBanner";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+
+import LogoBanner from "../logoBanner";
+
 import { UserDataContext } from "@/app/dashboard/providers";
 
 export default function NavBar({ isOpen }: { isOpen: boolean }) {
@@ -170,7 +172,9 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           }`}
         >
           <p className="leading-3.5">
-            {userData?.name || "Utilisateur Invité"}
+            {userData?.name
+              ? userData.name + (userData?.guest ? " (Invité)" : "")
+              : "Utilisateur Invité"}
           </p>
           <p className="text-xs opacity-75 mt-0.5">
             @{userData?.username || "invite"}
