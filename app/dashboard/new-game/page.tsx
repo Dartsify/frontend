@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { UserDataContext } from "../providers";
@@ -13,10 +13,10 @@ import LoginDialog from "@/components/dialogs/loginDialog";
 import TargetDialog from "@/components/dialogs/targetDialog";
 import ConfigCard from "@/components/cards/newGame/configCard";
 import TargetCard from "@/components/cards/newGame/targetCard";
+import PlayersCard from "@/components/cards/newGame/playersCard";
 
 import { GameDetail } from "@/utils/types";
 import { isHost } from "@/utils/games";
-import PlayersCard from "@/components/cards/newGame/playersCard";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
   "Êtes-vous sûr de vouloir quitter cette page ? Vous devrez rejoindre la partie depuis la page Mes Parties.";
@@ -152,6 +152,9 @@ export default function NewGame() {
     }
   }, [gameId]);
 
+  // Store if the user is the host of the game in a variable to avoid calling the isHost function multiple times
+  const userIsHost = isHost(gameData?.participations || [], userData);
+
   // Handle get the data of the game and set the data (& error if it occurs)
   const handleGetGame = async () => {
     // Start the loading
@@ -170,18 +173,34 @@ export default function NewGame() {
         );
       }
     } else {
-      setGameData(data);
+      setGameData({ ...data, id: gameId! });
     }
     // End the loading if error or data is set
     setLoadingGameData(false);
   };
 
-  // Cancel the active game -> show a prevent message and go back if the user confirms
   const handleCancel = () => {
     const shouldLeave = window.confirm(
-      isHost(gameData?.participations || [], userData)
-        ? LEAVE_PAGE_WARNING_HOST
-        : LEAVE_PAGE_WARNING_DEFAULT,
+      userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
+    );
+    if (shouldLeave) {
+      router.push("/dashboard");
+    }
+  };
+
+  // Cancel the active game -> show a prevent message and go back if the user confirms
+  const handleCancelGame = () => {
+    const shouldLeave = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer cette partie ? Tous les joueurs seront également déconnectés. Cette action est irréversible.",
+    );
+    if (shouldLeave) {
+      router.push("/dashboard");
+    }
+  };
+
+  const handleLeaveGame = () => {
+    const shouldLeave = window.confirm(
+      "Êtes-vous sûr de vouloir quitter cette partie ?",
     );
     if (shouldLeave) {
       router.push("/dashboard");
@@ -190,6 +209,7 @@ export default function NewGame() {
 
   const handleStart = () => {
     // Implementation for starting the game
+    alert("Start the game : not implemented yet");
   };
 
   if (loadingGameData) {
@@ -211,20 +231,35 @@ export default function NewGame() {
         <header className="flex justify-between items-center">
           <h1>Nouvelle partie</h1>
           <div className="flex gap-3 items-center">
-            <button
-              onClick={handleCancel}
-              type="button"
-              className="btn btn-destructive-soft"
-            >
-              Quitter
-            </button>
-            <button
-              onClick={handleStart}
-              type="button"
-              className="btn btn-brand"
-            >
-              Démarrer la partie
-            </button>
+            {userIsHost ? (
+              // If the user is the host, leaving the game means canceling it
+              <button
+                onClick={handleCancelGame}
+                type="button"
+                className="btn btn-destructive-soft"
+              >
+                Supprimer la partie
+              </button>
+            ) : (
+              // If the user is not the host, he only leaves the game but it continues for the other players
+              <button
+                onClick={handleLeaveGame}
+                type="button"
+                className="btn btn-destructive-soft"
+              >
+                Quitter
+              </button>
+            )}
+            {/* We only show the start game button if the user is the host */}
+            {userIsHost && (
+              <button
+                onClick={handleStart}
+                type="button"
+                className="btn btn-brand"
+              >
+                Démarrer la partie
+              </button>
+            )}
           </div>
         </header>
 
