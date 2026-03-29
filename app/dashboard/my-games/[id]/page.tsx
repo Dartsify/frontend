@@ -1,5 +1,5 @@
 import { getGame } from "@/lib/fastapi/games";
-import moment from "moment";
+import { utcConvert } from "@/utils/dates";
 
 export default async function Game({
   params,
@@ -32,7 +32,8 @@ export default async function Game({
             <b>Mode : </b> {mode}
           </li>
           <li>
-            <b>Créé le : </b> {moment(start_date).format("DD/MM/YYYY HH:mm")}
+            <b>Créé le : </b>{" "}
+            {utcConvert(start_date).format("DD/MM/YYYY HH:mm")}
           </li>
         </ul>
 

@@ -112,6 +112,7 @@ export default function PlayersCard({
               className="btn btn-xs btn-ghost btn-destructive-hover group"
               onClick={() => handleRemovePlayer(player_username)}
             >
+              {" "}
               <X
                 size={16}
                 className="stroke-red-500 group-hover:stroke-foreground-light transition-colors duration-300"
