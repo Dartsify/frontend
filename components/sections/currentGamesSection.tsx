@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { TimerIcon } from "lucide-react";
-import moment from "moment-timezone";
 
 import { calendarConvert } from "@/utils/dates";
 import { Game } from "@/utils/types";

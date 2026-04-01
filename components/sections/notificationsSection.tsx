@@ -95,7 +95,7 @@ const listItem = (
 
             <div className="footer">
               <button type="button" className="btn btn-sm btn-destructive">
-                Supprimer
+                Refuser
               </button>
               <button type="button" className="btn btn-sm btn-validate">
                 Accepter
