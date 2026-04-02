@@ -1,8 +1,33 @@
+import Image from "next/image";
+
 import { Friend } from "@/utils/types";
 
 export default function FriendsListSection({ friends }: { friends: Friend[] }) {
+  const handleShowControls = (username: string) => {};
+
   const listItem = (friend: Friend, index: number) => {
-    return <p>test</p>;
+    const { name, username } = friend;
+
+    return (
+      <div
+        onClick={() => handleShowControls(username)}
+        className="card flex gap-2 items-center hover-scale-2"
+        key={index}
+      >
+        <div className="rounded-lg relative">
+          <Image
+            src={`https://avatars.githubusercontent.com/${username}`}
+            alt="Avatar"
+            objectFit="cover"
+            fill
+          />
+        </div>
+
+        <h4>
+          {name} (@{username})
+        </h4>
+      </div>
+    );
   };
 
   return (

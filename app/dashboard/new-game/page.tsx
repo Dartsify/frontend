@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserDataContext } from "../providers";
 
 import { useDialog } from "@/lib/hooks/useDialog";
-import { getGame } from "@/lib/fastapi/games";
 
 import Dialog from "@/components/dialogs/dialog";
 import LoginDialog from "@/components/dialogs/loginDialog";
