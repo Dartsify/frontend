@@ -1,22 +1,38 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { X } from "lucide-react";
 
-import { DialogControls, Friend } from "@/utils/types";
+import { DialogControls, Friend, Participant } from "@/utils/types";
 import { getMyFriends } from "@/lib/fastapi/players";
-import Image from "next/image";
 
 export default function AddPlayersToGameDialog({
   dialogControls,
+  participations,
 }: {
   dialogControls: DialogControls;
+  participations: Participant[] | undefined;
 }) {
   const [input, setInput] = useState<string>("");
-  const [usernames, setUsernames] = useState<string[]>([]);
+  // const [usernames, setUsernames] = useState<string[]>([]);
+  const [players, setPlayers] = useState<
+    { username: string; guest: boolean }[]
+  >([]);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<Friend[]>([]); // This state will hold the suggestions for the usernames based on the input
+
+  useEffect(() => {
+    if (!dialogControls.isOpen) {
+      // When dialog is closed, we reset the input, the players to add, the suggestions and the error
+      setTimeout(() => {
+        setSuggestions([]);
+        setPlayers([]);
+        setInput("");
+        setError(null);
+      }, 300); // We put a timeout to wait for the closing animation of the dialog to finish before resetting the states
+    }
+  }, [dialogControls.isOpen]);
 
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -28,6 +44,60 @@ export default function AddPlayersToGameDialog({
       setError(null);
 
       return;
+    }
+
+    if (value[value.length - 1] === " ") {
+      // If the last character is a space, it means that the user finished typing a username, so we add it to the list of players to add to the game and we clear the input and the suggestions
+
+      // Check if the username perfectly matches a friend in the suggestions, if yes we add it as a non-guest player, if not we add it as a guest player
+      const friendMatch = suggestions.find(
+        (friend) => friend.username === value.trim(),
+      );
+
+      if (friendMatch) {
+        setPlayers((prev) => [
+          ...prev,
+          { username: friendMatch.username, guest: false },
+        ]); // We take the username from the suggestions to be sure that we have the correct username (case sensitive) and we set guest to false
+      } else {
+        // If we add the user as a non guest, we need to ckeck if the username is already in the list of players to add to avoid duplicates
+        let usernameToAdd = value.trim(); // TODO : ajouter première lettre en majuscule pour les joueurs invités
+
+        if (players.some((p) => p.guest && p.username === value.trim())) {
+          // A player has been already added with the same username as a guest (but without incremented number),
+          // so we add (1) to the already added player username and we add the new player with the same username but with (2) at the end to differentiate them in the UI
+          const matchingGuest = players.find(
+            (p) => p.guest && p.username === value.trim(),
+          );
+          setPlayers((prev) => [
+            ...prev.filter((p) => p !== matchingGuest),
+            { username: matchingGuest!.username + " (1)", guest: true },
+          ]);
+          usernameToAdd = usernameToAdd + " (2)"; // We add (1) at the end of the username to differentiate it from the other guest with the same username, we can later add a counter if there are more than 2 guests with the same username
+        } else if (
+          players.some(
+            (p) =>
+              p.guest &&
+              p.username.startsWith(value.trim() + " (") &&
+              p.username.endsWith(")"),
+          )
+        ) {
+          const matchingGuests = players.filter(
+            (p) =>
+              p.guest &&
+              p.username.startsWith(value.trim() + " (") &&
+              p.username.endsWith(")"),
+          );
+          usernameToAdd = usernameToAdd + ` (${matchingGuests.length + 1})`; // We add (x) at the end of the username to differentiate it from the other guests with the same username, x is the number of guests with the same username + 1
+        } // Also check if a guest with an incremented number is already in the list to increment the number
+        setPlayers((prev) => [
+          ...prev,
+          { username: usernameToAdd, guest: true },
+        ]); // We set guest to true
+      }
+
+      setInput("");
+      setSuggestions([]);
     }
 
     setLoading(true);
@@ -49,7 +119,11 @@ export default function AddPlayersToGameDialog({
     }
 
     setSuggestions(
-      data.filter((friend) => !usernames.includes(friend.username)),
+      data.filter(
+        (friend) =>
+          !players.some((p) => !p.guest && p.username === friend.username) && // ce player non invité n’est pas déjà ajouté dans la liste des joueurs à ajouter
+          !participations?.some((p) => p.player_username === friend.username), // ce player n’apparaît dans aucune participation
+      ),
     ); // We filter the suggestions to not show the usernames that are already added
     setLoading(false);
   };
@@ -61,11 +135,12 @@ export default function AddPlayersToGameDialog({
     return (
       <div
         onClick={() => {
-          if (usernames.includes(username)) {
+          // On click on a suggestion, we add the player to the list of players to add to the game and we clear the input and the suggestions
+          if (players.some((p) => !p.guest && p.username === username)) {
             setError("Ce joueur est déjà ajouté.");
             return;
           }
-          setUsernames([...usernames, username]);
+          setPlayers([...players, { username, guest: false }]);
           setInput("");
           setSuggestions([]);
         }}
@@ -90,13 +165,25 @@ export default function AddPlayersToGameDialog({
   };
 
   // List item for the usernames that are added in the input, we show them as tags in the input
-  const listItem_usernames = (username: string, index: number) => {
+  const listItem_players = (
+    player: { username: string; guest: boolean },
+    index: number,
+  ) => {
+    const { username, guest } = player;
+
     return (
+      // <p
+      //   key={index}
+      //   className="px-1.5 py-0.5 bg-brand rounded-lg text-foreground-light text-sm-2"
+      // >
+      //   {guest ? `Invité : ${username}` : "@" + username}
+      // </p>
       <p
         key={index}
-        className="px-2 py-1 bg-brand rounded-lg text-foreground-light"
+        className={`badge badge-sm ${guest ? "badge-neutral" : "badge-brand"}`}
       >
-        {username}
+        {/* {guest ? `${username} (Invité)` : "@" + username} */}
+        {guest ? username : "@" + username}
       </p>
     );
   };
@@ -120,10 +207,8 @@ export default function AddPlayersToGameDialog({
 
       <form className="mt-5">
         {/* <div className="flex items-center gap-2"> */}
-        <div className="input flex items-center gap-2">
-          {usernames.map((username, index) =>
-            listItem_usernames(username, index),
-          )}{" "}
+        <div className="input flex items-center gap-2 py-2">
+          {players.map((player, index) => listItem_players(player, index))}{" "}
           {/* Map the usernames to display them in the input as tags */}
           <input
             type="text"
@@ -160,8 +245,8 @@ export default function AddPlayersToGameDialog({
           </button>
           <button
             type="submit"
-            className={`btn btn-brand ${usernames.length === 0 && "btn-invalid"}`}
-            disabled={usernames.length === 0}
+            className={`btn btn-brand ${players.length === 0 && "btn-invalid"}`}
+            disabled={players.length === 0}
           >
             Ajouter
           </button>

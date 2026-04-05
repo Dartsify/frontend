@@ -25,11 +25,6 @@ export default function PlayersCard({
   const dialogControls = useDialog(); // Controls for the add player dialog
 
   const handleAddPlayers = () => {
-    // TODO : Implement the add players functionality with a dialog to enter the username of the player we want to add (with search/autocomplete if possible)
-    // alert(
-    //   "Cette fonctionnalité n'est pas encore implémentée. En attendant, les joueurs peuvent rejoindre la partie en partageant le lien de la partie avec leurs amis !",
-    // );
-
     dialogControls.open();
   };
 
@@ -165,7 +160,10 @@ export default function PlayersCard({
       </div>
 
       <Dialog width="w-150" dialogControls={dialogControls}>
-        <AddPlayersToGameDialog dialogControls={dialogControls} />
+        <AddPlayersToGameDialog
+          dialogControls={dialogControls}
+          participations={participations}
+        />
       </Dialog>
     </>
   );

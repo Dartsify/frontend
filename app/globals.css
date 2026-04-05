@@ -213,7 +213,7 @@ body {
 
 
   .badge {
-    @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5;
+    @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5 leading-4;
   }
 
   .badge p {
@@ -237,7 +237,7 @@ body {
   }
 
   .badge-sm {
-    @apply px-2 py-0.5;
+    @apply px-2 py-0.5 leading-3.5;
   }
 
   .game-badge {
