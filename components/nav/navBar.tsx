@@ -57,6 +57,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
   const iconSize = 16;
   const iconStrokeWidth = 2.5;
 
+  // TODO : show on scroll a border at the bottom of the navbar to separate it from the content
   return (
     <div
       className={`gradient-bg flex flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${

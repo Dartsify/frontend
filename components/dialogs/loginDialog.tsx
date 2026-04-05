@@ -271,7 +271,7 @@ export default function LoginDialog({
             Vous avez déjà un compte ?{" "}
             <button
               type="button"
-              className="text-blue-500 hover:underline cursor-pointer"
+              className="brand-link"
               onClick={() => setShowSignUp(false)}
             >
               Connectez-vous
@@ -347,7 +347,7 @@ export default function LoginDialog({
             Vous n'avez pas de compte ?{" "}
             <button
               type="button"
-              className="text-blue-500 hover:underline cursor-pointer"
+              className="brand-link"
               onClick={() => setShowSignUp(true)}
             >
               Inscrivez-vous

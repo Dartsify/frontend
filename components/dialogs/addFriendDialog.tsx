@@ -52,6 +52,7 @@ export default function AddFriendDialog({
           <X size={22} />
         </div>
       </div>
+
       <p className="text-foreground-soft">
         Entrez le nom d'utilisateur de votre ami pour lui envoyer une demande
         d'amis. Une fois qu'il aura accepté votre demande, vous pourrez
@@ -81,7 +82,7 @@ export default function AddFriendDialog({
             type="button"
             onClick={dialogControls.close}
           >
-            Annuer
+            Annuler
           </button>
           <button
             className={`btn btn-brand ${buttonDisabled ? "btn-invalid" : ""}`}

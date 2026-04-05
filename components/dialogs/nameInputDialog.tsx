@@ -29,7 +29,12 @@ export default function NameInputDialog({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <p className="text-foreground-soft">
+        Ce nom sera visible par les autres joueurs de la partie, alors
+        choisissez-le avec soin !
+      </p>
+
+      <form onSubmit={handleSubmit} className="mt-4">
         <input type="text" name="username" placeholder="Entrez votre nom" />
 
         <div className="footer">

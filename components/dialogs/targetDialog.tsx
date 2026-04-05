@@ -199,10 +199,7 @@ export default function TargetDialog({
       </p>
       <p className="mt-2">
         Entrez le code à 6 chiffres affiché sur votre cible, ou{" "}
-        <span
-          className="text-blue-500 hover:underline cursor-pointer"
-          onClick={() => setShowInput(false)}
-        >
+        <span className="brand-link" onClick={() => setShowInput(false)}>
           utilisez la caméra et scannez le QR Code
         </span>{" "}
         pour une connexion plus rapide.

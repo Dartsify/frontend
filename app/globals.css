@@ -278,7 +278,7 @@ body {
   }
 
   .dialog .header {
-    @apply flex justify-between items-center;
+    @apply flex justify-between items-center gap-5;
   }
 
   .dialog h2 {
@@ -302,6 +302,10 @@ body {
   }
 
   input {
+    @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
+  }
+
+  .input {
     @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
   }
 
@@ -343,6 +347,10 @@ body {
 
   .table .table-header {
     @apply bg-border py-2 font-bold border-b border-b-border-2;
+  }
+
+  .brand-link {
+    @apply text-brand hover:underline cursor-pointer
   }
 
   /* Anims */

@@ -4,9 +4,12 @@ import { isHost } from "@/utils/games";
 import { GameDetail, Participant, User } from "@/utils/types";
 
 import HorizontalSeparator from "@/components/horizontalSeparator";
+import IconButton from "@/components/buttons/actionButtons/iconButton";
+import Dialog from "@/components/dialogs/dialog";
+import AddPlayersToGameDialog from "@/components/dialogs/addPlayersToGameDialog";
 
 import { removePlayer } from "@/lib/fastapi/games";
-import IconButton from "@/components/buttons/actionButtons/iconButton";
+import { useDialog } from "@/lib/hooks/useDialog";
 
 export default function PlayersCard({
   gameData,
@@ -19,10 +22,15 @@ export default function PlayersCard({
 
   const userIsHost = isHost(participations || [], userData);
 
+  const dialogControls = useDialog(); // Controls for the add player dialog
+
   const handleAddPlayers = () => {
-    alert(
-      "Cette fonctionnalité n'est pas encore implémentée. En attendant, les joueurs peuvent rejoindre la partie en partageant le lien de la partie avec leurs amis !",
-    );
+    // TODO : Implement the add players functionality with a dialog to enter the username of the player we want to add (with search/autocomplete if possible)
+    // alert(
+    //   "Cette fonctionnalité n'est pas encore implémentée. En attendant, les joueurs peuvent rejoindre la partie en partageant le lien de la partie avec leurs amis !",
+    // );
+
+    dialogControls.open();
   };
 
   const handleShowUserControls = (player: Participant) => {
@@ -132,27 +140,33 @@ export default function PlayersCard({
   };
 
   return (
-    <div className="card">
-      <div className="flex justify-between items-center">
-        <h4 className="title">Joueurs</h4>
-        {userIsHost && (
-          <IconButton
-            title="Ajouter des joueurs"
-            icon={<Plus size={16} />}
-            onClick={handleAddPlayers}
-          />
+    <>
+      <div className="card">
+        <div className="flex justify-between items-center">
+          <h4 className="title">Joueurs</h4>
+          {userIsHost && (
+            <IconButton
+              title="Ajouter des joueurs"
+              icon={<Plus size={16} />}
+              onClick={handleAddPlayers}
+            />
+          )}
+        </div>
+
+        {participations ? (
+          <ul className="mt-1">
+            {participations
+              .toReversed()
+              .map((item, index) => listItem(item, index))}
+          </ul>
+        ) : (
+          <p>Aucun joueur pour le moment</p>
         )}
       </div>
 
-      {participations ? (
-        <ul className="mt-1">
-          {participations
-            .toReversed()
-            .map((item, index) => listItem(item, index))}
-        </ul>
-      ) : (
-        <p>Aucun joueur pour le moment</p>
-      )}
-    </div>
+      <Dialog width="w-150" dialogControls={dialogControls}>
+        <AddPlayersToGameDialog dialogControls={dialogControls} />
+      </Dialog>
+    </>
   );
 }

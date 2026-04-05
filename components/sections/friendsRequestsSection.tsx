@@ -19,6 +19,7 @@ export default function FriendsRequestsSection({
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollRafRef = useRef<number | null>(null);
+
   const [currentIndex, setCurrentIndex] = useState(0); // keep current index in state to manage button states and scroll position
 
   const [data, setData] = useState<Friend[]>(friends);
@@ -101,7 +102,9 @@ export default function FriendsRequestsSection({
     handleRemoveRequestFromData(username);
   };
 
-  const handleAcceptRequest = async (username: string) => {
+  const handleAcceptRequest = async (friend: Friend) => {
+    const { username } = friend;
+
     const res = acceptFriendRequest(username);
     const { error } = await res;
 
@@ -115,6 +118,7 @@ export default function FriendsRequestsSection({
     }
 
     handleRemoveRequestFromData(username);
+    setData((prev) => [...prev, friend]); // We add the new friend to the list of friends so that we can see it directly in the friends list section without refreshing the page
   };
 
   const handleRemoveRequestFromData = (username: string) => {
@@ -158,7 +162,7 @@ export default function FriendsRequestsSection({
               Refuser
             </button>
             <button
-              onClick={() => handleAcceptRequest(username)}
+              onClick={() => handleAcceptRequest(friend)}
               type="button"
               className="btn btn-sm btn-validate"
             >
@@ -187,9 +191,19 @@ export default function FriendsRequestsSection({
           </button>
           <button
             type="button"
-            className={`btn ${currentIndex === data.length - 1 ? "btn-invalid" : ""}`}
+            className={`btn ${
+              (data.length - 2 <= currentIndex &&
+                currentIndex <= data.length - 1) ||
+              data.length === 0
+                ? "btn-invalid"
+                : ""
+            }`}
             onClick={goNext}
-            disabled={currentIndex === data.length - 1}
+            disabled={
+              (data.length - 2 <= currentIndex &&
+                currentIndex <= data.length - 1) ||
+              data.length === 0
+            }
             aria-label="Notification suivante"
           >
             {" "}
