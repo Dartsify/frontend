@@ -1,9 +1,14 @@
 "use client";
 
-import { calendarConvert } from "@/utils/dates";
-import { Friend } from "@/utils/types";
 import { MoveLeft, MoveRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+
+import { calendarConvert } from "@/utils/dates";
+import { Friend } from "@/utils/types";
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from "@/lib/fastapi/players";
 
 const BUTTON_SCROLL_STEP = 2;
 
@@ -79,11 +84,36 @@ export default function FriendsRequestsSection({
     };
   }, []);
 
-  const handleRejectRequest = (username: string) => {
+  const handleRejectRequest = async (username: string) => {
+    const res = rejectFriendRequest(username);
+
+    const { error } = await res;
+
+    if (error) {
+      if (typeof error === "string") {
+        alert(`Error rejecting friend request: ${error}`);
+        return;
+      }
+      alert("Error rejecting friend request: Unknown error");
+      return;
+    }
+
     handleRemoveRequestFromData(username);
   };
 
-  const handleAcceptRequest = (username: string) => {
+  const handleAcceptRequest = async (username: string) => {
+    const res = acceptFriendRequest(username);
+    const { error } = await res;
+
+    if (error) {
+      if (typeof error === "string") {
+        alert(`Error accepting friend request: ${error}`);
+        return;
+      }
+      alert("Error accepting friend request: Unknown error");
+      return;
+    }
+
     handleRemoveRequestFromData(username);
   };
 
@@ -103,7 +133,7 @@ export default function FriendsRequestsSection({
       >
         <div className="flex items-center justify-between">
           <h4 className="title">
-            Demande d'{name}
+            Demande de {name}
             {/* (@{username}) */}
           </h4>
           <p className="font-medium text-sm-2 text-foreground-soft">

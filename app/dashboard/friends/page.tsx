@@ -1,3 +1,4 @@
+import AddFriend from "@/components/addFriend";
 import FriendsListSection from "@/components/sections/friendsListSection";
 import FriendsRequestsSection from "@/components/sections/friendsRequestsSection";
 import { getMyFriends, getMyFriendsRequests } from "@/lib/fastapi/players";
@@ -26,19 +27,13 @@ export default async function Friends() {
 
   return (
     <div>
-      <h1>Amis</h1>
+      <div className="flex items-center justify-between">
+        <h1>Amis</h1>
+        <AddFriend />
+      </div>
 
       <main className="main-container">
-        <FriendsRequestsSection
-          friends={[
-            ...friendsRequestsData,
-            ...friendsRequestsData,
-            ...friendsRequestsData,
-            ...friendsRequestsData,
-            ...friendsRequestsData,
-            ...friendsRequestsData,
-          ]}
-        />
+        <FriendsRequestsSection friends={friendsRequestsData} />
         <FriendsListSection friends={friendsData} />
       </main>
     </div>

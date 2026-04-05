@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 import { Friend } from "@/utils/types";
@@ -11,7 +13,7 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
     return (
       <div
         onClick={() => handleShowControls(username)}
-        className="card flex gap-2 items-center hover-scale-2"
+        className="card flex gap-2 items-center hover-anim-size-soft cursor-pointer"
         key={index}
       >
         <div className="rounded-lg relative">

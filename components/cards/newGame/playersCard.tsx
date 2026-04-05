@@ -6,6 +6,7 @@ import { GameDetail, Participant, User } from "@/utils/types";
 import HorizontalSeparator from "@/components/horizontalSeparator";
 
 import { removePlayer } from "@/lib/fastapi/games";
+import IconButton from "@/components/buttons/actionButtons/iconButton";
 
 export default function PlayersCard({
   gameData,
@@ -135,13 +136,11 @@ export default function PlayersCard({
       <div className="flex justify-between items-center">
         <h4 className="title">Joueurs</h4>
         {userIsHost && (
-          <button
-            type="button"
+          <IconButton
+            title="Ajouter des joueurs"
+            icon={<Plus size={16} />}
             onClick={handleAddPlayers}
-            className="btn btn-neutral btn-sm -mt-2"
-          >
-            <Plus size={16} /> Ajouter des joueurs
-          </button>
+          />
         )}
       </div>
 
