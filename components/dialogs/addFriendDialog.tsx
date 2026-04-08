@@ -1,9 +1,11 @@
 "use client";
 
-import { sendFriendRequest } from "@/lib/fastapi/players";
-import { DialogControls } from "@/utils/types";
 import { X } from "lucide-react";
 import { SubmitEvent, useState } from "react";
+
+import { sendFriendRequest } from "@/lib/fastapi/players";
+
+import { DialogControls } from "@/utils/types";
 
 export default function AddFriendDialog({
   dialogControls,
@@ -19,6 +21,7 @@ export default function AddFriendDialog({
   const buttonDisabled =
     username.length === 0 || username === associatedUsername;
 
+  // Handle Submit the form to send a friend request to the entered username
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 

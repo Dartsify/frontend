@@ -237,7 +237,7 @@ body {
   }
 
   .badge-sm {
-    @apply px-2 py-0.5 leading-3.5;
+    @apply px-2 py-1 leading-3.5;
   }
 
   .game-badge {

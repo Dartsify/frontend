@@ -23,7 +23,9 @@ export default function ConfigCard({
   userData: User | null;
 }) {
   // Set the default selected index of the game mode selector to 0 (which corresponds to the first game mode in the list) when the component is mounted
-  const selectorControls = useSelector(0);
+  const selectorControls = useSelector(
+    gameData?.mode ? games.findIndex((g) => g.slug === gameData.mode) : 0, // If gameData.mode is defined, we find the index of the corresponding game mode in the games array, otherwise we set it to 0 (first game mode in the list)
+  );
   const { selectedIndex } = selectorControls;
 
   const { participations, mode } = gameData ?? {};
@@ -43,7 +45,7 @@ export default function ConfigCard({
   }, [selectedIndex, gameId, mode]);
 
   const updateGameMode = async () => {
-    // ! bc we are sure that gameId is defined when we can change the game mode (the selector is only shown when gameData is loaded, which means gameId is set)
+    // '!' bc we are sure that gameId is defined when we can change the game mode (the selector is only shown when gameData is loaded, which means gameId is set)
     const res = await setGameMode(gameId!, games[selectedIndex!].slug);
 
     const { data, error } = res;

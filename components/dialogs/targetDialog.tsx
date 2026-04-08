@@ -11,19 +11,21 @@ import { createGame, joinGame } from "@/lib/fastapi/games";
 
 import { UserDataContext } from "@/app/dashboard/providers";
 
-import { DialogControls, Target } from "@/utils/types";
+import { DialogControls, GameMode, Target } from "@/utils/types";
+import { games } from "@/utils/games";
 
 import logo from "@/public/logo.svg";
 
 import { OtpInput } from "../otpInput";
 import NeedToLoginDialog from "./needToLoginDialog";
 import NameInputDialog from "./nameInputDialog";
-import { games } from "@/utils/games";
 
 export default function TargetDialog({
   dialogControls,
+  defaultMode,
 }: {
   dialogControls: DialogControls;
+  defaultMode?: GameMode;
 }) {
   const router = useRouter();
 
@@ -96,8 +98,11 @@ export default function TargetDialog({
         return;
       }
       // If the user is logged in, we can create the game
-      // We create a game with a default mode (normally "501", we retrieve the first game from the games array in utils/games.ts) but it can be changed later in the game settings
-      const res = await createGame(target_id, games[0].slug);
+      // // We create a game with a default mode (normally "501", we retrieve the first game from the games array in utils/games.ts) but it can be changed later in the game settings
+      const res = await createGame(
+        target_id,
+        (defaultMode as GameMode) || games[0].slug,
+      ); // If a default mode is not provided, we use the first game in the games array as the default mode
       const { data, error } = res;
 
       if (error || !data?.id) {

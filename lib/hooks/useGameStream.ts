@@ -40,14 +40,21 @@ export function useGameStream(gameId: number | undefined) {
         const { data: snapshot, error: snapshotError } = await getGame(gameId);
 
         if (snapshotError || !snapshot) {
-          throw new Error(
+          // throw new Error(
+          // typeof snapshotError === "string"
+          //   ? snapshotError
+          //   : "Failed to load initial game data",
+          // );
+          // throw new Error show an error in next js dev tools !
+          console.error(
             typeof snapshotError === "string"
               ? snapshotError
               : "Failed to load initial game data",
           );
+          return;
         }
 
-        setGameData(snapshot);
+        setGameData({ ...snapshot, id: gameId });
         setLoading(false);
 
         console.log("Initial game data loaded:", snapshot);
@@ -67,7 +74,7 @@ export function useGameStream(gameId: number | undefined) {
               const { event, game_state } = update;
               if (event === "GAME_UPDATED") {
                 // Event GAME_UPDATED means the data has been updated, so we update the current data
-                setGameData(game_state); // We don't merge, we replace the whole data (no sense to keep the prev one)
+                setGameData({ ...game_state, id: gameId }); // We don't merge, we replace the whole data (no sense to keep the prev one)
               }
             } catch {
               console.error("Parse error:", message);
@@ -79,8 +86,8 @@ export function useGameStream(gameId: number | undefined) {
           },
         });
       } catch (err) {
-        console.error("Stream error:", err);
-        console.log("Stream error:", err);
+        // console.error("Stream error:", err);
+        // console.log("Stream error:", err);
         if (err instanceof Error && err.name === "AbortError") return;
         setError(err instanceof Error ? err.message : String(err));
         setLoading(false);

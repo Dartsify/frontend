@@ -10,6 +10,7 @@ import AddPlayersToGameDialog from "@/components/dialogs/addPlayersToGameDialog"
 
 import { removePlayer } from "@/lib/fastapi/games";
 import { useDialog } from "@/lib/hooks/useDialog";
+import { useEffect } from "react";
 
 export default function PlayersCard({
   gameData,
@@ -19,6 +20,10 @@ export default function PlayersCard({
   userData: User | null;
 }) {
   const { participations, id } = gameData ?? {};
+
+  useEffect(() => {
+    console.log("gameData changed:", gameData);
+  }, [gameData]);
 
   const userIsHost = isHost(participations || [], userData);
 
@@ -34,9 +39,12 @@ export default function PlayersCard({
     );
   };
 
+  if (id === undefined || id === null) {
+    return <></>;
+  }
+
   const handleRemovePlayer = async (username: string) => {
-    // We are sure that id is defined bc we get the gameData from the gameId (and we set it in the gameData state in case of success)
-    const { data, error } = await removePlayer(id!, username); // Remove player from the game with his username
+    const { data, error } = await removePlayer(id, username); // Remove player from the game with his username
 
     if (error) {
       if (typeof error === "string") {
@@ -163,6 +171,7 @@ export default function PlayersCard({
         <AddPlayersToGameDialog
           dialogControls={dialogControls}
           participations={participations}
+          gameId={id}
         />
       </Dialog>
     </>
