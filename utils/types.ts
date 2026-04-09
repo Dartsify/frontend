@@ -31,6 +31,21 @@ export type User = {
   guest?: boolean; // We add a guest property to the user data to know if the user is a guest or not (we consider that if the username contains "guest_" then it's a guest user)
 };
 
+export type Friend = {
+  username: string;
+  name: string;
+  age: number;
+  creation_date: Date;
+};
+
+export type FriendRequest = {
+  username: string;
+  name: string;
+  age: number;
+  creation_date: Date;
+  request_date: Date;
+};
+
 export type GameStatus = "waiting" | "in_progress" | "finished";
 
 export type Target = {
@@ -98,7 +113,6 @@ export type JoinGameResponse = {
 
 export type StartGameStreamOptions = {
   gameId: number;
-  token: string;
   signal?: AbortSignal;
   onOpen?: () => void;
   onMessage: (payload: string) => void;

@@ -25,6 +25,7 @@ export default function Selector({
 
   const selectorRef = useRef<HTMLDivElement | null>(null);
 
+  // Handle clicks outside the dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!selectorRef.current) {
@@ -44,6 +45,7 @@ export default function Selector({
     };
   }, []);
 
+  // Handle escape key to close the dropdown
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -57,6 +59,7 @@ export default function Selector({
     };
   }, [isOpen]);
 
+  // Handle select an option
   const handleSelectOption = (index: number) => {
     // Set the selected index to the index of the option that was clicked
     setSelectedIndex(index);

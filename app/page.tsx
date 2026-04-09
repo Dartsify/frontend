@@ -1,7 +1,9 @@
 import Image from "next/image";
-import autodarts from "@/public/autodarts.png";
-import Button from "@/components/buttons/styleButtons/button";
 import Link from "next/link";
+
+import autodarts from "@/public/autodarts.png";
+
+import Button from "@/components/buttons/styleButtons/button";
 
 export default function Home() {
   return (
@@ -28,8 +30,11 @@ export default function Home() {
             de fléchettes avec Dartsify !
           </p> */}
           <div className="flex gap-2 mt-8">
-            <Link href={"/dashboard/new-game"}>
+            {/* <Link href={"/dashboard/new-game"}>
               <Button title={"Nouvelle Partie"} />
+            </Link> */}
+            <Link href={"/dashboard"}>
+              <Button title={"Jouer"} />
             </Link>
             <Link href={"/know-more"}>
               <Button title={"En Apprendre Plus"} />
@@ -84,7 +89,7 @@ export default function Home() {
     //   <main className="flex flex-col gap-10">
     //     <div className="bg-background-dark rounded-lg flex items-center justify-center m-10 py-5 border-border border">
     //       <Link
-    //         className="text-blue-700 font-bold text-lg hover:opacity-50 transition-opacity duration-250"
+    //         className="brand-link font-bold text-lg hover:opacity-50 transition-opacity duration-250"
     //         href={"/dashboard"}
     //       >
     //         {` -> `} Go to Dashboard

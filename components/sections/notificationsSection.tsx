@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { MoveLeft, MoveRight } from "lucide-react";
 
 import moment from "moment";
-import "moment/locale/fr";
 
 const data: { title: string; description: string; date: Date; type: string }[] =
   [
@@ -95,7 +94,7 @@ const listItem = (
 
             <div className="footer">
               <button type="button" className="btn btn-sm btn-destructive">
-                Supprimer
+                Refuser
               </button>
               <button type="button" className="btn btn-sm btn-validate">
                 Accepter

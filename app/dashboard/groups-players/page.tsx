@@ -4,7 +4,7 @@ export default function GroupsPayers() {
   return (
     <div>
       <h1>Groupes de Joueurs</h1>
-      <Link href={"/groups-players/create"} className="text-blue-500 underline">
+      <Link href={"/groups-players/create"} className="brand-link">
         Créer un groupe de joueurs
       </Link>
     </div>

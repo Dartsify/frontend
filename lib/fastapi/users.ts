@@ -52,6 +52,42 @@ export const getUserData = async () => {
   }
 };
 
+export const getPlayer = async (username: string) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/players/${username}`), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to fetch player data.",
+      };
+    }
+
+    return { ...data, guest: data.username.includes("guest_") };
+  } catch (error) {
+    return { error: "Erreur réseau" };
+  }
+};
+
 export const login = async ({
   username,
   password,
@@ -88,7 +124,7 @@ export const login = async ({
       };
     }
 
-    console.log(data);
+    // console.log(data);
 
     const { access_token } = data;
 

@@ -1,7 +1,14 @@
 "use client";
 
 import { useContext } from "react";
-import { Calendar, ChartLine, House, Swords, Users } from "lucide-react";
+import {
+  Calendar,
+  ChartLine,
+  Handshake,
+  House,
+  Swords,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -50,8 +57,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
   const iconSize = 16;
   const iconStrokeWidth = 2.5;
 
-  // const isSegmentActive: boolean = segment == pathname;
-
+  // TODO : show on scroll a border at the bottom of the navbar to separate it from the content
   return (
     <div
       className={`gradient-bg flex flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${
@@ -69,7 +75,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-3 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-3 gap-1" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
@@ -90,7 +96,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-1" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
@@ -111,7 +117,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-1" : "mt-0 gap-5 items-center"
             }`}
           >
             {routeItem(
@@ -137,9 +143,14 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
           <ul
             role="list"
             className={`flex flex-col ${
-              isOpen ? "mt-1.5 gap-2.5" : "mt-0 gap-5 items-center"
+              isOpen ? "mt-1.5 gap-1" : "mt-0 gap-5 items-center"
             }`}
           >
+            {routeItem(
+              "/dashboard/friends",
+              "Amis",
+              <Handshake size={iconSize} strokeWidth={iconStrokeWidth} />,
+            )}
             {routeItem(
               "/dashboard/groups-players",
               "Groupes de Joueurs",

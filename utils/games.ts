@@ -1,3 +1,4 @@
+import { addGuests, addPlayers } from "@/lib/fastapi/games";
 import { Participant, User } from "./types";
 
 export const games = [
@@ -43,4 +44,30 @@ export const isHost = (
     return false;
   }
   return userData?.username === host?.player_username;
+};
+
+export const addAllPlayersToGame = async (
+  gameId: number,
+  players: { username: string; guest: boolean }[],
+) => {
+  const guests = players.filter((p) => p.guest).map((p) => p.username);
+  const nonGuests = players.filter((p) => !p.guest).map((p) => p.username);
+
+  const nonGuestsRes = await addPlayers(gameId, nonGuests);
+  const guestsRes = await addGuests(gameId, guests);
+
+  const { error: nonGuestsError, data: nonGuestsData } = nonGuestsRes;
+  const { error: guestsError, data: guestsData } = guestsRes;
+
+  if (nonGuestsError) {
+    console.error("Error adding non-guest players:", nonGuestsError);
+    return { error: nonGuestsError };
+  }
+
+  if (guestsError) {
+    console.error("Error adding guest players:", guestsError);
+    return { error: guestsError };
+  }
+
+  return { data: { nonGuests: nonGuestsData, guests: guestsData } };
 };

@@ -213,7 +213,7 @@ body {
 
 
   .badge {
-    @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5;
+    @apply flex gap-1.5 items-center font-medium text-sm outline outline-border-2 rounded-lg px-2.5 py-1.5 leading-4;
   }
 
   .badge p {
@@ -237,7 +237,7 @@ body {
   }
 
   .badge-sm {
-    @apply px-2 py-0.5;
+    @apply px-2 py-1 leading-3.5;
   }
 
   .game-badge {
@@ -278,7 +278,7 @@ body {
   }
 
   .dialog .header {
-    @apply flex justify-between items-center;
+    @apply flex justify-between items-center gap-5;
   }
 
   .dialog h2 {
@@ -302,6 +302,10 @@ body {
   }
 
   input {
+    @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
+  }
+
+  .input {
     @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
   }
 
@@ -345,6 +349,10 @@ body {
     @apply bg-border py-2 font-bold border-b border-b-border-2;
   }
 
+  .brand-link {
+    @apply text-brand hover:underline cursor-pointer
+  }
+
   /* Anims */
 
   .hover-anim {
@@ -361,6 +369,14 @@ body {
   .game-badge,
   .btn {
     @apply hover:scale-105 transition-all duration-300 ease-in-out;
+  }
+
+  .btn-neutral-anim {
+    @apply hover:bg-ink-black-950/5 rounded-md transition-all duration-300 ease-in-out;
+  }
+
+  .btn-brand-anim {
+    @apply hover:bg-brand hover:text-foreground-light rounded-md transition-all duration-300 ease-in-out;
   }
 
   .hover-anim-size-soft {

@@ -9,18 +9,10 @@ export default function PlayGameSection() {
       <h2>Jouer</h2>
       <ul className="flex gap-4 list-none">
         {games.map((game, index) => (
-          // <li key={index}>
-          //   <Link
-          //     className="badge"
-          //     href={`/dashboard/new-game?game=${game.slug}`}
-          //   >
-          //     {game.name}
-          //   </Link>
-          // </li>
           <li key={index}>
             <Link
               className="game-badge hover-anim-badge group"
-              href={`/dashboard/new-game?game=${game.slug}`}
+              href={`/dashboard/new-game?mode=${game.slug}`}
             >
               {game.name}
               <Play size={16} />

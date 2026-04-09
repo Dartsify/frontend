@@ -39,6 +39,7 @@ export default function NeedToLoginDialog({
           <X size={22} />
         </div>
       </div>
+
       <p className="text-foreground-soft">
         Pour être l'administrateur de la partie et la contrôler, vous devez être
         connecté à votre compte ou vous en créez un.
