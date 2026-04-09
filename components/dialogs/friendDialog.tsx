@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import Link from "next/link";
 
 import { DialogControls, Friend } from "@/utils/types";
 import { utcConvert } from "@/utils/dates";
 
 import DeleteFriendConfirmationDialog from "./deleteFriendConfirmationDialog";
-import Link from "next/link";
 
 export default function FriendDialog({
   dialogControls,
@@ -72,10 +72,8 @@ export default function FriendDialog({
         <b>Taux de victoire : </b> 22%
       </p>
 
-      {/* TODO: replace with actual link to the game page with this friend to
-      show all the games played together */}
       <Link
-        href={`/dashboard/my-games/player=${username}`}
+        href={`/dashboard/my-games/player=${username}`} // TODO : replace with actual link to the game page with this friend to show all the games played together
         className="brand-link mt-2"
       >
         Voir toutes les parties jouées ensemble

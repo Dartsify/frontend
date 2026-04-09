@@ -371,6 +371,14 @@ body {
     @apply hover:scale-105 transition-all duration-300 ease-in-out;
   }
 
+  .btn-neutral-anim {
+    @apply hover:bg-ink-black-950/5 rounded-md transition-all duration-300 ease-in-out;
+  }
+
+  .btn-brand-anim {
+    @apply hover:bg-brand hover:text-foreground-light rounded-md transition-all duration-300 ease-in-out;
+  }
+
   .hover-anim-size-soft {
     @apply hover:scale-101 transition-all duration-300 ease-in-out;
   }
