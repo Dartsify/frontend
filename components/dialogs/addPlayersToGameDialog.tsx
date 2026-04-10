@@ -1,6 +1,6 @@
-import React, { SubmitEvent, useEffect, useRef, useState } from "react";
+import React, { SubmitEvent, use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Plus, PlusCircle, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 import { useDebounce } from "use-debounce";
 
@@ -10,16 +10,17 @@ import { getMyFriends } from "@/lib/fastapi/players";
 import { addAllPlayersToGame } from "@/utils/games";
 
 // TODO : baser le nombre incrémenté après le nom d'un guest sur base de la liste de players déjà ajoutés pour éviter les doublons dans le cas où on ajoute plusieurs guests avec le même nom, actuellement on ajoute (1) au premier guest et (2) au deuxième guest mais si on ajoute un troisième guest avec le même nom, il sera ajouté sans numéro incrémenté alors que ça devrait être (3)
-// TODO : ajouter bouton pour ajouter le dernier joueur écrit dans l'input à la liste des joueurs à ajouter sans avoir à taper un espace à la fin du nom du joueur
 
 export default function AddPlayersToGameDialog({
   dialogControls,
   participations,
   gameId,
+  participants = [],
 }: {
   dialogControls: DialogControls;
   participations: Participant[] | undefined;
   gameId: number;
+  participants?: Participant[];
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -28,6 +29,9 @@ export default function AddPlayersToGameDialog({
   const [players, setPlayers] = useState<
     { username: string; guest: boolean }[]
   >([]);
+  const [alreadyAddedPlayers, setAlreadyAddedPlayers] = useState<
+    { username: string; guest: boolean }[]
+  >([]); // We need to have the participants in a state in order to update it when we add players to the game, we initialize it with the participations that are passed as props
 
   // Initialize the debouncedInput value with the input value
   const [debouncedInput] = useDebounce(input, 300);
@@ -60,7 +64,14 @@ export default function AddPlayersToGameDialog({
   }, [dialogControls.isOpen]);
 
   useEffect(() => {
-    if (!dialogControls.isOpen) {
+    if (dialogControls.isOpen) {
+      setAlreadyAddedPlayers(
+        participants.map((p, i) => ({
+          username: p.player_username,
+          guest: p.player_username.startsWith("Guest_"),
+        })),
+      ); // We update the alreadyAddedPlayers state to match the players data
+    } else {
       // When dialog is closed, we reset the input, the players to add, the suggestions and the error
       setTimeout(() => {
         setSuggestions([]);
@@ -124,6 +135,25 @@ export default function AddPlayersToGameDialog({
     }
   };
 
+  // On change of the input, we update the input state
+  const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setInput(value);
+
+    if (value.length === 0) {
+      // If the input is empty, we clear the suggestions and the error and we don't make the API call
+      setSuggestions([]);
+      setError(null);
+
+      return;
+    }
+
+    if (value[value.length - 1] === " ") {
+      addPlayerToList(value);
+    }
+  };
+
+  // Add the player to the list of players to add to the game
   const addPlayerToList = (value: string) => {
     // If the last character is a space, it means that the user finished typing a username, so we add it to the list of players to add to the game and we clear the input and the suggestions
 
@@ -154,14 +184,14 @@ export default function AddPlayersToGameDialog({
         ]);
         usernameToAdd = usernameToAdd + " (2)"; // We add (1) at the end of the username to differentiate it from the other guest with the same username, we can later add a counter if there are more than 2 guests with the same username
       } else if (
-        players.some(
+        [...players, ...alreadyAddedPlayers].some(
           (p) =>
             p.guest &&
             p.username.startsWith(usernameToAdd + " (") &&
             p.username.endsWith(")"),
         )
       ) {
-        const matchingGuests = players.filter(
+        const matchingGuests = [...players, ...alreadyAddedPlayers].filter(
           (p) =>
             p.guest &&
             p.username.startsWith(usernameToAdd + " (") &&
@@ -176,23 +206,16 @@ export default function AddPlayersToGameDialog({
     setSuggestions([]);
   };
 
-  const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setInput(value);
+  const handleEditAddedPlayer = (index: number) => {
+    const player = players[index];
+    const { username } = player;
 
-    if (value.length === 0) {
-      // If the input is empty, we clear the suggestions and the error and we don't make the API call
-      setSuggestions([]);
-      setError(null);
-
-      return;
-    }
-
-    if (value[value.length - 1] === " ") {
-      addPlayerToList(value);
-    }
+    setInput(username); // Set the input to the username of the player we want to edit, the user can then edit the username and add it again by pressing space or by clicking on the add button, if he doesn't edit it and just press space or click on the add button, it will be added again to the list of players to add to the game
+    setPlayers((prev) => prev.filter((_, i) => i !== index)); // We remove the player from the list of players to add to the game, we will re add it with another username if the user edit the username or with the same username if the user doesn't edit it
+    inputRef.current?.focus();
   };
 
+  // Handle submit the form (= add all the selected players to the game)
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -260,6 +283,7 @@ export default function AddPlayersToGameDialog({
       <p
         key={index}
         className={`badge badge-sm ${guest ? "badge-neutral" : "badge-brand"} leading-3.5 py-1.25 whitespace-normal shrink-0`}
+        onClick={() => handleEditAddedPlayer(index)} // Edit the player if we click on it
       >
         {/* {guest ? `${username} (Invité)` : "@" + username} */}
         {guest ? username : "@" + username}
@@ -287,8 +311,9 @@ export default function AddPlayersToGameDialog({
       <form className="mt-5" onSubmit={handleSubmit}>
         {/* <div className="flex items-center gap-2"> */}
         <div className="input pr-10 flex flex-wrap items-center gap-2 py-2 relative">
-          {players.map((player, index) => listItem_players(player, index))}{" "}
           {/* Map the usernames to display them in the input as tags */}
+          {players.map((player, index) => listItem_players(player, index))}
+          {/* Input for the new player to add */}
           <input
             ref={inputRef}
             type="text"
