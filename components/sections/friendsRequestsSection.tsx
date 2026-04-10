@@ -85,6 +85,7 @@ export default function FriendsRequestsSection({
     };
   }, []);
 
+  // Handle reject friend request action
   const handleRejectRequest = async (username: string) => {
     const res = rejectFriendRequest(username);
 
@@ -99,9 +100,11 @@ export default function FriendsRequestsSection({
       return;
     }
 
+    // Remove the rejected request from the local state to update the UI immediately without needing to refresh
     handleRemoveRequestFromData(username);
   };
 
+  // Handle accept friend request action
   const handleAcceptRequest = async (friend: Friend) => {
     const { username } = friend;
 
@@ -117,8 +120,9 @@ export default function FriendsRequestsSection({
       return;
     }
 
+    // Remove the rejected request from the local state to update the UI immediately without needing to refresh
     handleRemoveRequestFromData(username);
-    setData((prev) => [...prev, friend]); // We add the new friend to the list of friends so that we can see it directly in the friends list section without refreshing the page
+    // setData((prev) => [...prev, friend]); // // We add the new friend to the list of friends so that we can see it directly in the friends list section without refreshing the page
   };
 
   const handleRemoveRequestFromData = (username: string) => {

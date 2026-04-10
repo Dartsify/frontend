@@ -1,6 +1,6 @@
-import React, { SubmitEvent, useEffect, useState } from "react";
+import React, { SubmitEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { Plus, PlusCircle, X } from "lucide-react";
 
 import { useDebounce } from "use-debounce";
 
@@ -8,6 +8,9 @@ import { DialogControls, Friend, Participant } from "@/utils/types";
 
 import { getMyFriends } from "@/lib/fastapi/players";
 import { addAllPlayersToGame } from "@/utils/games";
+
+// TODO : baser le nombre incrémenté après le nom d'un guest sur base de la liste de players déjà ajoutés pour éviter les doublons dans le cas où on ajoute plusieurs guests avec le même nom, actuellement on ajoute (1) au premier guest et (2) au deuxième guest mais si on ajoute un troisième guest avec le même nom, il sera ajouté sans numéro incrémenté alors que ça devrait être (3)
+// TODO : ajouter bouton pour ajouter le dernier joueur écrit dans l'input à la liste des joueurs à ajouter sans avoir à taper un espace à la fin du nom du joueur
 
 export default function AddPlayersToGameDialog({
   dialogControls,
@@ -18,6 +21,8 @@ export default function AddPlayersToGameDialog({
   participations: Participant[] | undefined;
   gameId: number;
 }) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [input, setInput] = useState<string>("");
   // const [usernames, setUsernames] = useState<string[]>([]);
   const [players, setPlayers] = useState<
@@ -30,6 +35,29 @@ export default function AddPlayersToGameDialog({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<Friend[]>([]); // This state will hold the suggestions for the usernames based on the input
+
+  // Function to get the editable player name when we want to edit a player by pressing backspace on an empty input, if the player is a guest we return only the username without the incremented number at the end, if it's not a guest we return the username as it is
+  const getEditablePlayerName = (player: {
+    username: string;
+    guest: boolean;
+  }) => {
+    if (!player.guest) {
+      return player.username;
+    }
+
+    return player.username.replace(/\s\(\d+\)$/, "");
+  };
+
+  // Focus the input when the dialog is opened
+  useEffect(() => {
+    if (!dialogControls.isOpen) return;
+
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [dialogControls.isOpen]);
 
   useEffect(() => {
     if (!dialogControls.isOpen) {
@@ -91,9 +119,61 @@ export default function AddPlayersToGameDialog({
 
       setTimeout(() => {
         setPlayers((prev) => prev.slice(0, prev.length - 1)); // We remove the last player from the list of players to add
-        setInput(lastPlayer.username);
+        setInput(getEditablePlayerName(lastPlayer)); // Only write (lastPlayer.username) makes trouble (we are not able to edit the name)
       }, 25); // Set a timeout in order to disable the backspace effect on the username
     }
+  };
+
+  const addPlayerToList = (value: string) => {
+    // If the last character is a space, it means that the user finished typing a username, so we add it to the list of players to add to the game and we clear the input and the suggestions
+
+    // Check if the username perfectly matches a friend in the suggestions, if yes we add it as a non-guest player, if not we add it as a guest player
+    const friendMatch = suggestions.find(
+      (friend) => friend.username === value.trim(),
+    );
+
+    if (friendMatch) {
+      // The username is a friend
+      setPlayers((prev) => [
+        ...prev,
+        { username: friendMatch.username, guest: false },
+      ]); // We take the username from the suggestions to be sure that we have the correct username (case sensitive) and we set guest to false
+    } else {
+      // If we add the user as a non guest, we need to ckeck if the username is already in the list of players to add to avoid duplicates
+      let usernameToAdd = value.trim()[0].toUpperCase() + value.trim().slice(1); // We capitalize the first letter of the username to differentiate the guests from the non guests in the UI
+
+      if (players.some((p) => p.guest && p.username === usernameToAdd)) {
+        // A player has been already added with the same username as a guest (but without incremented number),
+        // so we add (1) to the already added player username and we add the new player with the same username but with (2) at the end to differentiate them in the UI
+        const matchingGuest = players.find(
+          (p) => p.guest && p.username === usernameToAdd,
+        );
+        setPlayers((prev) => [
+          ...prev.filter((p) => p !== matchingGuest),
+          { username: matchingGuest!.username + " (1)", guest: true },
+        ]);
+        usernameToAdd = usernameToAdd + " (2)"; // We add (1) at the end of the username to differentiate it from the other guest with the same username, we can later add a counter if there are more than 2 guests with the same username
+      } else if (
+        players.some(
+          (p) =>
+            p.guest &&
+            p.username.startsWith(usernameToAdd + " (") &&
+            p.username.endsWith(")"),
+        )
+      ) {
+        const matchingGuests = players.filter(
+          (p) =>
+            p.guest &&
+            p.username.startsWith(usernameToAdd + " (") &&
+            p.username.endsWith(")"),
+        );
+        usernameToAdd = usernameToAdd + ` (${matchingGuests.length + 1})`; // We add (x) at the end of the username to differentiate it from the other guests with the same username, x is the number of guests with the same username + 1
+      } // Also check if a guest with an incremented number is already in the list to increment the number
+      setPlayers((prev) => [...prev, { username: usernameToAdd, guest: true }]); // We set guest to true
+    }
+
+    setInput("");
+    setSuggestions([]);
   };
 
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,59 +189,7 @@ export default function AddPlayersToGameDialog({
     }
 
     if (value[value.length - 1] === " ") {
-      // If the last character is a space, it means that the user finished typing a username, so we add it to the list of players to add to the game and we clear the input and the suggestions
-
-      // Check if the username perfectly matches a friend in the suggestions, if yes we add it as a non-guest player, if not we add it as a guest player
-      const friendMatch = suggestions.find(
-        (friend) => friend.username === value.trim(),
-      );
-
-      if (friendMatch) {
-        // The username is a friend
-        setPlayers((prev) => [
-          ...prev,
-          { username: friendMatch.username, guest: false },
-        ]); // We take the username from the suggestions to be sure that we have the correct username (case sensitive) and we set guest to false
-      } else {
-        // If we add the user as a non guest, we need to ckeck if the username is already in the list of players to add to avoid duplicates
-        let usernameToAdd =
-          value.trim()[0].toUpperCase() + value.trim().slice(1); // We capitalize the first letter of the username to differentiate the guests from the non guests in the UI
-
-        if (players.some((p) => p.guest && p.username === usernameToAdd)) {
-          // A player has been already added with the same username as a guest (but without incremented number),
-          // so we add (1) to the already added player username and we add the new player with the same username but with (2) at the end to differentiate them in the UI
-          const matchingGuest = players.find(
-            (p) => p.guest && p.username === usernameToAdd,
-          );
-          setPlayers((prev) => [
-            ...prev.filter((p) => p !== matchingGuest),
-            { username: matchingGuest!.username + " (1)", guest: true },
-          ]);
-          usernameToAdd = usernameToAdd + " (2)"; // We add (1) at the end of the username to differentiate it from the other guest with the same username, we can later add a counter if there are more than 2 guests with the same username
-        } else if (
-          players.some(
-            (p) =>
-              p.guest &&
-              p.username.startsWith(usernameToAdd + " (") &&
-              p.username.endsWith(")"),
-          )
-        ) {
-          const matchingGuests = players.filter(
-            (p) =>
-              p.guest &&
-              p.username.startsWith(usernameToAdd + " (") &&
-              p.username.endsWith(")"),
-          );
-          usernameToAdd = usernameToAdd + ` (${matchingGuests.length + 1})`; // We add (x) at the end of the username to differentiate it from the other guests with the same username, x is the number of guests with the same username + 1
-        } // Also check if a guest with an incremented number is already in the list to increment the number
-        setPlayers((prev) => [
-          ...prev,
-          { username: usernameToAdd, guest: true },
-        ]); // We set guest to true
-      }
-
-      setInput("");
-      setSuggestions([]);
+      addPlayerToList(value);
     }
   };
 
@@ -196,9 +224,10 @@ export default function AddPlayersToGameDialog({
             setError("Ce joueur est déjà ajouté.");
             return;
           }
-          setPlayers([...players, { username, guest: false }]);
-          setInput("");
-          setSuggestions([]);
+          setPlayers([...players, { username, guest: false }]); // Add the player as a non-guest player
+          setInput(""); // Clear the input
+          inputRef.current?.focus(); // Re focus the input
+          setSuggestions([]); // Clear suggestions after adding a player from the suggestions list
         }}
         className="card p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
         key={index}
@@ -257,17 +286,28 @@ export default function AddPlayersToGameDialog({
 
       <form className="mt-5" onSubmit={handleSubmit}>
         {/* <div className="flex items-center gap-2"> */}
-        <div className="input flex flex-wrap items-center gap-2 py-2">
+        <div className="input pr-10 flex flex-wrap items-center gap-2 py-2 relative">
           {players.map((player, index) => listItem_players(player, index))}{" "}
           {/* Map the usernames to display them in the input as tags */}
           <input
+            ref={inputRef}
             type="text"
             placeholder="Nom d'utilisateur ou nom d'invité"
-            className="outline-none border-none p-0 pl-0.5 flex-1 min-w-56" // Remove the default input styles, we already have them in the parent div with the "input" class
+            className="outline-none border-none p-0 pl-0.5 flex-1 min-w-58" // Remove the default input styles, we already have them in the parent div with the "input" class
             value={input}
             onChange={onInputChange}
             onKeyDown={onInputKeyDown}
           />
+          <div
+            className={`btn btn-xs btn-brand-anim absolute bottom-2 right-2.5 ${input.trim().length === 0 && "btn-invalid"}`}
+            onClick={() => {
+              addPlayerToList(input);
+              inputRef.current?.focus();
+            }}
+          >
+            {/* <PlusCircle size={16} /> */}
+            <Plus size={16} />
+          </div>
         </div>
 
         {input.length > 0 && (

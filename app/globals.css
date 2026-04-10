@@ -333,6 +333,18 @@ body {
     @apply text-foreground-soft absolute left-2.5 font-medium;
   }
 
+  .post-text>div {
+    @apply flex items-center relative;
+  }
+
+  .post-text input {
+    @apply pr-7;
+  }
+
+  .post-text>div>p {
+    @apply text-foreground-soft absolute right-2.5 font-medium;
+  }
+
   .table {
     @apply flex flex-col gap-2 outline outline-border-2 rounded-lg overflow-hidden w-full;
   }

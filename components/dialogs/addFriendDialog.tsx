@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { SubmitEvent, useState } from "react";
+import { SubmitEvent, useEffect, useRef, useState } from "react";
 
 import { sendFriendRequest } from "@/lib/fastapi/players";
 
@@ -12,11 +12,23 @@ export default function AddFriendDialog({
 }: {
   dialogControls: DialogControls;
 }) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [associatedUsername, setAssociatedUsername] = useState<string | null>(
     null,
   ); // This state is used to prevent multiple requests for the same username after an error
+
+  useEffect(() => {
+    if (!dialogControls.isOpen) return;
+
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [dialogControls.isOpen]);
 
   const buttonDisabled =
     username.length === 0 || username === associatedUsername;
@@ -68,6 +80,7 @@ export default function AddFriendDialog({
         <div className="input-field pre-text">
           <div>
             <input
+              ref={inputRef}
               type="text"
               name="username"
               placeholder="johndoe"
