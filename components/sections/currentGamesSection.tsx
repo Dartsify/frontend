@@ -54,7 +54,11 @@ const listItem = async (game: Game, index: number) => {
       <Link
         // We want to go to the new-game page with the id of the game as a query parameter
         // There we will show the lobby page of the game, with the possibility to start the game if the user is the host
-        href={`/dashboard/new-game?game=${id}`}
+        href={
+          status === "waiting"
+            ? `/dashboard/new-game?game=${id}`
+            : `/dashboard/my-games/${id}`
+        }
         className="card cursor-pointer hover-anim-size-soft"
       >
         <header className="flex items-center justify-between">

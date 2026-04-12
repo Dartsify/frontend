@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { UserDataContext } from "../providers";
@@ -16,7 +16,7 @@ import PlayersCard from "@/components/cards/newGame/playersCard";
 
 import { isHost } from "@/utils/games";
 import { useGameStream } from "@/lib/hooks/useGameStream";
-import { leaveGame } from "@/lib/fastapi/games";
+import { leaveGame, startGame } from "@/lib/fastapi/games";
 import { GameMode } from "@/utils/types";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
@@ -37,8 +37,10 @@ export default function NewGame() {
   const { userData } = userDataContext;
 
   const router = useRouter();
+  const isNavigatingAway = useRef(false);
 
   const [gameId, setGameId] = useState<number | undefined>(undefined);
+  const [isStartingGame, setIsStartingGame] = useState(false);
 
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -77,11 +79,19 @@ export default function NewGame() {
     const userIsHost = isHost(gameData?.participations || [], userData);
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isNavigatingAway.current) {
+        return;
+      }
+
       event.preventDefault();
       event.returnValue = "";
     };
 
     const handleDocumentClick = (event: MouseEvent) => {
+      if (isNavigatingAway.current) {
+        return;
+      }
+
       if (event.defaultPrevented) {
         return;
       }
@@ -124,6 +134,10 @@ export default function NewGame() {
     };
 
     const handlePopState = () => {
+      if (isNavigatingAway.current) {
+        return;
+      }
+
       // 2 messages according to the user role
       const shouldLeave = window.confirm(
         userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
@@ -158,14 +172,14 @@ export default function NewGame() {
   // Store if the user is the host of the game in a variable to avoid calling the isHost function multiple times
   const userIsHost = isHost(gameData?.participations || [], userData);
 
-  const handleCancel = () => {
-    const shouldLeave = window.confirm(
-      userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
-    );
-    if (shouldLeave) {
-      router.push("/dashboard");
-    }
-  };
+  // const handleCancel = () => {
+  //   const shouldLeave = window.confirm(
+  //     userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
+  //   );
+  //   if (shouldLeave) {
+  //     router.push("/dashboard");
+  //   }
+  // };
 
   const handleLeaveGame = async () => {
     // If the user is the host, leaving the game means canceling it
@@ -191,14 +205,60 @@ export default function NewGame() {
         return;
       }
 
+      isNavigatingAway.current = true;
       router.push("/dashboard");
     }
   };
 
   // Handle Start the game
-  const handleStartGame = () => {
-    // Implementation for starting the game
-    alert("Start the game : not implemented yet");
+  const handleStartGame = async () => {
+    if (gameId === undefined || isStartingGame) return;
+
+    setIsStartingGame(true);
+
+    const res = await startGame(gameId);
+    const { error } = res;
+
+    if (error) {
+      // If the game is already started server-side, we still redirect to the game page.
+      if (
+        typeof error === "string" &&
+        /already|already started|deja|déjà/i.test(error)
+      ) {
+        const destination = `/dashboard/my-games/${gameId}`;
+        isNavigatingAway.current = true;
+        router.push(destination);
+
+        window.setTimeout(() => {
+          if (window.location.pathname === "/dashboard/new-game") {
+            window.location.assign(destination);
+          }
+        }, 150);
+
+        setIsStartingGame(false);
+        return;
+      }
+
+      alert(
+        typeof error === "string"
+          ? error
+          : "Une erreur est survenue lors de la tentative de démarrer la partie.",
+      );
+      setIsStartingGame(false);
+      return;
+    }
+
+    const destination = `/dashboard/my-games/${gameId}`;
+    isNavigatingAway.current = true;
+    router.push(destination);
+
+    window.setTimeout(() => {
+      if (window.location.pathname === "/dashboard/new-game") {
+        window.location.assign(destination);
+      }
+    }, 150);
+
+    setIsStartingGame(false);
   };
 
   if (loadingGameData) {
@@ -232,9 +292,10 @@ export default function NewGame() {
               <button
                 onClick={handleStartGame}
                 type="button"
+                disabled={isStartingGame}
                 className="btn btn-brand"
               >
-                Démarrer la partie
+                {isStartingGame ? "Démarrage..." : "Démarrer la partie"}
               </button>
             )}
           </div>
