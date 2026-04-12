@@ -388,3 +388,40 @@ export const leaveGame = async (game_id: number) => {
     return { error: "Erreur réseau" };
   }
 };
+
+export const startGame = async (game_id: number) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/games/${game_id}/start`), {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to launch game. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
