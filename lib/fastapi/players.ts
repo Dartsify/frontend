@@ -211,3 +211,41 @@ export const rejectFriendRequest = async (username: string) => {
     return { error: "Erreur réseau" };
   }
 };
+
+export const removeFriend = async (username: string) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/players/me/friends/${username}`), {
+      method: "DELETE",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to remove friend. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};

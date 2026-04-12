@@ -4,7 +4,7 @@ import { MoveLeft, MoveRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { calendarConvert } from "@/utils/dates";
-import { Friend } from "@/utils/types";
+import { FriendRequest } from "@/utils/types"; // Friend request contains less information than Friend
 import {
   acceptFriendRequest,
   rejectFriendRequest,
@@ -15,14 +15,14 @@ const BUTTON_SCROLL_STEP = 2;
 export default function FriendsRequestsSection({
   friends,
 }: {
-  friends: Friend[];
+  friends: FriendRequest[];
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollRafRef = useRef<number | null>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0); // keep current index in state to manage button states and scroll position
 
-  const [data, setData] = useState<Friend[]>(friends);
+  const [data, setData] = useState<FriendRequest[]>(friends);
 
   const scrollToIndex = (nextIndex: number) => {
     // Scroll the list to the target index and update currentIndex state
@@ -105,7 +105,7 @@ export default function FriendsRequestsSection({
   };
 
   // Handle accept friend request action
-  const handleAcceptRequest = async (friend: Friend) => {
+  const handleAcceptRequest = async (friend: FriendRequest) => {
     const { username } = friend;
 
     const res = acceptFriendRequest(username);
@@ -131,7 +131,7 @@ export default function FriendsRequestsSection({
     );
   };
 
-  const listItem = (friend: Friend, index: number) => {
+  const listItem = (friend: FriendRequest, index: number) => {
     const { username, name, creation_date } = friend;
 
     return (
@@ -218,7 +218,10 @@ export default function FriendsRequestsSection({
 
       {data.length === 0 ? (
         friends.length === 0 ? (
-          <p>Aucune demande d'ami en attente</p>
+          <p>
+            {/* <i>Aucune demande d'ami en attente.</i> */}
+            Aucune demande d'ami en attente.
+          </p>
         ) : (
           <p>Toutes les demandes ont été traitées.</p>
         )

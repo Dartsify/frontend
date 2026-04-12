@@ -3,6 +3,9 @@ import FinishedGamesSection from "@/components/sections/finishedGamesSection";
 
 import { getGames } from "@/lib/fastapi/games";
 
+// TODO : add the good title in the navbar header
+// TODO : edit the already finished game page
+
 export default async function MyGames() {
   const currentGames = await getGames(["waiting", "in_progress"]);
   const finishedGames = await getGames(["finished"]);

@@ -36,6 +36,9 @@ export type Friend = {
   name: string;
   age: number;
   creation_date: Date;
+  friends_since: Date;
+  games_won_against: number;
+  games_played_together: number;
 };
 
 export type FriendRequest = {

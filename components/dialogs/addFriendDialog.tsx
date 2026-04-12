@@ -20,6 +20,7 @@ export default function AddFriendDialog({
     null,
   ); // This state is used to prevent multiple requests for the same username after an error
 
+  // Focus the input when the dialog is opened
   useEffect(() => {
     if (!dialogControls.isOpen) return;
 
@@ -28,6 +29,17 @@ export default function AddFriendDialog({
     });
 
     return () => cancelAnimationFrame(frame);
+  }, [dialogControls.isOpen]);
+
+  // Reset the state on closing the dialog
+  useEffect(() => {
+    if (!dialogControls.isOpen) {
+      setTimeout(() => {
+        setUsername("");
+        setError(null);
+        setAssociatedUsername(null);
+      }, 300); // We wait to let the closing animation of the dialog play before resetting the state to avoid seeing the reset state during the closing animation
+    }
   }, [dialogControls.isOpen]);
 
   const buttonDisabled =

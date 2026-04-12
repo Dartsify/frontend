@@ -137,6 +137,7 @@ export default function PlayersCard({
           dialogControls={dialogControls}
           participations={participations}
           gameId={id}
+          participants={participations}
         />
       </Dialog>
     </>
