@@ -7,7 +7,7 @@ import { Game } from "@/utils/types";
 import { getGame } from "@/lib/fastapi/games";
 
 import Timer from "../timer";
-import { gameHostName } from "@/utils/games";
+import { gameHostName, statusBadge } from "@/utils/games";
 
 const listItem = async (game: Game, index: number) => {
   // const { id, status, target_id, start_date, participants } = game;
@@ -33,19 +33,7 @@ const listItem = async (game: Game, index: number) => {
     mode,
   } = data;
 
-  // Return a good text (in French) and a color for status
-  const statusBadge = () => {
-    switch (status) {
-      case "waiting":
-        return { text: "Préparation", color: "bg-highlight" };
-      case "in_progress":
-        return { text: "En cours", color: "bg-green-500" };
-      default:
-        return { text: "Inconnue", color: "bg-gray-500" };
-    }
-  };
-
-  const { text: statusText, color: statusColor } = statusBadge();
+  const { text: statusText, color: statusColor } = statusBadge(status);
   const { name: hostName, username: hostUsername } =
     gameHostName(participations);
 

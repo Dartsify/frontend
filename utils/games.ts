@@ -71,3 +71,15 @@ export const addAllPlayersToGame = async (
 
   return { data: { nonGuests: nonGuestsData, guests: guestsData } };
 };
+
+// Return a good text (in French) and a color for status
+export const statusBadge = (status: string) => {
+  switch (status) {
+    case "waiting":
+      return { text: "Préparation", color: "bg-highlight" };
+    case "in_progress":
+      return { text: "En cours", color: "bg-green-500" };
+    default:
+      return { text: "Inconnue", color: "bg-gray-500" };
+  }
+};

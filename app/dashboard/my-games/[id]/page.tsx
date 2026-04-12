@@ -1,5 +1,9 @@
 import { getGame } from "@/lib/fastapi/games";
-import { utcConvert } from "@/utils/dates";
+
+import { statusBadge } from "@/utils/games";
+
+import FinishedGame from "@/components/pages/finishedGame";
+import InProgressGame from "@/components/pages/inProgressGame";
 
 export default async function Game({
   params,
@@ -19,42 +23,26 @@ export default async function Game({
     return <div>Error</div>;
   }
 
-  const { participations, mode, start_date, target_location, target_name } =
-    data;
+  const { status, mode } = data;
+
+  const { text: statusText, color: statusColor } = statusBadge(status);
 
   return (
-    <div>
-      <header>
-        <h1>Game {id}</h1>
-      </header>
-      <main className="main-container">
-        <ul>
-          <li>
-            <b>Mode : </b> {mode}
-          </li>
-          <li>
-            <b>Créé le : </b>{" "}
-            {utcConvert(start_date).format("DD/MM/YYYY HH:mm")}
-          </li>
-          <li>
-            <b>Localisation : </b> {target_location || "Inconnu"}
-          </li>
-          <li>
-            <b>Cible : </b> {target_name || "Inconnue"}
-          </li>
-        </ul>
-
-        <section className="default-section">
-          <div className="card">
-            <h4 className="title">Joueurs</h4>
-            <ul>
-              {participations.map((player) => (
-                <li key={player.player_username}>{player.player_username}</li>
-              ))}
-            </ul>
+    <>
+      <div>
+        <div className="flex items-center justify-between">
+          <h1>Partie de {mode}</h1>
+          <div className={`badge badge-neutral`}>
+            <div className={`badge-disc ${statusColor}`} />
+            <p>{statusText}</p>
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+
+        <main className="main-container">
+          {status === "finished" && <FinishedGame {...data} />}
+          {status === "in_progress" && <InProgressGame {...data} />}
+        </main>
+      </div>
+    </>
   );
 }

@@ -201,6 +201,7 @@ export const getGame = async (game_id: number) => {
     let data;
     try {
       data = await res.json();
+      data.id = game_id; // We add the id to the data because it's not returned by the API (more practical in the front)
     } catch (error) {
       console.error("Error parsing JSON response:", error);
       throw new Error("Failed to parse response from server.");

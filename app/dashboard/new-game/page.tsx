@@ -37,10 +37,10 @@ export default function NewGame() {
   const { userData } = userDataContext;
 
   const router = useRouter();
-  const isNavigatingAway = useRef(false);
+  const hasRedirectedToGame = useRef(false);
+  const allowProgrammaticNavigation = useRef(false);
 
   const [gameId, setGameId] = useState<number | undefined>(undefined);
-  const [isStartingGame, setIsStartingGame] = useState(false);
 
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -53,6 +53,32 @@ export default function NewGame() {
     error: gameError,
     isConnected,
   } = useGameStream(gameId);
+
+  // Redirect the user to the game page when game starts
+  const redirectToGame = () => {
+    if (gameId == null || hasRedirectedToGame.current) return;
+
+    hasRedirectedToGame.current = true;
+    allowProgrammaticNavigation.current = true;
+
+    const destination = `/dashboard/my-games/${gameId}`;
+    router.replace(destination);
+
+    // Fallback: force browser navigation if client router transition is ignored.
+    // ! Don't know why but router.replace is ignored
+    window.setTimeout(() => {
+      if (window.location.pathname.startsWith("/dashboard/new-game")) {
+        window.location.assign(destination);
+      }
+    }, 120);
+  };
+
+  // When the game starts, redirect all the users (host and players) to the game page
+  useEffect(() => {
+    if (gameData?.status === "in_progress") {
+      redirectToGame();
+    }
+  }, [gameData?.status, gameId, router]);
 
   // We want to execute this effect only once on mount to show the target dialog
   // Show the target dialog & set game id if we have it in the query params
@@ -79,7 +105,8 @@ export default function NewGame() {
     const userIsHost = isHost(gameData?.participations || [], userData);
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isNavigatingAway.current) {
+      // If we have accepted to navigate programmatically (after leaving the game or after starting the game), we don't show the warning and we let the navigation happen
+      if (allowProgrammaticNavigation.current) {
         return;
       }
 
@@ -88,7 +115,8 @@ export default function NewGame() {
     };
 
     const handleDocumentClick = (event: MouseEvent) => {
-      if (isNavigatingAway.current) {
+      // If we have accepted to navigate programmatically (after leaving the game or after starting the game), we don't show the warning and we let the navigation happen
+      if (allowProgrammaticNavigation.current) {
         return;
       }
 
@@ -134,7 +162,8 @@ export default function NewGame() {
     };
 
     const handlePopState = () => {
-      if (isNavigatingAway.current) {
+      // If we have accepted to navigate programmatically (after leaving the game or after starting the game), we don't show the warning and we let the navigation happen
+      if (allowProgrammaticNavigation.current) {
         return;
       }
 
@@ -172,15 +201,6 @@ export default function NewGame() {
   // Store if the user is the host of the game in a variable to avoid calling the isHost function multiple times
   const userIsHost = isHost(gameData?.participations || [], userData);
 
-  // const handleCancel = () => {
-  //   const shouldLeave = window.confirm(
-  //     userIsHost ? LEAVE_PAGE_WARNING_HOST : LEAVE_PAGE_WARNING_DEFAULT,
-  //   );
-  //   if (shouldLeave) {
-  //     router.push("/dashboard");
-  //   }
-  // };
-
   const handleLeaveGame = async () => {
     // If the user is the host, leaving the game means canceling it
     // If the user is not the host, he only leaves the game but it continues for the other players
@@ -205,37 +225,25 @@ export default function NewGame() {
         return;
       }
 
-      isNavigatingAway.current = true;
+      allowProgrammaticNavigation.current = true; // Allow navigation without warning after successfully leaving the game
       router.push("/dashboard");
     }
   };
 
   // Handle Start the game
   const handleStartGame = async () => {
-    if (gameId === undefined || isStartingGame) return;
-
-    setIsStartingGame(true);
+    if (gameId === undefined) return;
 
     const res = await startGame(gameId);
     const { error } = res;
 
     if (error) {
-      // If the game is already started server-side, we still redirect to the game page.
+      // If the error is about the game already started, it means the game has been started by another player (in case of multiple hosts or in case of a delay between the click on start and the actual start of the game), so we redirect to the game page instead of showing an error
       if (
         typeof error === "string" &&
         /already|already started|deja|déjà/i.test(error)
       ) {
-        const destination = `/dashboard/my-games/${gameId}`;
-        isNavigatingAway.current = true;
-        router.push(destination);
-
-        window.setTimeout(() => {
-          if (window.location.pathname === "/dashboard/new-game") {
-            window.location.assign(destination);
-          }
-        }, 150);
-
-        setIsStartingGame(false);
+        redirectToGame();
         return;
       }
 
@@ -244,21 +252,8 @@ export default function NewGame() {
           ? error
           : "Une erreur est survenue lors de la tentative de démarrer la partie.",
       );
-      setIsStartingGame(false);
       return;
     }
-
-    const destination = `/dashboard/my-games/${gameId}`;
-    isNavigatingAway.current = true;
-    router.push(destination);
-
-    window.setTimeout(() => {
-      if (window.location.pathname === "/dashboard/new-game") {
-        window.location.assign(destination);
-      }
-    }, 150);
-
-    setIsStartingGame(false);
   };
 
   if (loadingGameData) {
@@ -292,10 +287,9 @@ export default function NewGame() {
               <button
                 onClick={handleStartGame}
                 type="button"
-                disabled={isStartingGame}
                 className="btn btn-brand"
               >
-                {isStartingGame ? "Démarrage..." : "Démarrer la partie"}
+                Démarrer la partie
               </button>
             )}
           </div>
