@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 
 import { DialogControls, Friend } from "@/utils/types";
-import { calendarConvert, utcConvert } from "@/utils/dates";
+import { utcConvert } from "@/utils/dates";
 
 import DeleteFriendConfirmationDialog from "./deleteFriendConfirmationDialog";
 

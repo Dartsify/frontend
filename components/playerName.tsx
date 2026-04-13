@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { Participant } from "@/utils/types";
 import { userIsGuest } from "@/utils/users";
+
 import FriendWrapper from "./dialogs/friendWrapper";
 
 // Component to display the name of a player with some controls when we hover the player's name or click on it
@@ -27,18 +28,11 @@ export default function PlayerName({
   // Stores the pending close timeout to cancel it when the pointer comes back.
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { player_name, player_username } = player; // Informations of the pointed player
+  const { player_name, player_username, is_friend } = player; // Informations of the pointed player
 
   const isMe = player_username === myUsername; // User is pointing himself
 
   const showUserControls = !isMe && !userIsGuest(player_username); // Show controls only if it's not me and not a guest
-
-  //   Show controls when user clicks on a user
-  const handleShowUserControls = () => {
-    alert(
-      `Vous pourrez bientôt avoir directement ici des infos sur ${player_name} (@${player_username}) !`,
-    );
-  };
 
   // Opens controls immediately and cancels any pending close.
   const openControls = () => {
@@ -85,7 +79,6 @@ export default function PlayerName({
       >
         <p
           className={`${showUserControls && "transition-colors duration-300 ease-out cursor-pointer"} ${isControlsVisible && "text-brand"}`}
-          // onClick={() => (showUserControls ? handleShowUserControls() : null)}
         >
           <b className="">{player_name}</b>
           {isMe && " (Vous)"}
@@ -138,7 +131,7 @@ export default function PlayerName({
         )}
       </div>
       {/* Show friend dialog when we click on the player's name */}
-      {showFriendDialog && <FriendWrapper friendData={player} />}{" "}
+      {showFriendDialog && <FriendWrapper friendData={player} />}
     </>
   );
 }

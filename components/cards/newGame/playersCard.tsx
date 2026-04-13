@@ -3,16 +3,16 @@ import { Crown, Plus, X } from "lucide-react";
 
 import { isHost } from "@/utils/games";
 import { GameDetail, Participant, User } from "@/utils/types";
+import { userIsGuest } from "@/utils/users";
 
 import HorizontalSeparator from "@/components/horizontalSeparator";
 import IconButton from "@/components/buttons/actionButtons/iconButton";
 import Dialog from "@/components/dialogs/dialog";
 import AddPlayersToGameDialog from "@/components/dialogs/addPlayersToGameDialog";
+import PlayerName from "@/components/playerName";
 
 import { removePlayer } from "@/lib/fastapi/games";
 import { useDialog } from "@/lib/hooks/useDialog";
-import PlayerName from "@/components/playerName";
-import { userIsGuest } from "@/utils/users";
 
 export default function PlayersCard({
   gameData,
@@ -57,13 +57,9 @@ export default function PlayersCard({
   };
 
   const listItem = (item: Participant, index: number) => {
-    const { player_name, player_username, status, position, is_host } = item;
+    const { player_name, player_username, status, is_host } = item;
 
     const isMe = player_username === userData?.username;
-
-    const victories = (Math.random() * 100) | 0;
-    const games = 100;
-    const ratio = victories / games;
 
     return (
       <li key={index} className="">

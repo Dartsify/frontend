@@ -82,6 +82,8 @@ export type Participant = {
   status: "validated" | "pending" | "rejected";
   checkout_suggestion: string[];
   is_host: boolean;
+  current_average: number;
+  is_friend: boolean;
 };
 
 export type GameDetail = {
