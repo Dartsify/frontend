@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Trophy } from "lucide-react";
+import { UserCheck, UserPlus } from "lucide-react";
 import Image from "next/image";
 
 import { Participant } from "@/utils/types";
 import { userIsGuest } from "@/utils/users";
 
 import FriendWrapper from "./dialogs/friendWrapper";
+import Dialog from "./dialogs/dialog";
+import FriendDialog from "./dialogs/friendDialog";
+import { useDialog } from "@/lib/hooks/useDialog";
+import { sendFriendRequest } from "@/lib/fastapi/players";
 
 // Component to display the name of a player with some controls when we hover the player's name or click on it
 export default function PlayerName({
@@ -23,10 +27,13 @@ export default function PlayerName({
   // so we can keep it open briefly when the pointer leaves.
   const [isControlsVisible, setIsControlsVisible] = useState<boolean>(false);
 
-  const [showFriendDialog, setShowFriendDialog] = useState<boolean>(false); // State to show the friend dialog when we click on the player's name
+  // Keep dialog mounted only when needed: opening/open/closing animation window.
+  const [isDialogMounted, setIsDialogMounted] = useState<boolean>(false);
 
   // Stores the pending close timeout to cancel it when the pointer comes back.
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const dialogControls = useDialog();
 
   const { player_name, player_username, is_friend } = player; // Informations of the pointed player
 
@@ -55,7 +62,6 @@ export default function PlayerName({
     }
 
     closeTimeoutRef.current = setTimeout(() => {
-      setShowFriendDialog(false);
       setIsControlsVisible(false);
       closeTimeoutRef.current = null;
     }, 80);
@@ -70,6 +76,39 @@ export default function PlayerName({
     };
   }, []);
 
+  // Unmount after close animation ends so the fade-out can complete.
+  useEffect(() => {
+    if (dialogControls.isOpen) return;
+
+    const unmountTimeout = setTimeout(() => {
+      setIsDialogMounted(false);
+    }, 300);
+
+    return () => clearTimeout(unmountTimeout);
+  }, [dialogControls.isOpen]);
+
+  const handleAddPlayer = async () => {
+    const res = await sendFriendRequest(player_username);
+
+    const { data, error } = res;
+
+    if (error) {
+      alert(
+        typeof error === "string"
+          ? error
+          : "Une erreur est survenue lors de l'envoi de la demande d'ami. Veuillez réessayer.",
+      );
+      return;
+    }
+
+    alert("Demande d'ami envoyée !");
+  };
+
+  const handleOpenDialog = () => {
+    setIsDialogMounted(true);
+    dialogControls.open();
+  };
+
   return (
     <>
       <div
@@ -79,6 +118,7 @@ export default function PlayerName({
       >
         <p
           className={`${showUserControls && "transition-colors duration-300 ease-out cursor-pointer"} ${isControlsVisible && "text-brand"}`}
+          // onClick={handleOpenDialog}
         >
           <b className="">{player_name}</b>
           {isMe && " (Vous)"}
@@ -101,7 +141,6 @@ export default function PlayerName({
             }`}
             onMouseEnter={openControls}
             onMouseLeave={closeControlsWithDelay}
-            onClick={() => setShowFriendDialog(true)}
           >
             <div className="rounded-md relative w-7 h-7 md:w-10 md:h-10 overflow-hidden">
               <Image
@@ -119,19 +158,46 @@ export default function PlayerName({
               </p>
             </div>
 
-            {/* <div className="btn btn-xs btn-brand-anim ml-4 cursor-pointer">
-            <UserPlus size={16} strokeWidth={2.5} />
-          </div> */}
+            {is_friend ? (
+              <div className="btn btn-xs no-anim">
+                <UserCheck size={16} strokeWidth={2.5} />
+              </div>
+            ) : (
+              <div
+                onClick={handleAddPlayer}
+                className="btn btn-xs btn-brand-anim ml-4 cursor-pointer"
+              >
+                <UserPlus size={16} strokeWidth={2.5} />
+              </div>
+            )}
+            {/* 
             <div className="ml-4 flex gap-0.5 items-center">
               <p className="text-yellow-500 font-bold">{player_name.length}</p>{" "}
-              {/* TODO: Replace with actual victories count */}
               <Trophy size={16} className="text-yellow-500" strokeWidth={2.5} />
-            </div>
+            </div> */}
           </div>
         )}
       </div>
       {/* Show friend dialog when we click on the player's name */}
-      {showFriendDialog && <FriendWrapper friendData={player} />}
+
+      {/* {isDialogMounted && (
+        <Dialog dialogControls={dialogControls}>
+          <FriendDialog
+            dialogControls={dialogControls}
+            // friendData={{
+            //   username: "test",
+            //   name: "Test",
+            //   age: 0,
+            //   creation_date: new Date(),
+            //   friends_since: new Date(),
+            //   games_played_together: 0,
+            //   games_won_against: 0,
+            // }}
+            friendData={player}
+            isFriend={is_friend}
+          />
+        </Dialog>
+      )} */}
     </>
   );
 }

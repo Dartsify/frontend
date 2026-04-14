@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { TimerIcon } from "lucide-react";
 
-import { calendarConvert } from "@/utils/dates";
+import { calendarConvert, utcConvert } from "@/utils/dates";
 import { Game } from "@/utils/types";
+import { gameHostName, statusBadge } from "@/utils/games";
 
 import { getGame } from "@/lib/fastapi/games";
 
 import Timer from "../timer";
-import { gameHostName, statusBadge } from "@/utils/games";
 
 const listItem = async (game: Game, index: number) => {
   // const { id, status, target_id, start_date, participants } = game;
@@ -30,6 +30,7 @@ const listItem = async (game: Game, index: number) => {
     target_location,
     target_name,
     start_date,
+    creation_date,
     mode,
   } = data;
 
@@ -58,7 +59,7 @@ const listItem = async (game: Game, index: number) => {
                 : "en solo"}
             </h4>
             <p className="text-foreground-soft text-sm-2 font-medium">
-              {calendarConvert(start_date)}
+              {calendarConvert(creation_date)}
             </p>
           </div>
           <div className="flex gap-2 items-center">
@@ -69,7 +70,7 @@ const listItem = async (game: Game, index: number) => {
             {status === "in_progress" && (
               <div className="badge badge-brand">
                 <TimerIcon size={14} />
-                <Timer time={start_date} />
+                <Timer time={utcConvert(start_date).valueOf()} />
               </div>
             )}
           </div>

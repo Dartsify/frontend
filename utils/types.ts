@@ -90,6 +90,8 @@ export type GameDetail = {
   id: number;
   mode: GameMode;
   start_date: Date;
+  creation_date: Date;
+  end_date: Date | null;
   status: GameStatus;
   target_id: string;
   target_name: string;

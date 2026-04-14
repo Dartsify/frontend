@@ -26,14 +26,16 @@ export default function FriendWrapper({
   // We open the dialog when we have the friend data (i.e. when the component is mounted with the friend data after clicking on a friend in the friends list)
   useEffect(() => {
     // We only get the data if the user is a friend
-    if (friendData && !is_friend && !error) {
+    if (friendData && is_friend && !error) {
       // Here we get the data of the friend we want to show in the dialog
       const fetchData = async () => {
         const res = await getPlayer(friendData.player_username);
 
         const { data, error } = res;
 
-        if (error || !data) {
+        // TODO : Quand on affiche le dialog avec les infos de la personne, il faut garder la souris sur l'élément pour qu'il ne disparaisse pas
+
+        if (error) {
           alert(
             typeof error === "string"
               ? error
@@ -52,6 +54,10 @@ export default function FriendWrapper({
       fetchData();
     }
   }, [friendData, dialogControls, error]);
+
+  if (!friendData) {
+    return null;
+  }
 
   return (
     <Dialog dialogControls={dialogControls}>

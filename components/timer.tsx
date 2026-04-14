@@ -1,8 +1,13 @@
 "use client";
 
+import moment, { Moment } from "moment";
 import { useEffect, useMemo, useState } from "react";
 
-export default function Timer({ time }: { time: Date | string | number }) {
+export default function Timer({
+  time,
+}: {
+  time: Moment | Date | string | number;
+}) {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -16,7 +21,9 @@ export default function Timer({ time }: { time: Date | string | number }) {
   }, []);
 
   const elapsedLabel = useMemo(() => {
-    const baseTime = new Date(time).getTime(); // Base time is the given start date
+    const baseTime = moment.isMoment(time)
+      ? time.valueOf()
+      : new Date(time).getTime(); // Base time is the given start date
 
     if (Number.isNaN(baseTime)) {
       return "00:00";

@@ -2,8 +2,16 @@ import { utcConvert } from "@/utils/dates";
 import { GameDetail } from "@/utils/types";
 
 export default function FinishedGame(game: GameDetail) {
-  const { id, participations, mode, start_date, target_location, target_name } =
-    game;
+  const {
+    id,
+    participations,
+    mode,
+    start_date,
+    end_date,
+    creation_date,
+    target_location,
+    target_name,
+  } = game;
 
   return (
     <>
@@ -12,7 +20,14 @@ export default function FinishedGame(game: GameDetail) {
           <b>Mode : </b> {mode}
         </li>
         <li>
-          <b>Créé le : </b> {utcConvert(start_date).format("DD/MM/YYYY HH:mm")}
+          <b>Créé le : </b>{" "}
+          {utcConvert(creation_date).format("DD/MM/YYYY HH:mm")}
+        </li>
+        <li>
+          <b>Fin : </b>{" "}
+          {end_date
+            ? utcConvert(end_date).format("DD/MM/YYYY HH:mm")
+            : "En cours"}
         </li>
         <li>
           <b>Localisation : </b> {target_location || "Inconnu"}

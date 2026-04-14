@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
 
-import { DialogControls, Friend } from "@/utils/types";
+import { DialogControls, Friend, Participant } from "@/utils/types";
 import { utcConvert } from "@/utils/dates";
 
 import DeleteFriendConfirmationDialog from "./deleteFriendConfirmationDialog";
@@ -12,9 +12,13 @@ import DeleteFriendConfirmationDialog from "./deleteFriendConfirmationDialog";
 export default function FriendDialog({
   dialogControls,
   friendData,
+  // isFriend,
 }: {
   dialogControls: DialogControls;
+  // friendData: Friend | Participant | null;
   friendData: Friend | null;
+
+  // isFriend?: boolean;
 }) {
   const [showRemovePlayerConfirmation, setShowRemovePlayerConfirmation] =
     useState(false);
@@ -32,11 +36,15 @@ export default function FriendDialog({
   // When the dialog is closed, we want to reset the showRemovePlayerConfirmation state to false to show the friend dialog again when we open the dialog next time (when we click on another friend for example)
   useEffect(() => {
     if (!dialogControls.isOpen) {
-      setTimeout(() => {
+      const closeResetTimeout = setTimeout(() => {
         setShowRemovePlayerConfirmation(false);
       }, 300); // We wait for 300ms to let the closing animation of the dialog play before resetting the state
+
+      return () => clearTimeout(closeResetTimeout);
     }
   }, [dialogControls.isOpen]);
+
+  if (!dialogControls.isOpen) return null;
 
   if (showRemovePlayerConfirmation) {
     return (

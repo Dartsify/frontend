@@ -82,6 +82,8 @@ export const getPlayer = async (username: string) => {
       };
     }
 
+    console.log("Player data fetched successfully:", data);
+
     return { ...data, guest: data.username.includes("guest_") };
   } catch (error) {
     return { error: "Erreur réseau" };
