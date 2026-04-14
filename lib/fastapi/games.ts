@@ -213,7 +213,12 @@ export const getGame = async (game_id: number) => {
       };
     }
 
-    return { data: data as GameDetail };
+    return {
+      data: {
+        ...data,
+        participations: data.participations.reverse() ?? [], // We reverse the participations to have the first player at the top of the list
+      } as GameDetail,
+    };
   } catch (error) {
     console.error("Error during fetching game:", error);
     return { error: "Erreur réseau" };
@@ -235,7 +240,7 @@ export const joinGame = async (game_id: number, name?: string) => {
         "Content-Type": "application/json",
         authorization: token ? `Bearer ${token}` : "",
       },
-      body: token ? "" : JSON.stringify({ name }),
+      body: token ? JSON.stringify({}) : JSON.stringify({ name }),
     });
 
     let data;

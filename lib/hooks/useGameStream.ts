@@ -9,17 +9,25 @@ import { GameDetail } from "@/utils/types";
 
 // Stream the data of the game to be sure to have the most up-to-date data of the game (especially for the players list in the lobby)
 // We call this hook stream in the NewGame Page, and we pass the gameId to start the stream for this game.
-export function useGameStream(gameId: number | undefined) {
-  const [gameData, setGameData] = useState<GameDetail | null>(null);
-  const [loading, setLoading] = useState(false);
+export function useGameStream(
+  gameId: number | undefined,
+  snapshot?: GameDetail,
+) {
+  const [gameData, setGameData] = useState<GameDetail | null>(
+    snapshot && gameId ? { ...snapshot, id: gameId } : null,
+  ); // We directly init the state with the given snapshot (if exists)
+  // const [gameData, setGameData] = useState<GameDetail | null>(null);
+  const [loading, setLoading] = useState(snapshot ? false : true);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+
+  // const [frozenData, setFrozenData] = useState<GameDetail | null>(null); // Set here the data we want to keep frozen
 
   // gameId is set after successfully creating or joining a game in the TargetDialog (from NewGame Page)
   //  -> We want to get the data of the party and start the stream
   useEffect(() => {
     // If we don't have a gameId, we can't start the stream, so we return early.
-    if (!gameId) return;
+    // if (!gameId) return;
 
     console.log("gameId ok :", gameId);
 
@@ -28,34 +36,48 @@ export function useGameStream(gameId: number | undefined) {
 
     // Init the stream
     const initStream = async () => {
+      if (!gameId) {
+        setLoading(false);
+        return;
+      }
+
       console.log("Starting game stream for gameId:", gameId);
       controller = new AbortController();
 
-      //   Set loading to true and reset error before starting the stream
-      setLoading(true);
-      setError(null);
-
       try {
         // 1) Hydrate initial state once (snapshot) before listening to live updates.
-        const { data: snapshot, error: snapshotError } = await getGame(gameId);
+        if (!snapshot) {
+          //   Set loading to true and reset error before starting the stream
+          setLoading(true);
+          setError(null);
 
-        if (snapshotError || !snapshot) {
-          // throw new Error(
-          // typeof snapshotError === "string"
-          //   ? snapshotError
-          //   : "Failed to load initial game data",
-          // );
-          // throw new Error show an error in next js dev tools !
-          console.error(
-            typeof snapshotError === "string"
-              ? snapshotError
-              : "Failed to load initial game data",
-          );
-          return;
+          const { data: snapshot, error: snapshotError } =
+            await getGame(gameId);
+
+          if (snapshotError || !snapshot) {
+            // throw new Error(
+            // typeof snapshotError === "string"
+            //   ? snapshotError
+            //   : "Failed to load initial game data",
+            // );
+            // throw new Error show an error in next js dev tools !
+            console.error(
+              typeof snapshotError === "string"
+                ? snapshotError
+                : "Failed to load initial game data",
+            );
+            return;
+          }
+
+          // const isFriendField = snapshot.participations.map((p) => p.is_friend);
+
+          // console.log("isFriendField: ", isFriendField);
+
+          // setFrozenData({ participations: isFriendField });
+          setGameData({ ...snapshot, id: gameId });
+
+          setLoading(false);
         }
-
-        setGameData({ ...snapshot, id: gameId });
-        setLoading(false);
 
         console.log("Initial game data loaded:", snapshot);
 

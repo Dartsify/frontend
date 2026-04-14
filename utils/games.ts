@@ -79,7 +79,10 @@ export const statusBadge = (status: string) => {
       return { text: "Préparation", color: "bg-highlight" };
     case "in_progress":
       return { text: "En cours", color: "bg-green-500" };
+    case "finished": {
+      return { text: "Terminé", color: "bg-brand" };
+    }
     default:
-      return { text: "Inconnue", color: "bg-gray-500" };
+      return { text: "Inconnu", color: "bg-gray-500" };
   }
 };

@@ -74,6 +74,12 @@ export type Game = {
   winner_name: string;
 };
 
+export type Point = {
+  points: number;
+  multiplier: number;
+  total: number;
+};
+
 export type Participant = {
   player_username: string;
   player_name: string;
@@ -84,6 +90,7 @@ export type Participant = {
   is_host: boolean;
   current_average: number;
   is_friend: boolean;
+  last_3_points: Point[];
 };
 
 export type GameDetail = {
@@ -98,6 +105,9 @@ export type GameDetail = {
   target_location: string;
   target_description?: string;
   participations: Participant[];
+  current_player_username: string;
+  current_turn_number: number;
+  current_dart_number: number;
 };
 
 // Requests

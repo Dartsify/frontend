@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserDataContext } from "../providers";
 
 import { useDialog } from "@/lib/hooks/useDialog";
+import { useGameStream } from "@/lib/hooks/useGameStream";
+import { leaveGame, startGame } from "@/lib/fastapi/games";
 
 import Dialog from "@/components/dialogs/dialog";
 import LoginDialog from "@/components/dialogs/loginDialog";
@@ -15,8 +17,6 @@ import TargetCard from "@/components/cards/newGame/targetCard";
 import PlayersCard from "@/components/cards/newGame/playersCard";
 
 import { isHost } from "@/utils/games";
-import { useGameStream } from "@/lib/hooks/useGameStream";
-import { leaveGame, startGame } from "@/lib/fastapi/games";
 import { GameMode } from "@/utils/types";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
@@ -55,20 +55,19 @@ export default function NewGame() {
   } = useGameStream(gameId);
 
   // Redirect the user to the game page when game starts
-  const redirectToGame = () => {
+  const redirectTo = (href: string) => {
     if (gameId == null || hasRedirectedToGame.current) return;
 
     hasRedirectedToGame.current = true;
     allowProgrammaticNavigation.current = true;
 
-    const destination = `/dashboard/my-games/${gameId}`;
-    router.replace(destination);
+    router.replace(href);
 
     // Fallback: force browser navigation if client router transition is ignored.
     // ! Don't know why but router.replace is ignored
     window.setTimeout(() => {
       if (window.location.pathname.startsWith("/dashboard/new-game")) {
-        window.location.assign(destination);
+        window.location.assign(href);
       }
     }, 120);
   };
@@ -76,7 +75,10 @@ export default function NewGame() {
   // When the game starts, redirect all the users (host and players) to the game page
   useEffect(() => {
     if (gameData?.status === "in_progress") {
-      redirectToGame();
+      redirectTo(`/dashboard/my-games/${gameId}`);
+    } else if (gameData?.status === "finished") {
+      // The game has been finished
+      redirectTo(`/dashboard/my-games/${gameId}`);
     }
   }, [gameData?.status, gameId, router]);
 
@@ -225,8 +227,7 @@ export default function NewGame() {
         return;
       }
 
-      allowProgrammaticNavigation.current = true; // Allow navigation without warning after successfully leaving the game
-      router.push("/dashboard");
+      redirectTo(`/dashboard`);
     }
   };
 
@@ -243,7 +244,7 @@ export default function NewGame() {
         typeof error === "string" &&
         /already|already started|deja|déjà/i.test(error)
       ) {
-        redirectToGame();
+        redirectTo(`/dashboard/my-games/${gameId}`);
         return;
       }
 

@@ -104,10 +104,10 @@ export default function PlayerName({
     alert("Demande d'ami envoyée !");
   };
 
-  const handleOpenDialog = () => {
-    setIsDialogMounted(true);
-    dialogControls.open();
-  };
+  // const handleOpenDialog = () => {
+  //   setIsDialogMounted(true);
+  //   dialogControls.open();
+  // };
 
   return (
     <>
