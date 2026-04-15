@@ -64,6 +64,7 @@
   --font-roboto: var(--font-roboto);
   /* Font Sizes */
   --text-sm-2: 0.95rem;
+  --text-xs-2: 0.8rem;
   /* Coolors Color Variables */
   --color-full-spectrum-blue-50: #e5ebff;
   --color-full-spectrum-blue-100: #ccd7ff;
@@ -238,8 +239,20 @@ body {
     @apply h-2.5 w-2.5 rounded-full;
   }
 
+  .badge-disc-xs {
+    @apply h-2 lg:h-2.5 w-2 lg:w-2.5 rounded-full;
+  }
+
   .badge-sm {
     @apply px-2 py-1 leading-3.5;
+  }
+
+  .badge-xs {
+    @apply px-1.5 lg:px-2 py-1 lg:py-1 gap-1 lg:gap-1.5;
+  }
+
+  .badge-xs p {
+    @apply leading-3 lg:leading-3.5 text-xs lg:text-xs-2;
   }
 
   .game-badge {

@@ -1,131 +1,48 @@
 "use client";
 
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { MoveLeft, MoveRight } from "lucide-react";
 
-import moment from "moment";
+import { DashboardNotification } from "@/utils/types";
+import { notificationType } from "@/utils/games";
+import {
+  rejectParticipation,
+  validateParticipation,
+} from "@/lib/fastapi/games";
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from "@/lib/fastapi/players";
+import { calendarConvert } from "@/utils/dates";
 
-const data: { title: string; description: string; date: Date; type: string }[] =
-  [
-    {
-      title: "Nouvelle partie de groupe",
-      date: new Date("2026-03-01T14:48:00"),
-      description:
-        "Alexandre (alexboss) a créé une nouvelle partie de Cricket dans le groupe Test à Chez Cabu.",
-      type: "new-game",
-    },
-    {
-      title: "Invitation à rejoindre un groupe",
-      date: new Date("2026-02-01T15:48:00"),
-      description:
-        "Adrien (adri1) vous a invité à rejoindre le groupe Les Pros de Fléchettes.",
-      type: "group-invite",
-    },
-    {
-      title: "Demande d'ami",
-      date: new Date("2026-02-01T15:20:00"),
-      description: "Louis (llouis70) vous a envoyé une demande d'ami.",
-      type: "friend-request",
-    },
-    {
-      title: "Nouvelle partie de groupe",
-      date: new Date("2026-02-01T14:48:00"),
-      description:
-        "Adrien (adri1) a créé une nouvelle partie de 501 dans le groupe Test à Kickoff.",
-      type: "new-game",
-    },
-  ];
+const getNotificationTimestamp = (notification: DashboardNotification) => {
+  const date =
+    notification.type === "pending-game"
+      ? notification.join_date
+      : notification.request_date;
 
-const listItem = (
-  item: { title: string; description: string; date: Date; type: string },
-  index: number,
-) => {
-  const { title, description, type } = item;
-
-  const fromNow = moment(item.date).fromNow();
-
-  const footer = () => {
-    switch (type) {
-      case "new-game":
-        return (
-          <>
-            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
-              Confirmez votre présence afin d'ajouter cette partie à vos
-              statistiques !
-            </p>
-
-            <div className="footer">
-              <button type="button" className="btn btn-sm btn-destructive">
-                Refuser
-              </button>
-              <button type="button" className="btn btn-sm btn-validate">
-                Valider
-              </button>
-            </div>
-          </>
-        );
-      case "group-invite":
-        return (
-          <>
-            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
-              Acceptez l'invitation pour rejoindre le groupe de joueurs. Les
-              groupes de joueurs permettent de démarrer rapidement une partie
-              avec vos amis !
-            </p>
-
-            <div className="footer">
-              <button type="button" className="btn btn-sm btn-destructive">
-                Supprimer
-              </button>
-              <button type="button" className="btn btn-sm btn-validate">
-                Rejoindre
-              </button>
-            </div>
-          </>
-        );
-      case "friend-request":
-        return (
-          <>
-            <p className="flex-1 mt-1 leading-4.5 text-foreground-soft font-medium text-sm-2">
-              Acceptez l'invitation pour ajouter ce joueur à votre liste d'amis.
-              Les amis vous permettent de suivre leurs statistiques et de les
-              inviter rapidement à des parties !
-            </p>
-
-            <div className="footer">
-              <button type="button" className="btn btn-sm btn-destructive">
-                Refuser
-              </button>
-              <button type="button" className="btn btn-sm btn-validate">
-                Accepter
-              </button>
-            </div>
-          </>
-        );
-    }
-  };
-  return (
-    <li
-      className="card flex-[0_0_100%] snap-start list-none flex flex-col"
-      key={index}
-    >
-      <div className="flex items-center justify-between">
-        <h4 className="title">{title}</h4>
-        <p className="text-xs text-foreground-soft font-semibold">
-          {fromNow[0].toUpperCase() + fromNow.slice(1)} • Notification{" "}
-          {index + 1} sur {data.length}
-        </p>
-      </div>
-      <p>{description}</p>
-      <div className="flex flex-col flex-1">{footer()}</div>
-    </li>
-  );
+  return new Date(date).getTime();
 };
 
-export default function NotificationsSection() {
+export default function NotificationsSection({
+  data: initialData,
+}: {
+  data: DashboardNotification[];
+}) {
+  // export default function NotificationsSection() {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollRafRef = useRef<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0); // keep current index in state to manage button states and scroll position
+
+  const [data, setData] = useState<DashboardNotification[]>(() =>
+    [...initialData].sort(
+      (a, b) => getNotificationTimestamp(b) - getNotificationTimestamp(a),
+    ),
+  );
+  const hasNotifications = data.length > 0;
+  const isPrevDisabled = !hasNotifications || currentIndex === 0;
+  const isNextDisabled = !hasNotifications || currentIndex >= data.length - 1;
 
   const scrollToIndex = (nextIndex: number) => {
     // Scroll the list to the target index and update currentIndex state
@@ -188,6 +105,155 @@ export default function NotificationsSection() {
     };
   }, []);
 
+  useEffect(() => {
+    // Keep index in bounds after removing notifications.
+    setCurrentIndex((prev) => {
+      if (data.length === 0) return 0;
+      return Math.min(prev, data.length - 1);
+    });
+  }, [data.length]);
+
+  const pendingGameAction = async (
+    gameId: number,
+    action: (game_id: number) => Promise<{ error?: unknown; data?: unknown }>,
+  ) => {
+    const res = await action(gameId);
+    const { error } = res;
+
+    if (error) {
+      alert(
+        typeof error === "string"
+          ? error
+          : "Une erreur est survenue. Veuillez réessayer.",
+      );
+      return;
+    }
+
+    setData((prev) =>
+      prev.filter((i) => !(i.type === "pending-game" && i.game_id === gameId)),
+    );
+  };
+
+  const friendRequestAction = async (
+    username: string,
+    action: (username: string) => Promise<{ error?: unknown; data?: unknown }>,
+  ) => {
+    const res = await action(username);
+    const { error } = res;
+
+    if (error) {
+      alert(
+        typeof error === "string"
+          ? error
+          : "Une erreur est survenue. Veuillez réessayer.",
+      );
+      return;
+    }
+
+    setData((prev) =>
+      prev.filter(
+        (i) => !(i.type === "friend-request" && i.username === username),
+      ),
+    );
+  };
+
+  const listItem = (item: DashboardNotification, index: number) => {
+    const { type } = item;
+    const { title, description, date, subtitle } = notificationType(item);
+
+    // Specific footer content based on notification type
+    const footer = () => {
+      switch (type) {
+        case "pending-game":
+          return (
+            <>
+              <div className="footer">
+                <button
+                  onClick={() =>
+                    pendingGameAction(item.game_id, rejectParticipation)
+                  }
+                  type="button"
+                  className="btn btn-sm btn-destructive"
+                >
+                  Refuser
+                </button>
+                <button
+                  onClick={() =>
+                    pendingGameAction(item.game_id, validateParticipation)
+                  }
+                  type="button"
+                  className="btn btn-sm btn-validate"
+                >
+                  Valider
+                </button>
+              </div>
+            </>
+          );
+        case "friend-request":
+          return (
+            <>
+              <div className="footer">
+                <button
+                  onClick={() =>
+                    friendRequestAction(item.username, rejectFriendRequest)
+                  }
+                  type="button"
+                  className="btn btn-sm btn-destructive"
+                >
+                  Refuser
+                </button>
+                <button
+                  onClick={() =>
+                    friendRequestAction(item.username, acceptFriendRequest)
+                  }
+                  type="button"
+                  className="btn btn-sm btn-validate"
+                >
+                  Accepter
+                </button>
+              </div>
+            </>
+          );
+      }
+    };
+
+    return (
+      <li
+        className="card flex-[0_0_100%] snap-start list-none flex flex-col"
+        key={index}
+      >
+        <div className="flex items-center justify-between">
+          <h4 className="title">{title}</h4>
+          <p className="text-xs-2 text-foreground-soft font-medium -mt-1">
+            {calendarConvert(date)}
+          </p>
+        </div>
+        <p className="leading-4.5 mt-1.5 font-medium">{description}</p>
+        <p className="leading-4.5 mt-2">{subtitle}</p>
+        <div className="flex flex-col flex-1">{footer()}</div>
+      </li>
+      // <li
+      //   className="card flex-[0_0_100%] snap-start list-none flex flex-col"
+      //   key={index}
+      // >
+      //   {/* <div className="flex items-center justify-between -mb-0.5">
+      //     <h4 className="title">{title}</h4>
+      //     <p className="text-xs-2 text-foreground-soft font-medium -mt-1">
+      //       {fromNow[0].toUpperCase() + fromNow.slice(1)}
+      //     </p>
+      //   </div> */}
+      //   <h4 className="title">{title}</h4>
+      //   <p className="text-sm-2 text-foreground-soft font-medium -mt-2">
+      //     {fromNow[0].toUpperCase() + fromNow.slice(1)}
+      //   </p>
+
+      //   <p className="leading-5.5 mt-3">{description}</p>
+      //   <p className="leading-5.5 mt-2">{subtitle}</p>
+      //   <div className="flex flex-col flex-1">{footer()}</div>
+      // </li>
+    );
+  };
+
   return (
     <section id="notif-card" className="default-section">
       <div className="flex justify-between">
@@ -196,9 +262,9 @@ export default function NotificationsSection() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className={`btn ${currentIndex === 0 ? "btn-invalid" : ""}`}
+            className={`btn ${isPrevDisabled ? "btn-invalid" : ""}`}
             onClick={goPrev}
-            disabled={currentIndex === 0}
+            disabled={isPrevDisabled}
             aria-label="Notification précédente"
           >
             {" "}
@@ -206,9 +272,9 @@ export default function NotificationsSection() {
           </button>
           <button
             type="button"
-            className={`btn ${currentIndex === data.length - 1 ? "btn-invalid" : ""}`}
+            className={`btn ${isNextDisabled ? "btn-invalid" : ""}`}
             onClick={goNext}
-            disabled={currentIndex === data.length - 1}
+            disabled={isNextDisabled}
             aria-label="Notification suivante"
           >
             {" "}
@@ -216,14 +282,20 @@ export default function NotificationsSection() {
           </button>
         </div>
       </div>
-      <ul
-        ref={listRef}
-        onScroll={handleScroll}
-        className="flex gap-4 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth overscroll-x-contain pb-4"
-      >
-        {/* Content */}
-        {data.map((item, index) => listItem(item, index))}
-      </ul>
+      {data.length === 0 ? (
+        <p>
+          <i>Vous n'avez plus de notifications.</i>
+        </p>
+      ) : (
+        <ul
+          ref={listRef}
+          onScroll={handleScroll}
+          className="flex gap-4 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth overscroll-x-contain pb-4"
+        >
+          {/* Content */}
+          {data.map((item, index) => listItem(item, index))}
+        </ul>
+      )}
     </section>
   );
 }

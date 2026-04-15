@@ -97,6 +97,8 @@ export function useGameStream(
               if (event === "GAME_UPDATED") {
                 // Event GAME_UPDATED means the data has been updated, so we update the current data
                 setGameData({ ...game_state, id: gameId }); // We don't merge, we replace the whole data (no sense to keep the prev one)
+
+                console.log("Game data updated:", game_state);
               }
             } catch {
               console.error("Parse error:", message);

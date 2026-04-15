@@ -137,7 +137,16 @@ export const addGuests = async (game_id: number, guest_names: string[]) => {
   }
 };
 
-export const getGames = async (status?: GameStatus[]) => {
+export const getGames = async (
+  // status?: GameStatus[],
+  // limit?: number,
+  // offset?: number,
+  {
+    status,
+    limit = 10,
+    offset,
+  }: { status?: GameStatus[]; limit?: number; offset?: number },
+) => {
   const token = await getToken();
 
   if (!token) {
@@ -148,7 +157,7 @@ export const getGames = async (status?: GameStatus[]) => {
     const res = await fetch(
       // If a status is provided, we add it as a query parameter to filter games by status, otherwise we get all games
       buildApiUrl(
-        `/games/?limit=10${status && `&status=${status.join("&status=")}`}`,
+        `/games/?limit=${limit}${status ? `&status=${status.join("&status=")}` : ""}${offset ? `&offset=${offset}` : ""}`,
       ),
       {
         method: "GET",
@@ -167,7 +176,7 @@ export const getGames = async (status?: GameStatus[]) => {
       throw new Error("Failed to parse response from server.");
     }
 
-    // console.log(data);
+    console.log(data);
 
     if (!res.ok) {
       return {
@@ -213,10 +222,12 @@ export const getGame = async (game_id: number) => {
       };
     }
 
+    console.log("GAME DATA GET FROM API : ", data);
+
     return {
       data: {
         ...data,
-        participations: data.participations.reverse() ?? [], // We reverse the participations to have the first player at the top of the list
+        id: game_id,
       } as GameDetail,
     };
   } catch (error) {
@@ -422,6 +433,82 @@ export const startGame = async (game_id: number) => {
     if (!res.ok) {
       return {
         error: data.detail || "Failed to launch game. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const validateParticipation = async (game_id: number) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/games/${game_id}/validate`), {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error:
+          data.detail || "Failed to validate participation. Please try again.",
+      };
+    }
+
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const rejectParticipation = async (game_id: number) => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/games/${game_id}/reject`), {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error:
+          data.detail || "Failed to reject participation. Please try again.",
       };
     }
 

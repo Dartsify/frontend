@@ -6,9 +6,10 @@ import { User } from "@/utils/types";
 
 import { getUserData } from "@/lib/fastapi/users";
 
+import Loading from "../loading";
+
 import LoginGate from "@/components/login/loginGate";
 import NavWrapper from "@/components/nav/navWrapper";
-import Loading from "../loading";
 import NoConnectedContentWrapper from "@/components/noConnectedContentWrapper";
 
 export default async function DashboardLayout({

@@ -1,5 +1,5 @@
 import { addGuests, addPlayers } from "@/lib/fastapi/games";
-import { Participant, User } from "./types";
+import { DashboardNotification, Participant, User } from "./types";
 
 export const games = [
   // Keep it first bc it is the default game when creating a new game
@@ -84,5 +84,54 @@ export const statusBadge = (status: string) => {
     }
     default:
       return { text: "Inconnu", color: "bg-gray-500" };
+  }
+};
+
+export const notificationType = (notification: DashboardNotification) => {
+  switch (notification.type) {
+    case "pending-game": {
+      const {
+        player_username,
+        player_name,
+        join_date,
+        game_mode,
+        target_location,
+        target_name,
+      } = notification;
+      return {
+        title: "Nouvelle partie en attente",
+        // description: `Alexandre (alexboss) a créé une nouvelle partie de Cricket dans le groupe Test à Chez Cabu.`,
+        description: `${player_name} (${player_username}) a créé une nouvelle partie de ${game_mode} à ${target_location}.`,
+        subtitle:
+          "Confirmez votre présence afin d'ajouter cette partie à vos statistiques !",
+        date: join_date,
+      };
+    }
+    case "friend-request": {
+      const { username, name, request_date } = notification;
+      return {
+        title: "Nouvelle demande d'ami",
+        // description: `Alexandre (alexboss) a créé une nouvelle partie de Cricket dans le groupe Test à Chez Cabu.`,
+        description: `${name} (${username}) vous a envoyé une demande d'ami.`,
+        subtitle:
+          "Acceptez l'invitation pour ajouter ce joueur à votre liste d'amis. Les amis vous permettent de suivre leurs statistiques et de les inviter rapidement à des parties !",
+        date: request_date,
+      };
+    }
+    // case "group-invite": {
+    //   return {
+    //     title: "Nouvelle invitation à rejoindre un groupe",
+    //     description: `Adrien (adri1) vous a invité à rejoindre le groupe Les Pros de Fléchettes.`,
+    //     subtitle:
+    //       "Acceptez l'invitation pour rejoindre le groupe de joueurs. Les groupes de joueurs permettent de démarrer rapidement une partie avec vos amis !",
+    //     date: new Date(),
+    //   }
+    // }
+    default:
+      return {
+        title: "Notification",
+        description: "Vous avez une nouvelle notification.",
+        date: new Date(),
+      };
   }
 };

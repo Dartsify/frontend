@@ -7,8 +7,8 @@ import { getGames } from "@/lib/fastapi/games";
 // TODO : edit the already finished game page
 
 export default async function MyGames() {
-  const currentGames = await getGames(["waiting", "in_progress"]);
-  const finishedGames = await getGames(["finished"]);
+  const currentGames = await getGames({ status: ["waiting", "in_progress"] });
+  const finishedGames = await getGames({ status: ["finished"] });
 
   const { data: currentData, error: currentError } = currentGames;
   const { data: finishedData, error: finishedError } = finishedGames;

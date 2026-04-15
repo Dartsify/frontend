@@ -100,7 +100,7 @@ export default function InProgressGame(game: GameDetail) {
 
       <div className="w-2/3 rounded-lg overflow-hidden gradient-bg-light p-4 border border-border sticky top-18">
         <h4 className="card-title">Tour {current_turn_number}</h4>
-        <p className="card-subtitle -mt-1.5">
+        <p className="card-subtitle text-base -mt-1.5">
           {participations[currentPlayerIndex]?.player_name}, c'est à vous de
           jouer !
         </p>

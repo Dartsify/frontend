@@ -65,6 +65,8 @@ export type Game = {
   id: number;
   mode: GameMode;
   start_date: Date;
+  creation_date: Date;
+  end_date: Date | null;
   status: GameStatus;
   target_id: string;
   target_name: string;
@@ -93,6 +95,11 @@ export type Participant = {
   last_3_points: Point[];
 };
 
+export type Coordinates = {
+  x: number;
+  y: number;
+};
+
 export type GameDetail = {
   id: number;
   mode: GameMode;
@@ -108,7 +115,53 @@ export type GameDetail = {
   current_player_username: string;
   current_turn_number: number;
   current_dart_number: number;
+  board_hits: {
+    current_player: Coordinates[];
+    others: Coordinates[];
+  };
 };
+
+export type Stats = {
+  total_games_played: number;
+  total_wins: number;
+  win_rate_percentage: number;
+  average_points_per_dart: number;
+  total_darts_thrown: number;
+  total_misses: number;
+  total_triple_20: number;
+  total_180s: number;
+  total_100_plus: number;
+  cursed_target: string;
+  favorite_targets: string[];
+};
+
+export type Notification = "pending-game" | "friend-request" | "other";
+
+export type PendingInvitation = {
+  game_id: number;
+  game_mode: GameMode;
+  final_score: number | null;
+  status: "pending" | "accepted" | "rejected";
+  player_username: string;
+  player_name: string;
+  current_score: number;
+  position: number | null;
+  join_date: Date;
+  target_name: string;
+  target_location: string;
+};
+
+export type PendingGameNotification = PendingInvitation & {
+  type: "pending-game";
+};
+
+export type FriendRequestNotification = FriendRequest & {
+  type: "friend-request";
+};
+
+export type DashboardNotification =
+  | PendingGameNotification
+  | FriendRequestNotification;
 
 // Requests
 

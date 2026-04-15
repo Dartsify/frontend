@@ -119,9 +119,7 @@ export default function PlayersCard({
 
         {participations ? (
           <ul className="mt-1">
-            {participations
-              .toReversed()
-              .map((item, index) => listItem(item, index))}
+            {participations.map((item, index) => listItem(item, index))}
           </ul>
         ) : (
           <p>Aucun joueur pour le moment</p>
