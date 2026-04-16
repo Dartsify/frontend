@@ -171,8 +171,10 @@ function StatCard({
 }) {
   return (
     <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
-      <h3 className="text-sm font-semibold text-gray-500 mb-1">{title}</h3>
-      <p className="text-2xl font-black text-gray-900">
+      <h3 className="text-sm font-semibold text-gray-500 mb-1 uppercase">
+        {title}
+      </h3>
+      <p className="text-xl font-black text-gray-900">
         {value !== undefined ? value : "0"}
       </p>
     </div>

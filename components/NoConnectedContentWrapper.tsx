@@ -51,7 +51,7 @@ export default function NoConnectedContentWrapper({
                 <h4 className="title">Mode invité</h4>
                 {/* If the user is a guest with a guest token, we can add that he alrdeady knows that he can join games */}
                 <p>
-                  Pas de panique, {guest && <b>comme vous le savez déjà</b>},
+                  Pas de panique, {guest && <b>comme vous le savez déjà, </b>}
                   vous pouvez <b>jouer sur nos cibles en tant qu'invité</b> !
                   <br />
                   Cependant, afin de profiter de nos fonctionnalités telles que
@@ -98,8 +98,8 @@ export default function NoConnectedContentWrapper({
             <div className="card">
               <h4 className="title">Mode invité</h4>
               <p>
-                Pas de panique, {guest && <b>comme vous le savez déjà</b>}, vous
-                pouvez <b>jouer sur nos cibles en tant qu'invité</b> !
+                Pas de panique, {guest && <b>comme vous le savez déjà, </b>}{" "}
+                vous pouvez <b>jouer sur nos cibles en tant qu'invité</b> !
                 <br />
                 Cependant, afin de profiter de nos fonctionnalités telles que la{" "}
                 <b>création de parties en tant qu'hôte</b>, la{" "}
