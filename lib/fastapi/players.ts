@@ -3,7 +3,14 @@
 import { getToken } from "./auth";
 
 import { buildApiUrl } from "@/utils/requests";
-import { Friend, FriendRequest, PendingInvitation, Stats } from "@/utils/types";
+import {
+  Friend,
+  FriendRequest,
+  PendingInvitation,
+  Stats,
+  ZonesStats,
+  HeatmapData,
+} from "@/utils/types";
 
 export const getMyFriends = async (search?: string) => {
   const token = await getToken();
@@ -282,6 +289,82 @@ export const getMyStats = async () => {
     }
 
     return { data: data as Stats };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const getMyZonesStats = async () => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/players/me/zones_stats`), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to get zones stats. Please try again.",
+      };
+    }
+
+    return { data: data as ZonesStats };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const getMyHeatmap = async () => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/players/me/heatmap`), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error: data.detail || "Failed to get heatmap. Please try again.",
+      };
+    }
+
+    return { data: data as HeatmapData };
   } catch (error) {
     console.log(error);
     return { error: "Erreur réseau" };

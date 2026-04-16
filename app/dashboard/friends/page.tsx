@@ -28,7 +28,7 @@ export default async function Friends() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1>Amis</h1>
+        <h1 className="mb-0">Amis</h1>
         <AddFriend />
       </div>
 

@@ -135,6 +135,12 @@ export type Stats = {
   favorite_targets: string[];
 };
 
+export type ZonesStats = {
+  hit_distribution: { zone: string; hits: number }[];
+};
+
+export type HeatmapData = Coordinates[];
+
 export type Notification = "pending-game" | "friend-request" | "other";
 
 export type PendingInvitation = {

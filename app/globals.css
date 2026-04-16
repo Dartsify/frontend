@@ -186,13 +186,17 @@ body {
   }
 
   .gradient-bg-light,
-  .card,
+  /* .card, */
   .game-badge {
     @apply bg-radial-[at_25%_25%] from-background-dark to-alice-blue-50 to-75%;
   }
 
-  .card {
+  /* .card {
     @apply mt-0 p-4 rounded-lg border border-border flex flex-col;
+  } */
+
+  .card {
+    @apply bg-white p-5 rounded-2xl shadow-sm border border-border flex flex-col justify-center;
   }
 
   .card .title,

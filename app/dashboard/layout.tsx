@@ -10,7 +10,7 @@ import Loading from "../loading";
 
 import LoginGate from "@/components/login/loginGate";
 import NavWrapper from "@/components/nav/navWrapper";
-import NoConnectedContentWrapper from "@/components/noConnectedContentWrapper";
+import NoConnectedContentWrapper from "@/components/NoConnectedContentWrapper";
 
 export default async function DashboardLayout({
   children,
