@@ -52,15 +52,13 @@ const listItem = async (game: Game, index: number) => {
       >
         <header className="flex items-center justify-between">
           <div>
-            <h4 className="title mb-0">
+            <h4 className="title">
               Partie{" "}
               {participations.length > 1
                 ? "à " + participations.length + " joueurs"
                 : "en solo"}
             </h4>
-            <p className="text-foreground-soft text-sm-2 font-medium">
-              {calendarConvert(creation_date)}
-            </p>
+            <p className="subtitle">{calendarConvert(creation_date)}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className={`badge badge-neutral`}>

@@ -24,6 +24,37 @@ const COLORS = [
   "#ff248a",
 ];
 
+// Hook pour détecter un écran md (vs grand écran)
+// et adapter la hauteur des graphiques en conséquence.
+function useMdScreenChartLayout(
+  size = 1000,
+  mdChartHeight = 220,
+  largeChartHeight = 250,
+) {
+  const [isMdScreen, setIsMdScreen] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => setIsMdScreen(window.innerWidth < size);
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, [size]);
+
+  return {
+    isMdScreen,
+    chartHeight: isMdScreen ? mdChartHeight : largeChartHeight,
+  };
+}
+
+// Retourne les rayons du cercle en fonction de la taille d'écran
+function getChartRadii(isMdScreen: boolean) {
+  if (isMdScreen) {
+    return { innerRadius: 45, outerRadius: 70 }; // Épaisseur: 25px (moins épais)
+  }
+  return { innerRadius: 45, outerRadius: 80 }; // Épaisseur: 35px (normal)
+}
+
 export function HitDistributionChart({
   data,
 }: {
@@ -42,13 +73,13 @@ export function HitDistributionChart({
       {/* Récapitulatif mobile/PC au-dessus du graphe */}
       <div className="mb-4 text-center min-h-[24px]">
         {selectedData ? (
-          <p className="text-sm font-bold text-gray-800">
+          <p className="text-sm-2 font-bold">
             Zone sélectionnée :{" "}
             <span className="text-[#2454ff]">{selectedData.zone}</span> —{" "}
-            {selectedData.hits} fois touchée(s)
+            {selectedData.hits} fois touchée
           </p>
         ) : (
-          <p className="text-sm font-medium text-gray-400">
+          <p className="text-sm font-medium text-foreground-soft italic">
             Clique sur un bâtonnet pour afficher les détails
           </p>
         )}
@@ -115,6 +146,9 @@ export function HitDistributionChart({
 }
 
 export function WinRateChart({ wins, games }: { wins: number; games: number }) {
+  const { isMdScreen, chartHeight } = useMdScreenChartLayout();
+  const radii = getChartRadii(isMdScreen);
+
   const winPercent = games > 0 ? Math.round((wins / games) * 100) : 0;
   const losses = Math.max(0, games - wins);
   const lossPercent = games > 0 ? 100 - winPercent : 0;
@@ -126,18 +160,27 @@ export function WinRateChart({ wins, games }: { wins: number; games: number }) {
 
   if (games === 0)
     return (
-      <p className="text-gray-500 italic text-center">Aucune partie jouée</p>
+      <p className="text-foreground-soft italic text-center">
+        Aucune partie jouée
+      </p>
     );
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer
+      // className="relative"
+      width="100%"
+      height={chartHeight}
+    >
+      {/* <p className="absolute text-center top-0 left-0 right-0 subtitle">
+        Victoires vs Défaites
+      </p> */}
       <PieChart>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          innerRadius={45}
-          outerRadius={80}
+          innerRadius={radii.innerRadius}
+          outerRadius={radii.outerRadius}
           paddingAngle={3}
           dataKey="value"
           stroke="none"
@@ -171,6 +214,9 @@ export function HitMissChart({
   thrown: number;
   misses: number;
 }) {
+  const { isMdScreen, chartHeight } = useMdScreenChartLayout();
+  const radii = getChartRadii(isMdScreen);
+
   const hits = Math.max(0, thrown - misses);
   const hitPercent = thrown > 0 ? Math.round((hits / thrown) * 100) : 0;
   const missPercent = thrown > 0 ? 100 - hitPercent : 0;
@@ -182,20 +228,27 @@ export function HitMissChart({
 
   if (thrown === 0)
     return (
-      <p className="text-gray-500 italic text-center">
+      <p className="text-foreground-soft italic text-center">
         Aucune fléchette lancée
       </p>
     );
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer
+      // className="relative"
+      width="100%"
+      height={chartHeight}
+    >
+      {/* <p className="absolute text-center top-0 left-0 right-0 subtitle">
+        Précision globale
+      </p> */}
       <PieChart>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          innerRadius={45}
-          outerRadius={80}
+          innerRadius={radii.innerRadius}
+          outerRadius={radii.outerRadius}
           paddingAngle={3}
           dataKey="value"
           stroke="none"

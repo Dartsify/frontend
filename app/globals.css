@@ -196,17 +196,38 @@ body {
   } */
 
   .card {
-    @apply bg-white p-5 rounded-2xl shadow-sm border border-border flex flex-col justify-center;
+    @apply bg-white p-5 rounded-2xl shadow-xs border border-border flex flex-col;
+    /* justify-center */
   }
 
   .card .title,
-  .card-title {
-    @apply text-lg leading-5 font-semibold mb-2;
+  .card h3,
+  .card-title,
+  .card h4 {
+    @apply text-lg leading-5 font-bold mb-1;
+  }
+
+  .card-sm .title,
+  .card-sm h4,
+  .card-xs .title,
+  .card-xs h4 {
+    @apply text-sm font-medium text-foreground-soft mb-1 uppercase;
+    /* @apply text-sm font-semibold text-foreground-soft mb-1; */
+  }
+
+  /* .card-xs .title,
+  .card-xs h3 {
+    @apply text-xl font-black text-gray-900;
+  } */
+
+  .card-xs p {
+    @apply text-xl font-black;
   }
 
   .card .subtitle,
   .card-subtitle {
-    @apply text-sm-2 text-foreground-soft font-medium -mt-1 mb-2;
+    @apply text-sm-2 leading-4.5 text-foreground-soft mt-0.5;
+    /* -mt-1 mb-2; */
   }
 
   .card b {
@@ -214,9 +235,8 @@ body {
   }
 
   .card .footer {
-    @apply flex gap-2 self-end mt-4;
+    @apply flex gap-2 self-end mt-6;
   }
-
 
 
   .badge {

@@ -47,7 +47,7 @@ export default function NoConnectedContentWrapper({
               <h1>Bonjour {guest && name} 👋</h1>
             </header>
             <main className="main-container">
-              <div className="card">
+              <div className="card card-sm">
                 <h4 className="title">Mode invité</h4>
                 {/* If the user is a guest with a guest token, we can add that he alrdeady knows that he can join games */}
                 <p>

@@ -3,8 +3,11 @@ import {
   getMyZonesStats,
   getMyHeatmap,
 } from "@/lib/fastapi/players";
+
 import Dartboard from "@/components/dartboard";
+
 import { HeatmapData, Stats, ZonesStats } from "@/utils/types";
+
 import {
   HitDistributionChart,
   WinRateChart,
@@ -89,12 +92,10 @@ export default async function StatsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
           {favorite_targets && favorite_targets.length > 0 && (
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Podium des cibles favorites
-              </h2>
-              <p className="text-sm text-gray-500 mb-6">
-                Les zones que tu vises avec le plus de succès.
+            <div className="card">
+              <h3>Podium des cibles favorites</h3>
+              <p className="subtitle">
+                Les zones que vous visez avec le plus de succès.
               </p>
               <div className="flex-1 flex items-center justify-center">
                 <Podium targets={favorite_targets} />
@@ -102,21 +103,14 @@ export default async function StatsPage() {
             </div>
           )}
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Ratios Globaux
-            </h2>
+          <div className="card">
+            <h3>Ratios Globaux</h3>
+            <p className="subtitle">Comparez vos performances.</p>
             <div className="grid grid-cols-2 gap-4 flex-1">
               <div className="flex flex-col items-center">
-                <h3 className="text-sm font-semibold text-gray-500 mb-2 text-center">
-                  Victoires vs Défaites
-                </h3>
                 <WinRateChart wins={total_wins} games={total_games_played} />
               </div>
               <div className="flex flex-col items-center">
-                <h3 className="text-sm font-semibold text-gray-500 mb-2 text-center">
-                  Précision Globale
-                </h3>
                 <HitMissChart
                   thrown={total_darts_thrown}
                   misses={total_misses}
@@ -127,10 +121,9 @@ export default async function StatsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 self-start">
-              Heatmap de la cible
-            </h2>
+          <div className="card">
+            <h3>Heatmap de la cible</h3>
+            <p className="subtitle">Visualisez où vous touchez la cible.</p>
             <div className="flex-1 w-full flex items-center justify-center">
               {heatmapData && heatmapData.length > 0 ? (
                 <Dartboard size={320} points={heatmapData} />
@@ -142,10 +135,11 @@ export default async function StatsPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Zones les plus touchées
-            </h2>
+          <div className="card">
+            <h3>Zones les plus touchées</h3>
+            <p className="subtitle">
+              Visualisez toutes vos zones les plus touchées.
+            </p>
             <div className="flex-1 min-h-[300px] w-full mt-4">
               {sortedZonesStats.length > 0 ? (
                 <HitDistributionChart data={sortedZonesStats} />
@@ -170,13 +164,9 @@ function StatCard({
   value: string | number | undefined;
 }) {
   return (
-    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
-      <h3 className="text-sm font-semibold text-gray-500 mb-1 uppercase">
-        {title}
-      </h3>
-      <p className="text-xl font-black text-gray-900">
-        {value !== undefined ? value : "0"}
-      </p>
+    <div className="card card-xs">
+      <h4>{title}</h4>
+      <p>{value !== undefined ? value : "0"}</p>
     </div>
   );
 }
