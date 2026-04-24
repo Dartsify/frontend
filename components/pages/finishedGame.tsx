@@ -1,5 +1,12 @@
+"use client";
+
 import { utcConvert } from "@/utils/dates";
 import { GameDetail } from "@/utils/types";
+import ConfigCard from "../cards/newGame/configCard";
+import TargetCard from "../cards/newGame/targetCard";
+import { useContext } from "react";
+import { UserDataContext } from "@/app/dashboard/providers";
+import PlayersCard from "../cards/newGame/playersCard";
 
 export default function FinishedGame(game: GameDetail) {
   const {
@@ -13,40 +20,27 @@ export default function FinishedGame(game: GameDetail) {
     target_name,
   } = game;
 
-  return (
-    <>
-      <ul>
-        <li>
-          <b>Mode : </b> {mode}
-        </li>
-        <li>
-          <b>Créé le : </b>{" "}
-          {utcConvert(creation_date).format("DD/MM/YYYY HH:mm")}
-        </li>
-        <li>
-          <b>Fin : </b>{" "}
-          {end_date
-            ? utcConvert(end_date).format("DD/MM/YYYY HH:mm")
-            : "En cours"}
-        </li>
-        <li>
-          <b>Localisation : </b> {target_location || "Inconnu"}
-        </li>
-        <li>
-          <b>Cible : </b> {target_name || "Inconnue"}
-        </li>
-      </ul>
+  const userDataContext = useContext(UserDataContext);
+  if (!userDataContext) return <div>Loading...</div>;
+  const { userData } = userDataContext;
 
+  return (
+    <div className="flex flex-col gap-3">
       <section className="default-section">
-        <div className="card">
-          <h4 className="title">Joueurs</h4>
-          <ul>
-            {participations.map((player) => (
-              <li key={player.player_username}>{player.player_username}</li>
-            ))}
-          </ul>
+        <div className="grid grid-cols-2 gap-3">
+          {/* We pass the userData props to prevent getting data from the providers again */}
+          <ConfigCard
+            gameId={id}
+            gameData={game}
+            userData={userData}
+            editable={false}
+          />
+          <TargetCard gameData={game} />
         </div>
       </section>
-    </>
+      <section className="default-section">
+        <PlayersCard gameData={game} userData={userData} editable={false} />
+      </section>
+    </div>
   );
 }

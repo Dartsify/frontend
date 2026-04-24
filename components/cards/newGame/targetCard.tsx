@@ -7,8 +7,9 @@ export default function TargetCard({
 }) {
   return (
     <div className="card">
-      <h4 className="title">{gameData?.target_name || "Cible"}</h4>
-      <ul>
+      <h3>{gameData?.target_name || "Cible"}</h3>
+      <p className="subtitle">Informations sur la cible sélectionnée.</p>
+      <ul className="content">
         <li>
           <b>Identifiant :</b> {gameData?.target_id || "N/A"}
         </li>

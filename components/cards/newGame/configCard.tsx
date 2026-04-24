@@ -14,6 +14,7 @@ export default function ConfigCard({
   gameId,
   gameData,
   userData,
+  editable = true, // If editable is false, the host cannot change the game mode (used for the finished game page)
 }: {
   // If gameId is undefined, it means we haven't created a game yet
   // If gameData is null, it means we haven't loaded the data of the game yet (it can be because we just created the game and we are waiting for the response, or because we are loading the data of an existing game that we joined or bc we need to choose the target id and join)
@@ -21,6 +22,7 @@ export default function ConfigCard({
   gameId: number | undefined;
   gameData: GameDetail | null;
   userData: User | null;
+  editable?: boolean;
 }) {
   // Set the default selected index of the game mode selector to 0 (which corresponds to the first game mode in the list) when the component is mounted
   const selectorControls = useSelector(
@@ -67,8 +69,11 @@ export default function ConfigCard({
 
   return (
     <div className="card">
-      <h4 className="title">Configuration</h4>
-      <ul>
+      <h3>Configuration</h3>
+      <p className="subtitle">
+        L'hôte de la partie peut personnaliser les paramètres de la partie.
+      </p>
+      <ul className="content">
         <li>
           <b>Chef de partie :</b>{" "}
           {userIsHost
@@ -76,7 +81,7 @@ export default function ConfigCard({
             : gameHostName(gameData?.participations || []).name}
           {/* gameHostName return "Inconnu" if the name is not found (so ok if gameData is null) */}
         </li>
-        {userIsHost ? (
+        {userIsHost && editable ? (
           <li className="">
             <div className="flex gap-1.5 items-center">
               <b>Mode de jeu :</b>{" "}

@@ -129,6 +129,8 @@
   --animate-spin-alt: spin 1s cubic-bezier(0.25, 0.1, 0.15, 0.8) infinite;
 }
 
+
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -150,11 +152,11 @@ body {
 }
 
 @layer components {
-  .content {
+  .main-content {
     @apply mt-3 bg-none;
   }
 
-  .content,
+  .main-content,
   .horizontal-p {
     @apply px-4 lg:px-6 xl:px-10;
   }
@@ -186,18 +188,12 @@ body {
   }
 
   .gradient-bg-light,
-  /* .card, */
   .game-badge {
     @apply bg-radial-[at_25%_25%] from-background-dark to-alice-blue-50 to-75%;
   }
 
-  /* .card {
-    @apply mt-0 p-4 rounded-lg border border-border flex flex-col;
-  } */
-
   .card {
     @apply bg-white p-5 rounded-2xl shadow-xs border border-border flex flex-col;
-    /* justify-center */
   }
 
   .card .title,
@@ -228,6 +224,10 @@ body {
   .card-subtitle {
     @apply text-sm-2 leading-4.5 text-foreground-soft mt-0.5;
     /* -mt-1 mb-2; */
+  }
+
+  .card .content {
+    @apply mt-5;
   }
 
   .card b {
@@ -285,11 +285,11 @@ body {
   }
 
   .btn {
-    @apply px-2.5 py-1.25 cursor-pointer flex gap-1 items-center font-medium;
+    @apply px-2.5 py-1.5 cursor-pointer flex gap-1 items-center font-medium leading-5;
   }
 
   .btn-sm {
-    @apply text-sm px-2 py-1 cursor-pointer;
+    @apply text-sm px-3 py-1 cursor-pointer;
   }
 
   .btn-xs {
@@ -385,19 +385,19 @@ body {
   }
 
   .table {
-    @apply flex flex-col gap-2 outline outline-border-2 rounded-lg overflow-hidden w-full;
+    @apply flex flex-col gap-2 outline outline-border rounded-2xl overflow-hidden w-full;
   }
 
   .table .table-line {
-    @apply grid w-full px-3 py-1 gap-x-4 items-center grid-cols-6 transition-[font-weight];
+    @apply bg-white text-sm-2 leading-none grid w-full px-5 py-3 gap-x-4 items-center grid-cols-6 transition-[background] duration-300 ease-in-out;
   }
 
   .table .table-line:hover:not(.table-header) {
-    @apply font-medium;
+    @apply bg-background;
   }
 
   .table .table-header {
-    @apply bg-border py-2 font-bold border-b border-b-border-2;
+    @apply bg-background py-4 px-5 font-semibold text-base border-b border-b-border;
   }
 
   .brand-link {

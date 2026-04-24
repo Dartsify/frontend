@@ -29,7 +29,7 @@ export default async function DashboardLayout({
       <Providers user={user}>
         <LoginGate user={user}>
           <NavWrapper>
-            <div className="content">
+            <div className="main-content">
               <NoConnectedContentWrapper>{children}</NoConnectedContentWrapper>
             </div>
           </NavWrapper>

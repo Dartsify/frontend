@@ -33,10 +33,10 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
     return (
       <div
         onClick={() => handleShowControls(friend)}
-        className="card p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
+        className="card gradient-bg-light p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
         key={index}
       >
-        <div className="rounded-md relative w-10 h-10 md:w-15 md:h-15 overflow-hidden">
+        <div className="rounded-xl relative w-10 h-10 md:w-15 md:h-15 overflow-hidden">
           <Image
             src={`https://avatars.githubusercontent.com/${username}`}
             alt="Avatar"
@@ -76,7 +76,9 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
       <section id="friends-list-section" className="default-section">
         <h2>Liste d'amis</h2>
         {friends.length === 0 ? (
-          <p>Ajoutez des amis pour les voir ici !</p>
+          <p>
+            <i>Ajoutez des amis pour les voir ici !</i>
+          </p>
         ) : (
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {friends.map((item, index) => listItem(item, index))}

@@ -1,6 +1,5 @@
 "use client";
 
-import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { MoveLeft, MoveRight } from "lucide-react";
 
@@ -159,7 +158,8 @@ export default function NotificationsSection({
 
   const listItem = (item: DashboardNotification, index: number) => {
     const { type } = item;
-    const { title, description, date, subtitle } = notificationType(item);
+    const { title, description, date, subtitle, content } =
+      notificationType(item);
 
     // Specific footer content based on notification type
     const footer = () => {
@@ -173,7 +173,7 @@ export default function NotificationsSection({
                     pendingGameAction(item.game_id, rejectParticipation)
                   }
                   type="button"
-                  className="btn btn-sm btn-destructive"
+                  className="btn btn-sm btn-destructive-soft"
                 >
                   Refuser
                 </button>
@@ -198,7 +198,7 @@ export default function NotificationsSection({
                     friendRequestAction(item.username, rejectFriendRequest)
                   }
                   type="button"
-                  className="btn btn-sm btn-destructive"
+                  className="btn btn-sm btn-destructive-soft"
                 >
                   Refuser
                 </button>
@@ -219,38 +219,17 @@ export default function NotificationsSection({
 
     return (
       <li
-        className="card flex-[0_0_100%] snap-start list-none flex flex-col"
         key={index}
+        className="card flex-[0_0_100%] snap-start list-none flex flex-col"
       >
-        <div className="flex items-center justify-between">
-          <h4 className="title">{title}</h4>
-          <p className="text-xs-2 text-foreground-soft font-medium -mt-1">
-            {calendarConvert(date)}
-          </p>
-        </div>
-        <p className="leading-4.5 mt-1.5 font-medium">{description}</p>
-        <p className="leading-4.5 mt-2">{subtitle}</p>
-        <div className="flex flex-col flex-1">{footer()}</div>
-      </li>
-      // <li
-      //   className="card flex-[0_0_100%] snap-start list-none flex flex-col"
-      //   key={index}
-      // >
-      //   {/* <div className="flex items-center justify-between -mb-0.5">
-      //     <h4 className="title">{title}</h4>
-      //     <p className="text-xs-2 text-foreground-soft font-medium -mt-1">
-      //       {fromNow[0].toUpperCase() + fromNow.slice(1)}
-      //     </p>
-      //   </div> */}
-      //   <h4 className="title">{title}</h4>
-      //   <p className="text-sm-2 text-foreground-soft font-medium -mt-2">
-      //     {fromNow[0].toUpperCase() + fromNow.slice(1)}
-      //   </p>
+        <h3>{title}</h3>
+        <p className="subtitle">{subtitle}</p>
 
-      //   <p className="leading-5.5 mt-3">{description}</p>
-      //   <p className="leading-5.5 mt-2">{subtitle}</p>
-      //   <div className="flex flex-col flex-1">{footer()}</div>
-      // </li>
+        <div className="content">
+          {content ? content() : <p>{description}</p>}
+          <div className="flex flex-col flex-1">{footer()}</div>
+        </div>
+      </li>
     );
   };
 

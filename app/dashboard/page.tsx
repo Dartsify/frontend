@@ -111,7 +111,7 @@ export default async function Dashboard() {
         </div>
 
         {index !== lastGamesData.length - 1 && (
-          <HorizontalSeparator bg="bg-background" />
+          <HorizontalSeparator bg="bg-border mb-2" />
         )}
       </li>
     );
@@ -127,47 +127,44 @@ export default async function Dashboard() {
         <section id="summary-section" className="default-section">
           <h2>Résumé de la semaine</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            <div className="card">
-              <h4 className="title">Nombre de parties jouées</h4>
+            <div className="card card-xs">
+              <h4>Parties jouées</h4>
               <p>{total_games_played}</p>
             </div>
-            <div className="card">
-              <h4 className="title">Nombre de parties gagnées</h4>
+            <div className="card card-xs">
+              <h4>Victoires</h4>
               <p>{total_wins}</p>
             </div>
-            <div className="card">
-              <h4 className="title">Nombre de fléchettes lancées</h4>
+            <div className="card card-xs">
+              <h4>Fléchettes lancées</h4>
               <p>{total_darts_thrown}</p>
             </div>
-            <div className="card">
-              <h4 className="title">Zone les plus souvent touchées</h4>
+            <div className="card card-xs">
+              <h4 className="title">Zones favorites</h4>
               {favorite_targets.length === 0 ? (
                 <p>
                   <i>Aucune donnée disponible</i>
                 </p>
               ) : (
-                <ul>
-                  {favorite_targets.map((t, index) => {
-                    return (
-                      <li key={index}>
-                        <b>{index + 1}.</b> {t}
-                      </li>
-                    );
-                  })}
-                </ul>
+                <p>{favorite_targets.join(" - ")}</p>
               )}
             </div>
             <div className="card col-span-2 md:col-span-2 lg:col-span-4">
-              <h4 className="title">Dernières parties de la semaine</h4>
-              {lastGamesData.length === 0 ? (
-                <p>
-                  <i>Aucune partie à afficher.</i>
-                </p>
-              ) : (
-                <ul className="flex flex-col">
-                  {lastGamesData?.map((game, index) => listItem(game, index))}
-                </ul>
-              )}
+              <h3>Dernières parties de la semaine</h3>
+              <p className="subtitle">
+                Découvrez vos dernières parties et suivez votre progression.
+              </p>
+              <div className="content w-full">
+                {lastGamesData.length === 0 ? (
+                  <p>
+                    <i>Aucune partie à afficher.</i>
+                  </p>
+                ) : (
+                  <ul className="flex flex-col">
+                    {lastGamesData?.map((game, index) => listItem(game, index))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
         </section>

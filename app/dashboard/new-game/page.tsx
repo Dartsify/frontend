@@ -299,8 +299,8 @@ export default function NewGame() {
         <main className="main-container gap-3">
           <section className="default-section">
             {!userData && (
-              <div className="card">
-                <h4 className="title">Mode invité</h4>
+              <div className="card card-sm">
+                <h4>Mode invité</h4>
                 <p>
                   Veuillez vous connecter à votre compte si vous souhaitez
                   conserver cette partie dans votre historique.

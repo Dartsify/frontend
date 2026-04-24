@@ -17,9 +17,11 @@ import { useDialog } from "@/lib/hooks/useDialog";
 export default function PlayersCard({
   gameData,
   userData,
+  editable = true,
 }: {
   gameData: GameDetail | null;
   userData: User | null;
+  editable?: boolean;
 }) {
   const { participations, id } = gameData ?? {};
 
@@ -70,17 +72,12 @@ export default function PlayersCard({
               myUsername={userData?.username || ""}
               showUsername={false}
             />
-            {/* {!userIsGuest(player_username) && (
-              <p className="text-foreground-soft text-sm-2 font-medium -mt-0.5">
-                {ratio.toFixed(2)} ({victories} victoires, {games} parties)
-              </p>
-            )} */}
-            <p className="text-foreground-soft text-sm-2 font-medium -mt-1">
+            <p className="text-foreground-soft text-sm font-medium -mt-1">
               {userIsGuest(player_username) ? "Invité" : `@${player_username}`}
             </p>
           </div>
 
-          {userIsHost && !isMe && (
+          {userIsHost && !isMe && editable && (
             <button
               type="button"
               className="btn btn-xs btn-ghost btn-destructive-hover group"
@@ -97,7 +94,7 @@ export default function PlayersCard({
         </div>
 
         {participations && index !== participations.length - 1 && (
-          <HorizontalSeparator bg="bg-background" />
+          <HorizontalSeparator my="my-1" />
         )}
       </li>
     );
@@ -107,8 +104,8 @@ export default function PlayersCard({
     <>
       <div className="card">
         <div className="flex justify-between items-center">
-          <h4 className="title">Joueurs</h4>
-          {userIsHost && (
+          <h3>Joueurs</h3>
+          {userIsHost && editable && (
             <IconButton
               title="Ajouter des joueurs"
               icon={<Plus size={16} />}
@@ -117,13 +114,17 @@ export default function PlayersCard({
           )}
         </div>
 
-        {participations ? (
-          <ul className="mt-1">
-            {participations.map((item, index) => listItem(item, index))}
-          </ul>
-        ) : (
-          <p>Aucun joueur pour le moment</p>
-        )}
+        <div className="content mt-3">
+          {participations ? (
+            <ul className="mt-1">
+              {participations.map((item, index) => listItem(item, index))}
+            </ul>
+          ) : (
+            <p>
+              <i>Aucun joueur pour le moment</i>
+            </p>
+          )}
+        </div>
       </div>
 
       <Dialog width="w-150" dialogControls={dialogControls}>

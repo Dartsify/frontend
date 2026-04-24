@@ -71,7 +71,7 @@ export function HitDistributionChart({
   return (
     <div className="flex flex-col w-full h-full">
       {/* Récapitulatif mobile/PC au-dessus du graphe */}
-      <div className="mb-4 text-center min-h-[24px]">
+      <div className="mb-4 text-center min-h-6">
         {selectedData ? (
           <p className="text-sm-2 font-bold">
             Zone sélectionnée :{" "}

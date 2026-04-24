@@ -4,6 +4,7 @@ import {
   getMyHeatmap,
 } from "@/lib/fastapi/players";
 
+import { mapBackendToDartboard } from "@/utils/games";
 import Dartboard from "@/components/dartboard";
 
 import { HeatmapData, Stats, ZonesStats } from "@/utils/types";
@@ -87,17 +88,17 @@ export default async function StatsPage() {
           <StatCard title="Total T20" value={total_triple_20} />
           <StatCard title="Total 180s" value={total_180s} />
           <StatCard title="Scores 100+" value={total_100_plus} />
-          <StatCard title="Cible maudite" value={cursed_target || "Aucune"} />
+          <StatCard title="Zone maudite" value={cursed_target || "Aucune"} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
           {favorite_targets && favorite_targets.length > 0 && (
             <div className="card">
-              <h3>Podium des cibles favorites</h3>
+              <h3>Podium des zones favorites</h3>
               <p className="subtitle">
                 Les zones que vous visez avec le plus de succès.
               </p>
-              <div className="flex-1 flex items-center justify-center">
+              <div className="content mt-2 flex-1 flex items-center justify-center">
                 <Podium targets={favorite_targets} />
               </div>
             </div>
@@ -106,7 +107,7 @@ export default async function StatsPage() {
           <div className="card">
             <h3>Ratios Globaux</h3>
             <p className="subtitle">Comparez vos performances.</p>
-            <div className="grid grid-cols-2 gap-4 flex-1">
+            <div className="content mt-2 grid grid-cols-2 gap-4 flex-1">
               <div className="flex flex-col items-center">
                 <WinRateChart wins={total_wins} games={total_games_played} />
               </div>
@@ -124,9 +125,15 @@ export default async function StatsPage() {
           <div className="card">
             <h3>Heatmap de la cible</h3>
             <p className="subtitle">Visualisez où vous touchez la cible.</p>
-            <div className="flex-1 w-full flex items-center justify-center">
+            <div className="content flex-1 w-full flex items-center justify-center">
               {heatmapData && heatmapData.length > 0 ? (
-                <Dartboard size={320} points={heatmapData} />
+                // L'affichage est désormais corrigé avec la fonction de mapping ultra-précise du backend
+                <Dartboard
+                  size={320}
+                  points={heatmapData.map((p) =>
+                    mapBackendToDartboard(p.x, p.y),
+                  )}
+                />
               ) : (
                 <p className="text-gray-500 italic">
                   Pas assez de données pour la heatmap
@@ -140,12 +147,12 @@ export default async function StatsPage() {
             <p className="subtitle">
               Visualisez toutes vos zones les plus touchées.
             </p>
-            <div className="flex-1 min-h-[300px] w-full mt-4">
+            <div className="content flex-1 min-h-75 w-full">
               {sortedZonesStats.length > 0 ? (
                 <HitDistributionChart data={sortedZonesStats} />
               ) : (
-                <p className="text-gray-500 italic flex items-center justify-center h-full">
-                  Aucune donnée de zone disponible
+                <p className="text-foreground-soft flex items-center justify-center h-full">
+                  <i>Aucune donnée de zone disponible</i>
                 </p>
               )}
             </div>

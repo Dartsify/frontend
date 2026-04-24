@@ -151,11 +151,11 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
               "Amis",
               <Handshake size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
-            {routeItem(
+            {/* {routeItem(
               "/dashboard/groups-players",
               "Groupes de Joueurs",
               <Users size={iconSize} strokeWidth={iconStrokeWidth} />,
-            )}
+            )} */}
           </ul>
         </div>
       </div>

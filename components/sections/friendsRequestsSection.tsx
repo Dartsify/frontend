@@ -140,15 +140,13 @@ export default function FriendsRequestsSection({
         className="card shrink-0 basis-[calc((100%-1rem)/2)] snap-start list-none flex flex-col"
       >
         <div className="flex items-center justify-between">
-          <h4 className="title">
+          <h3>
             Demande de {name}
             {/* (@{username}) */}
-          </h4>
-          <p className="font-medium text-sm-2 text-foreground-soft">
-            {calendarConvert(creation_date)}
-          </p>
+          </h3>
+          <p className="subtitle">{calendarConvert(creation_date)}</p>
         </div>
-        <p>
+        <p className="content mt-3">
           Acceptez la demande de{" "}
           <b>
             {name} (@{username})
@@ -219,11 +217,12 @@ export default function FriendsRequestsSection({
       {data.length === 0 ? (
         friends.length === 0 ? (
           <p>
-            {/* <i>Aucune demande d'ami en attente.</i> */}
-            Aucune demande d'ami en attente.
+            <i>Aucune demande d'ami en attente.</i>
           </p>
         ) : (
-          <p>Toutes les demandes ont été traitées.</p>
+          <p>
+            <i>Toutes les demandes ont été traitées.</i>
+          </p>
         )
       ) : (
         <ul

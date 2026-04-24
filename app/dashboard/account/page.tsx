@@ -28,8 +28,8 @@ export default function Account() {
 
         {/* If the user is a guest */}
         {guest && (
-          <div className="card">
-            <h4 className="title">Mode invité</h4>
+          <div className="card card-xs">
+            <h4>Mode invité</h4>
             <p>
               Vous êtes connecté en tant qu'invité avec le nom{" "}
               <b>
@@ -63,16 +63,16 @@ export default function Account() {
         {/* If the user is logged in and not a guest */}
         {!guest && (
           <div className="card">
-            <h4 className="title">
+            <h3>
               Bienvenue, {name} (@{username}) !
-            </h4>
+            </h3>
             {creation_date && (
               <p className="subtitle">
                 Vous avez rejoint Dartsify le{" "}
                 {utcConvert(creation_date).format("DD/MM/YYYY")}
               </p>
             )}
-            <div>
+            <div className="content">
               <p>
                 <b>Email :</b> {email}
               </p>
@@ -83,6 +83,7 @@ export default function Account() {
                 <b>Âge :</b> {age || "Non renseigné"}
               </p>
             </div>
+
             <div className="footer">
               <button
                 type="button"

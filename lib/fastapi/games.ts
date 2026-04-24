@@ -143,7 +143,7 @@ export const getGames = async (
   // offset?: number,
   {
     status,
-    limit = 10,
+    limit = 50,
     offset,
   }: { status?: GameStatus[]; limit?: number; offset?: number },
 ) => {

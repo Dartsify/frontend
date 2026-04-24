@@ -1,25 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { startGameSseStream } from "@/lib/fastapi/games-stream"; // ton helper
 import { getGame } from "@/lib/fastapi/games";
 
 import { GameDetail } from "@/utils/types";
 
+type GameStreamEventCallbacks = {
+  onTurnChange?: (
+    newPlayer: string,
+    oldPlayer: string,
+    newGameState: GameDetail,
+    previousGameState: GameDetail,
+  ) => void;
+  onRoundChange?: (
+    newRoundNumber: number,
+    newGameState: GameDetail,
+    previousGameState: GameDetail,
+  ) => void;
+  onGameFinished?: (
+    newGameState: GameDetail,
+    previousGameState: GameDetail,
+  ) => void;
+};
+
 // Stream the data of the game to be sure to have the most up-to-date data of the game (especially for the players list in the lobby)
 // We call this hook stream in the NewGame Page, and we pass the gameId to start the stream for this game.
 export function useGameStream(
   gameId: number | undefined,
   snapshot?: GameDetail,
+  callbacks?: GameStreamEventCallbacks,
 ) {
-  const [gameData, setGameData] = useState<GameDetail | null>(
-    snapshot && gameId ? { ...snapshot, id: gameId } : null,
-  ); // We directly init the state with the given snapshot (if exists)
+  const initialData = snapshot && gameId ? { ...snapshot, id: gameId } : null;
+  const [gameData, setGameData] = useState<GameDetail | null>(initialData); // We directly init the state with the given snapshot (if exists)
   // const [gameData, setGameData] = useState<GameDetail | null>(null);
   const [loading, setLoading] = useState(snapshot ? false : true);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+
+  const gameDataRef = useRef<GameDetail | null>(initialData);
+  const callbacksRef = useRef(callbacks);
+
+  // Update callbacks ref when they change to avoid stale closures in the SSE listener
+  useEffect(() => {
+    callbacksRef.current = callbacks;
+  }, [callbacks]);
 
   // const [frozenData, setFrozenData] = useState<GameDetail | null>(null); // Set here the data we want to keep frozen
 
@@ -74,6 +100,7 @@ export function useGameStream(
           // console.log("isFriendField: ", isFriendField);
 
           // setFrozenData({ participations: isFriendField });
+          gameDataRef.current = { ...snapshot, id: gameId };
           setGameData({ ...snapshot, id: gameId });
 
           setLoading(false);
@@ -95,7 +122,56 @@ export function useGameStream(
               console.log("Game update:", update);
               const { event, game_state } = update;
               if (event === "GAME_UPDATED") {
+                const oldData = gameDataRef.current;
+
+                console.log("GAME_UPDATED received.");
+                console.log(
+                  "oldData:",
+                  oldData?.current_turn_number,
+                  oldData?.current_player_username,
+                );
+                console.log(
+                  "newData:",
+                  game_state.current_turn_number,
+                  game_state.current_player_username,
+                );
+
+                if (oldData) {
+                  // Detect game finished
+                  if (
+                    oldData.status !== "finished" &&
+                    game_state.status === "finished"
+                  ) {
+                    console.log("Game finished detected!");
+                    callbacksRef.current?.onGameFinished?.(game_state, oldData);
+                  }
+                  // Detect round transition
+                  else if (
+                    oldData.current_turn_number !==
+                    game_state.current_turn_number
+                  ) {
+                    console.log("Round change detected!");
+                    callbacksRef.current?.onRoundChange?.(
+                      game_state.current_turn_number,
+                      game_state,
+                      oldData,
+                    );
+                  } else if (
+                    oldData.current_player_username !==
+                    game_state.current_player_username
+                  ) {
+                    console.log("Turn change detected!");
+                    callbacksRef.current?.onTurnChange?.(
+                      game_state.current_player_username,
+                      oldData.current_player_username,
+                      game_state,
+                      oldData,
+                    );
+                  }
+                }
+
                 // Event GAME_UPDATED means the data has been updated, so we update the current data
+                gameDataRef.current = { ...game_state, id: gameId };
                 setGameData({ ...game_state, id: gameId }); // We don't merge, we replace the whole data (no sense to keep the prev one)
 
                 console.log("Game data updated:", game_state);

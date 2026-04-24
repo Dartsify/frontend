@@ -48,7 +48,7 @@ export default function NoConnectedContentWrapper({
             </header>
             <main className="main-container">
               <div className="card card-sm">
-                <h4 className="title">Mode invité</h4>
+                <h4>Mode invité</h4>
                 {/* If the user is a guest with a guest token, we can add that he alrdeady knows that he can join games */}
                 <p>
                   Pas de panique, {guest && <b>comme vous le savez déjà, </b>}
@@ -95,8 +95,8 @@ export default function NoConnectedContentWrapper({
             <h1>{routeNames[selectedLayoutSegment] || "Page Inconnue"}</h1>
           </header>
           <main className="main-container">
-            <div className="card">
-              <h4 className="title">Mode invité</h4>
+            <div className="card card-sm">
+              <h4>Mode invité</h4>
               <p>
                 Pas de panique, {guest && <b>comme vous le savez déjà, </b>}{" "}
                 vous pouvez <b>jouer sur nos cibles en tant qu'invité</b> !

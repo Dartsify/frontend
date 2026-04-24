@@ -9,7 +9,7 @@ export default function KnowMore() {
           de cibles et suivi des résultats.
         </p>
       </header>
-      <main className="content horizontal-p vertical-p w-full">
+      <main className="main-content horizontal-p vertical-p w-full">
         <section className="default-section gap-4 mt-8">
           <h2 className="mb-1">Ce que propose le projet</h2>
           <div className="ml-3">

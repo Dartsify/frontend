@@ -52,14 +52,15 @@ const listItem = async (game: Game, index: number) => {
       >
         <header className="flex items-center justify-between">
           <div>
-            <h4 className="title">
+            <h3>
               Partie{" "}
               {participations.length > 1
                 ? "à " + participations.length + " joueurs"
                 : "en solo"}
-            </h4>
+            </h3>
             <p className="subtitle">{calendarConvert(creation_date)}</p>
           </div>
+
           <div className="flex gap-2 items-center">
             <div className={`badge badge-neutral`}>
               <div className={`badge-disc ${statusColor}`} />
@@ -74,7 +75,7 @@ const listItem = async (game: Game, index: number) => {
           </div>
         </header>
 
-        <p className="leading-5.5 mt-3">
+        <p className="content leading-5.5">
           <b>{target_name ?? "Cible inconnue"}</b> à
           <b> {target_location ?? "Emplacement inconnu"}</b>
           <br />
