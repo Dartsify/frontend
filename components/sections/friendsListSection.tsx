@@ -1,7 +1,8 @@
 "use client";
+
 import { useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { Swords, X } from "lucide-react";
 
 import { Friend } from "@/utils/types";
 
@@ -10,6 +11,9 @@ import { useDialog } from "@/lib/hooks/useDialog";
 import Dialog from "../dialogs/dialog";
 import FriendDialog from "../dialogs/friendDialog";
 import DeleteFriendConfirmationDialog from "../dialogs/deleteFriendConfirmationDialog";
+import IconButton from "../buttons/actionButtons/iconButton";
+import InlineIconButton from "../buttons/actionButtons/inlineIconButton";
+import Link from "next/link";
 
 export default function FriendsListSection({ friends }: { friends: Friend[] }) {
   const [friendData, setFriendData] = useState<Friend | null>(null);
@@ -33,7 +37,7 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
     return (
       <div
         onClick={() => handleShowControls(friend)}
-        className="card gradient-bg-light p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
+        className="card bg-background-dark p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
         key={index}
       >
         <div className="rounded-xl relative w-10 h-10 md:w-15 md:h-15 overflow-hidden">
@@ -74,7 +78,16 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
   return (
     <>
       <section id="friends-list-section" className="default-section">
-        <h2>Liste d'amis</h2>
+        <div className="flex justify-between items-center">
+          <h2>Liste d'amis</h2>
+          <Link
+            href="/dashboard/friends/compare"
+            type="button"
+            className="btn btn-inline"
+          >
+            <Swords size={18} /> Se comparer
+          </Link>
+        </div>
         {friends.length === 0 ? (
           <p>
             <i>Ajoutez des amis pour les voir ici !</i>

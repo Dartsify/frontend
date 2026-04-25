@@ -38,7 +38,7 @@ const listItem = (game: Game, index: number, username: string | undefined) => {
         <p className="font-medium">{target_name || "Inconnue"}</p>
         <p>{target_location || "Inconnu"}</p>
         <p>{mode}</p>
-        <p>
+        <p className="truncate pr-2">
           {winner_username && username
             ? isMe
               ? "Moi"
@@ -82,7 +82,7 @@ export default function FinishedGamesSection({ games }: { games: Game[] }) {
           {/* Specify the number of columns in the table -> here we want 6 columns with diff sizes (according to the field content) */}
           {/* By default, I specified 6 columns with fix size */}
           <div className="w-full overflow-x-auto py-1.5 -mx-4 px-4 sm:-mx-1 sm:px-1">
-            <ul className="table min-w-175 [&_.table-line]:grid-cols-[minmax(0,1.8fr)_minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1.4fr)]">
+            <ul className="table min-w-175 [&_.table-line]:grid-cols-[minmax(0,1.6fr)_minmax(0,1.4fr)_minmax(0,0.7fr)_minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,1.4fr)]">
               {/* First elem is the header (with the fields) */}
               <li
                 key={-1}

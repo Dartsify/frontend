@@ -3,7 +3,7 @@ const routes: { [key: string]: string } = {
   "/dashboard/new-game": "Nouvelle Partie",
   "/dashboard/stats": "Statistiques",
   "/dashboard/my-games": "Mes Parties",
-  "/dashboard/groups-players": "Groupes de Joueurs",
+  // "/dashboard/groups-players": "Groupes de Joueurs",
   "/dashboard/friends": "Amis",
   "/dashboard/account": "Mon Compte",
   "/dashboard/groups-players/create": "Créer un Groupe de Joueurs",

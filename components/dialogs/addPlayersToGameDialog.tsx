@@ -252,10 +252,10 @@ export default function AddPlayersToGameDialog({
           inputRef.current?.focus(); // Re focus the input
           setSuggestions([]); // Clear suggestions after adding a player from the suggestions list
         }}
-        className="card p-1.5 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
+        className="card bg-background-dark p-2 flex flex-row gap-3 items-center hover-anim-size-soft cursor-pointer"
         key={index}
       >
-        <div className="rounded-md relative w-7 h-7 md:w-10 md:h-10 overflow-hidden">
+        <div className="rounded-xl relative w-8 h-8 md:w-12 md:h-12 overflow-hidden">
           <Image
             src={`https://avatars.githubusercontent.com/${username}`}
             alt="Avatar"
@@ -266,7 +266,7 @@ export default function AddPlayersToGameDialog({
 
         <div>
           <h4 className="leading-none font-medium">{name}</h4>
-          <p className="text-sm-2 text-foreground-soft -my-0.5">@{username}</p>
+          <p className="text-sm-2 text-foreground-soft -my-1">@{username}</p>
         </div>
       </div>
     );

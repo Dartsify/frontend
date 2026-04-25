@@ -1,66 +1,84 @@
-export default function StatsLoading() {
+function StatCardSkeleton({ index }: { index: number }) {
   return (
-    <div className="p-6 max-w-7xl mx-auto flex flex-col gap-6 animate-pulse">
-      <div className="h-9 bg-gray-200 rounded-md w-64 mb-2" />
+    <div key={index} className="card card-xs animate-pulse">
+      <div className="h-3.5 bg-border rounded w-26 mb-2" />
+      <div className="h-8 bg-border rounded w-18" />
+    </div>
+  );
+}
 
-      {/* 10 StatCards Skeletons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <div
-            key={i}
-            className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center h-[90px]"
-          >
-            <div className="h-4 bg-gray-200 rounded w-24 mb-2" />
-            <div className="h-8 bg-gray-200 rounded w-16" />
-          </div>
-        ))}
-      </div>
+export default function StatsLoading() {
+  const barHeightClasses = [
+    "h-[18%]",
+    "h-[28%]",
+    "h-[38%]",
+    "h-[48%]",
+    "h-[58%]",
+    "h-[68%]",
+    "h-[78%]",
+  ];
 
-      {/* 2 Ratios Cards Skeletons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center h-64">
-          <div className="h-6 bg-gray-200 rounded w-64 mx-auto mb-2" />
-          <div className="h-4 bg-gray-200 rounded w-48 mx-auto mb-6" />
-          <div className="flex-1 flex items-end justify-center gap-4">
-            <div className="w-16 sm:w-20 bg-gray-200 rounded-t-lg h-[60%]" />
-            <div className="w-20 sm:w-24 bg-gray-200 rounded-t-lg h-[85%]" />
-            <div className="w-16 sm:w-20 bg-gray-200 rounded-t-lg h-[45%]" />
-          </div>
+  return (
+    <div>
+      <h1 className="animate-pulse">
+        <span className="block h-11 w-68 bg-border rounded-xl" />
+      </h1>
+
+      <main className="main-container flex flex-col gap-2 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <StatCardSkeleton key={i} index={i} />
+          ))}
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-64">
-          <div className="h-6 bg-gray-200 rounded w-48 mb-6" />
-          <div className="grid grid-cols-2 gap-4 flex-1">
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-32 h-32 rounded-full bg-gray-200" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+          <div className="card animate-pulse min-h-80">
+            <div className="h-7 bg-border rounded w-56 mb-2" />
+            <div className="h-4 bg-border rounded w-72 mb-5" />
+            <div className="content mt-2 flex-1 flex items-end justify-center gap-4">
+              <div className="w-16 sm:w-20 bg-border rounded-t-lg h-[55%]" />
+              <div className="w-20 sm:w-24 bg-border rounded-t-lg h-[82%]" />
+              <div className="w-16 sm:w-20 bg-border rounded-t-lg h-[42%]" />
             </div>
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-32 h-32 rounded-full bg-gray-200" />
+          </div>
+
+          <div className="card animate-pulse min-h-80">
+            <div className="h-7 bg-border rounded w-42 mb-2" />
+            <div className="h-4 bg-border rounded w-56 mb-5" />
+            <div className="content mt-2 grid grid-cols-2 gap-4 flex-1">
+              <div className="flex items-center justify-center">
+                <div className="w-32 h-32 rounded-full bg-border" />
+              </div>
+              <div className="flex items-center justify-center">
+                <div className="w-32 h-32 rounded-full bg-border" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 2 Bottom Cards Skeletons */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center h-[420px]">
-          <div className="h-6 bg-gray-200 rounded w-48 mb-6 self-start" />
-          <div className="w-64 h-64 rounded-full bg-gray-200 mt-4" />
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
+          <div className="card animate-pulse min-h-110">
+            <div className="h-7 bg-border rounded w-44 mb-2" />
+            <div className="h-4 bg-border rounded w-64 mb-5" />
+            <div className="content flex-1 w-full flex items-center justify-center">
+              <div className="w-72 h-72 rounded-full bg-border" />
+            </div>
+          </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-[420px]">
-          <div className="h-6 bg-gray-200 rounded w-64 mb-6" />
-          <div className="flex-1 flex items-end justify-around pb-6 gap-2">
-            {Array.from({ length: 15 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-full bg-gray-200 rounded-t-sm"
-                style={{ height: `${Math.max(10, Math.random() * 100)}%` }}
-              />
-            ))}
+          <div className="card animate-pulse min-h-110">
+            <div className="h-7 bg-border rounded w-52 mb-2" />
+            <div className="h-4 bg-border rounded w-72 mb-5" />
+            <div className="content flex-1 min-h-75 w-full flex items-end justify-around gap-2 pb-3">
+              {Array.from({ length: 15 }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-full bg-border rounded-t-sm ${barHeightClasses[i % barHeightClasses.length]}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

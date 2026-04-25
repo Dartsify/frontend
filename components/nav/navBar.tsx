@@ -1,14 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import {
-  Calendar,
-  ChartLine,
-  Handshake,
-  House,
-  Swords,
-  Users,
-} from "lucide-react";
+import { BowArrow, Calendar, ChartLine, Handshake, House } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -102,7 +95,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
             {routeItem(
               "/dashboard/new-game",
               "Nouvelle Partie",
-              <Swords size={iconSize} strokeWidth={iconStrokeWidth} />,
+              <BowArrow size={iconSize} strokeWidth={iconStrokeWidth} />,
             )}
           </ul>
         </div>

@@ -135,6 +135,27 @@ export type Stats = {
   favorite_targets: string[];
 };
 
+export type FriendStats = {
+  username: string;
+  guest?: boolean;
+  name: string;
+  age: number;
+  creation_date: Date;
+  stats: {
+    total_games_played: number;
+    total_wins: number;
+    win_rate_percentage: number;
+    average_points_per_dart: number;
+    total_darts_thrown: number;
+    favorite_targets: string[];
+    total_misses: number;
+    total_triple_20: number;
+    total_180s: number;
+    total_100_plus: number;
+    cursed_target: string;
+  };
+};
+
 export type ZonesStats = {
   hit_distribution: { zone: string; hits: number }[];
 };

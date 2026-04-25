@@ -256,7 +256,7 @@ body {
   }
 
   .badge-outline-brand {
-    @apply bg-background outline outline-brand;
+    @apply bg-background outline-2 text-brand font-black outline-brand;
   }
 
   .badge-disc {
@@ -341,7 +341,7 @@ body {
   }
 
   input {
-    @apply w-full border border-border rounded-lg px-2.5 py-0.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
+    @apply w-full border border-border rounded-lg px-2.5 py-1.5 focus:outline-2 focus:outline-border/60 focus:outline-offset-0 placeholder:text-foreground-soft;
   }
 
   .input {
@@ -389,7 +389,7 @@ body {
   }
 
   .table .table-line {
-    @apply bg-white text-sm-2 leading-none grid w-full px-5 py-3 gap-x-4 items-center grid-cols-6 transition-[background] duration-300 ease-in-out;
+    @apply bg-white text-sm-2 grid w-full px-5 py-1.5 gap-x-4 items-center grid-cols-6 transition-[background] duration-300 ease-in-out;
   }
 
   .table .table-line:hover:not(.table-header) {
@@ -402,6 +402,18 @@ body {
 
   .brand-link {
     @apply text-brand hover:underline cursor-pointer
+  }
+
+  .brand-title-outline {
+    text-shadow:
+      1px 0 0 var(--border),
+      -1px 0 0 var(--border),
+      0 1px 0 var(--border),
+      0 -1px 0 var(--border),
+      1px 1px 0 var(--border),
+      -1px 1px 0 var(--border),
+      1px -1px 0 var(--border),
+      -1px -1px 0 var(--border);
   }
 
   /* Anims */
@@ -478,6 +490,10 @@ body {
 
   .btn-destructive-hover {
     @apply hover:bg-red-600 hover:stroke-foreground-light hover:text-foreground-light;
+  }
+
+  .btn-inline {
+    @apply bg-none text-brand stroke-brand hover:bg-background;
   }
 }
 

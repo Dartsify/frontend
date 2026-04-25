@@ -1,6 +1,7 @@
 import AddFriend from "@/components/addFriend";
 import FriendsListSection from "@/components/sections/friendsListSection";
 import FriendsRequestsSection from "@/components/sections/friendsRequestsSection";
+
 import { getMyFriends, getMyFriendsRequests } from "@/lib/fastapi/players";
 
 export default async function Friends() {

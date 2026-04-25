@@ -3,18 +3,27 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="gradient-bg-light w-full bg-background-dark border-t border-border pt-10 pb-5 px-4 mt-15">
-      <h3 className="font-semibold">Footer de la page</h3>
-      Dashboard :
-      <ul>
+    <footer className="bg-background-dark w-full border-t border-border pt-8 pb-8 px-4 mt-15">
+      <p className="text-background text-9xl">
+        <b className="brand-title-outline">Dartsify</b>
+        <span className="text-sm opacity-15">®️</span>
+      </p>
+
+      <p className="text-foreground-soft mt-10">
         {Object.keys(routes)
           .filter((i) => i.includes("dashboard"))
           .map((segment, index) => (
-            <li className="hover-anim" key={index}>
+            <span
+              className="hover-anim hover:text-foreground transition-[color]"
+              key={index}
+            >
               <Link href={segment}>{routes[segment]}</Link>
-            </li>
+              {index < Object.keys(routes).length - 2 && (
+                <span className="mx-2">•</span>
+              )}
+            </span>
           ))}
-      </ul>
+      </p>
     </footer>
   );
 }
