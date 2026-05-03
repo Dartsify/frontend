@@ -134,7 +134,7 @@ export default async function Dashboard() {
         <PlayGameSection />
 
         <section id="summary-section" className="default-section">
-          <h2>Résumé de la semaine</h2>
+          <h2>Résumé de mon profil</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             <div className="card card-xs">
               <h4>Parties jouées</h4>
