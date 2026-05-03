@@ -2,7 +2,7 @@
 
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Eye, EyeClosed, X } from "lucide-react";
 
 import { login, signup } from "@/lib/fastapi/users";
 import { DialogControls, FieldError } from "@/utils/types";
@@ -35,6 +35,8 @@ export default function LoginDialog({
   const [signInError, setSignInError] = useState<FieldError[] | null>(null);
   const [signUpError, setSignUpError] = useState<FieldError[] | null>(null);
 
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const hasBlockingErrorFromSameValue = (errors: FieldError[] | null) => {
     if (!errors || errors.length === 0) {
       return false;
@@ -56,7 +58,7 @@ export default function LoginDialog({
     const { name, value } = event.currentTarget;
     setFormValues((previousValues) => ({
       ...previousValues,
-      [name]: value,
+      [name]: name == "username" ? value.toLowerCase() : value,
     }));
   };
 
@@ -325,9 +327,18 @@ export default function LoginDialog({
           <div
             className={`input-field ${getErrorFromFieldsError("password", "signin") && "input-field-invalid"}`}
           >
-            <label htmlFor="password">Mot de passe</label>
+            <div className="flex justify-between items-center">
+              <label htmlFor="password">Mot de passe</label>
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="btn btn-ghost"
+              >
+                {showPassword ? <Eye size={16} /> : <EyeClosed size={16} />}
+              </button>
+            </div>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               placeholder="••••••••"

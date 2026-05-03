@@ -19,10 +19,19 @@ import { statusBadge } from "@/utils/games";
 
 export default async function Dashboard() {
   // API calls
-  const myStats = await getMyStats();
-  const lastGames = await getGames({ limit: 3 });
-  const pendingGames = await getPendingInvitations();
-  const friendsRequests = await getMyFriendsRequests();
+  // const myStats = await getMyStats();
+  // const lastGames = await getGames({ limit: 3 });
+  // const pendingGames = await getPendingInvitations();
+  // const friendsRequests = await getMyFriendsRequests();
+
+  const [myStats, lastGames, pendingGames, friendsRequests] = await Promise.all(
+    [
+      getMyStats(),
+      getGames({ limit: 3 }),
+      getPendingInvitations(),
+      getMyFriendsRequests(),
+    ],
+  );
 
   // Data and errors of each API call
   const { data: statsData, error: statsError } = myStats;

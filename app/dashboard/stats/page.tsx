@@ -107,11 +107,11 @@ export default async function StatsPage() {
           <div className="card">
             <h3>Ratios Globaux</h3>
             <p className="subtitle">Comparez vos performances.</p>
-            <div className="content mt-2 grid grid-cols-2 gap-4 flex-1">
+            <div className="content mt-2 grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 flex-1">
               <div className="flex flex-col items-center">
                 <WinRateChart wins={total_wins} games={total_games_played} />
               </div>
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center -mt-5 md:mt-0">
                 <HitMissChart
                   thrown={total_darts_thrown}
                   misses={total_misses}

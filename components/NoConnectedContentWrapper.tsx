@@ -73,7 +73,7 @@ export default function NoConnectedContentWrapper({
               <PlayGameSection />
             </main>
           </div>
-          <Dialog width="w-150" dialogControls={dialogControls}>
+          <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
             <LoginDialog dialogControls={dialogControls} />
           </Dialog>
         </>
@@ -118,7 +118,7 @@ export default function NoConnectedContentWrapper({
             </div>
           </main>
         </div>
-        <Dialog width="w-150" dialogControls={dialogControls}>
+        <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
           <LoginDialog dialogControls={dialogControls} />
         </Dialog>
       </>

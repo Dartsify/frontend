@@ -309,7 +309,7 @@ body {
   }
 
   .dialog {
-    @apply flex flex-col;
+    @apply flex flex-col overflow-y-scroll overflow-x-hidden max-h-[80vh];
   }
 
   .dialog p {

@@ -28,7 +28,7 @@ export default function Account() {
 
         {/* If the user is a guest */}
         {guest && (
-          <div className="card card-xs">
+          <div className="card card-sm">
             <h4>Mode invité</h4>
             <p>
               Vous êtes connecté en tant qu'invité avec le nom{" "}
@@ -96,7 +96,7 @@ export default function Account() {
           </div>
         )}
       </div>
-      <Dialog width="w-150" dialogControls={dialogControls}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
         <LoginDialog dialogControls={dialogControls} />
       </Dialog>
     </>

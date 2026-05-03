@@ -272,7 +272,7 @@ export default function NewGame() {
   return (
     <>
       <div>
-        <header className="flex justify-between items-center">
+        <header className="flex flex-col md:flex-row justify-between items-center">
           <h1>Nouvelle partie</h1>
           <div className="flex gap-3 items-center">
             <button
@@ -318,7 +318,7 @@ export default function NewGame() {
             )}
           </section>
           <section className="default-section">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* We pass the userData props to prevent getting data from the providers again */}
               <ConfigCard
                 gameId={gameId}
@@ -334,7 +334,7 @@ export default function NewGame() {
         </main>
       </div>
 
-      <Dialog width="w-150" dialogControls={dialogControls_target}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls_target}>
         <TargetDialog
           dialogControls={{
             ...dialogControls_target,
@@ -345,7 +345,7 @@ export default function NewGame() {
         />
       </Dialog>
 
-      <Dialog width="w-150" dialogControls={dialogControls_login}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls_login}>
         <LoginDialog dialogControls={dialogControls_login} />
       </Dialog>
     </>

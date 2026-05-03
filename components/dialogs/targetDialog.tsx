@@ -3,7 +3,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useOtpInput } from "@/lib/hooks/useOtpInput";
 import { getTargetData } from "@/lib/fastapi/targets";
@@ -19,6 +19,7 @@ import logo from "@/public/logo.svg";
 import { OtpInput } from "../otpInput";
 import NeedToLoginDialog from "./needToLoginDialog";
 import NameInputDialog from "./nameInputDialog";
+import LoginDialog from "./loginDialog";
 
 export default function TargetDialog({
   dialogControls,
@@ -29,21 +30,33 @@ export default function TargetDialog({
 }) {
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const target = searchParams.get("target");
+
   const [showInput, setShowInput] = useState<boolean>(true);
   const [targetData, setTargetData] = useState<Target | null>(null);
   const [targetError, setTargetError] = useState<string | null>(null);
 
+  const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showNeedToLogin, setShowNeedToLogin] = useState<boolean>(false);
   const [showNameInput, setShowNameInput] = useState<boolean>(false);
 
   const userDataContext = useContext(UserDataContext);
   if (!userDataContext) return <div>Loading...</div>;
   const { userData } = userDataContext;
+  const { name, username, guest } = userData ?? {};
 
   const otpInput = useOtpInput();
   const { otp, setOtp } = otpInput;
 
   const target_id = useCallback(() => otp.join(""), [otp])();
+
+  // Set the target id from params to state
+  useEffect(() => {
+    if (target) {
+      setOtp(target.split(""));
+    }
+  }, [target]);
 
   // Executes on otp changes (when user types or deletes a digit)
   useEffect(() => {
@@ -82,6 +95,14 @@ export default function TargetDialog({
       handleSubmit();
     }
   }, [showNeedToLogin, userData]);
+
+  // If target data is updated, then we want to submit in this case
+  useEffect(() => {
+    if (target && userData && !guest) {
+      // If a target was specified in params, the user is connected and not a guest and we dont have any error, we can then continue
+      handleSubmit();
+    }
+  }, [targetData]);
 
   // Handle close dialog (when user clicks the "cancel" and "X" buttons)
   const handleCloseDialog = () => {
@@ -189,6 +210,18 @@ export default function TargetDialog({
     );
   }
 
+  // If the user wants to login, show the login dialog
+  if (showLogin) {
+    return (
+      <LoginDialog
+        dialogControls={{
+          ...dialogControls,
+          close: () => setShowLogin(false),
+        }}
+      />
+    );
+  }
+
   return (
     <div className="dialog">
       <div className="header">
@@ -231,6 +264,37 @@ export default function TargetDialog({
                 </>
               )}
             </p>
+          </div>
+        )}
+        {/* If the user is not connected (a guest with a name or not), we show the login card */}
+        {(!userData || userData.guest) && (
+          <div className="card card-sm">
+            <h4>Mode invité</h4>
+            {guest ? (
+              <p>
+                Vous êtes connecté en tant qu'invité avec le nom{" "}
+                <b>
+                  {name} (@{username})
+                </b>
+                . Veuillez vous connecter si vous souhaitez conserver cette
+                partie dans votre historique.
+              </p>
+            ) : (
+              <p>
+                Veuillez vous connecter à votre compte avant de rejoindre si
+                vous souhaitez conserver cette partie dans votre historique.
+              </p>
+            )}
+
+            <div className="footer">
+              <button
+                type="button"
+                className="btn btn-brand btn-sm"
+                onClick={() => setShowLogin(true)} // A true state will show the login dialog instead of this content
+              >
+                Se connecter
+              </button>
+            </div>
           </div>
         )}
         {targetError && (

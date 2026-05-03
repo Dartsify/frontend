@@ -54,7 +54,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
   return (
     <div
       className={`gradient-bg flex flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${
-        isOpen ? "w-60 px-4" : "w-20 px-2"
+        isOpen ? "w-50 md:w-60 px-4" : "w-15 md:w-20 px-1 md:px-2"
       }`}
     >
       <LogoBanner isOpen={isOpen} />

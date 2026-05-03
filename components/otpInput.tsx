@@ -63,7 +63,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
   };
 
   return (
-    <div className="flex items-center gap-4" onPaste={handlePaste}>
+    <div className="flex items-center gap-2 md:gap-4" onPaste={handlePaste}>
       {otp.map((value, index) => (
         <span key={`otp-item-${index}`} className="contents">
           <input
@@ -77,7 +77,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
             ref={(el) => {
               inputsRef.current[index] = el;
             }}
-            className={`w-10 h-13 text-center text-lg ${value ? "bg-foreground-light-soft" : ""} border-2`}
+            className={`w-8 md:w-10 h-10.5 md:h-13 text-center text-lg ${value ? "bg-foreground-light-soft" : ""} border-2`}
           />
           {index == 2 && <span className="mx-2 font-bold">-</span>}
         </span>

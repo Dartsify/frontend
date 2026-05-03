@@ -137,16 +137,15 @@ export const addGuests = async (game_id: number, guest_names: string[]) => {
   }
 };
 
-export const getGames = async (
-  // status?: GameStatus[],
-  // limit?: number,
-  // offset?: number,
-  {
-    status,
-    limit = 50,
-    offset,
-  }: { status?: GameStatus[]; limit?: number; offset?: number },
-) => {
+export const getGames = async ({
+  status,
+  limit = 50,
+  offset,
+}: {
+  status?: GameStatus[];
+  limit?: number;
+  offset?: number;
+}) => {
   const token = await getToken();
 
   if (!token) {

@@ -3,27 +3,24 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-background-dark w-full border-t border-border pt-8 pb-8 px-4 mt-15">
-      <p className="text-background text-9xl">
+    <footer className="bg-background-dark w-full border-t border-border pt-8 pb-8 px-4 mt-15 flex flex-col lg:flex-row items-start lg:items-center lg:justify-between">
+      <p className="text-background text-7xl md:text-9xl">
         <b className="brand-title-outline">Dartsify</b>
         <span className="text-sm opacity-15">®️</span>
       </p>
 
-      <p className="text-foreground-soft mt-10">
+      <ul className="text-foreground-soft mt-10 grid grid-cols-2 gap-x-5 gap-y-1">
         {Object.keys(routes)
           .filter((i) => i.includes("dashboard"))
           .map((segment, index) => (
-            <span
-              className="hover-anim hover:text-foreground transition-[color]"
+            <li
+              className="hover-anim hover:text-foreground transition-[color] max-w-35 leading-5"
               key={index}
             >
-              <Link href={segment}>{routes[segment]}</Link>
-              {index < Object.keys(routes).length - 2 && (
-                <span className="mx-2">•</span>
-              )}
-            </span>
+              • <Link href={segment}>{routes[segment]}</Link>
+            </li>
           ))}
-      </p>
+      </ul>
     </footer>
   );
 }

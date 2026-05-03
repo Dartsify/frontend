@@ -127,7 +127,7 @@ export default function PlayersCard({
         </div>
       </div>
 
-      <Dialog width="w-150" dialogControls={dialogControls}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
         <AddPlayersToGameDialog
           dialogControls={dialogControls}
           participations={participations}

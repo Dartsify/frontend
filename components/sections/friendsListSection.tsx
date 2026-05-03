@@ -93,20 +93,23 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
             <i>Ajoutez des amis pour les voir ici !</i>
           </p>
         ) : (
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {friends.map((item, index) => listItem(item, index))}
           </ul>
         )}
       </section>
 
-      <Dialog width="w-150" dialogControls={dialogControls_friend}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls_friend}>
         <FriendDialog
           friendData={friendData}
           dialogControls={dialogControls_friend}
         />
       </Dialog>
 
-      <Dialog width="w-150" dialogControls={dialogControls_deleteConfirmation}>
+      <Dialog
+        width="w-5/6 max-w-150"
+        dialogControls={dialogControls_deleteConfirmation}
+      >
         <DeleteFriendConfirmationDialog
           friendData={friendData}
           dialogControls={dialogControls_deleteConfirmation}

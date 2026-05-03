@@ -396,7 +396,7 @@ export default function Compare() {
           )}
         </main>
       </div>
-      <Dialog width="w-150" dialogControls={dialogControls}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
         <CompareWithFriendDialog
           dialogControls={{
             ...dialogControls,

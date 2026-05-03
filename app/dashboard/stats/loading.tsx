@@ -1,3 +1,5 @@
+// app/dashboard/stats/loading.tsx
+
 function StatCardSkeleton({ index }: { index: number }) {
   return (
     <div key={index} className="card card-xs animate-pulse">

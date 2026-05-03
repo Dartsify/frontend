@@ -19,7 +19,7 @@ export default function AddFriend() {
         onClick={toggleOpen}
       />
 
-      <Dialog width="w-150" dialogControls={dialogControls}>
+      <Dialog width="w-5/6 max-w-150" dialogControls={dialogControls}>
         <AddFriendDialog dialogControls={dialogControls} />
       </Dialog>
     </>

@@ -6,7 +6,7 @@ export default function Selector({
   selectorControls,
   options,
   placeholder = "Sélectionnez une option",
-  width = "w-45",
+  width = "w-35 md:w-45",
 }: {
   selectorControls: SelectorControls;
   options: string[];
