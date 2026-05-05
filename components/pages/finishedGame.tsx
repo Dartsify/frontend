@@ -1,14 +1,16 @@
 "use client";
 
-import { utcConvert } from "@/utils/dates";
+import { useContext } from "react";
+
 import { GameDetail } from "@/utils/types";
+
 import ConfigCard from "../cards/newGame/configCard";
 import TargetCard from "../cards/newGame/targetCard";
-import { useContext } from "react";
-import { UserDataContext } from "@/app/dashboard/providers";
 import PlayersCard from "../cards/newGame/playersCard";
 
-export default function FinishedGame(game: GameDetail) {
+import { UserDataContext } from "@/app/dashboard/providers";
+
+export default function FinishedGame({ game }: { game: GameDetail }) {
   const {
     id,
     participations,
@@ -25,7 +27,7 @@ export default function FinishedGame(game: GameDetail) {
   const { userData } = userDataContext;
 
   return (
-    <div className="flex flex-col gap-3">
+    <>
       <section className="default-section">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {/* We pass the userData props to prevent getting data from the providers again */}
@@ -41,6 +43,6 @@ export default function FinishedGame(game: GameDetail) {
       <section className="default-section">
         <PlayersCard gameData={game} userData={userData} editable={false} />
       </section>
-    </div>
+    </>
   );
 }

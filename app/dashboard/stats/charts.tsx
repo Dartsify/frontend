@@ -24,8 +24,7 @@ const COLORS = [
   "#ff248a",
 ];
 
-// Hook pour détecter un écran md (vs grand écran)
-// et adapter la hauteur des graphiques en conséquence.
+// Hook to detect an md screen (vs large screen) and adapt the chart heights accordingly.
 function useMdScreenChartLayout(
   size = 1000,
   mdChartHeight = 220,
@@ -47,12 +46,12 @@ function useMdScreenChartLayout(
   };
 }
 
-// Retourne les rayons du cercle en fonction de la taille d'écran
+// Returns the circle radius based on screen size
 function getChartRadii(isMdScreen: boolean) {
   if (isMdScreen) {
-    return { innerRadius: 45, outerRadius: 70 }; // Épaisseur: 25px (moins épais)
+    return { innerRadius: 45, outerRadius: 70 }; // Thickness: 25px (thinner)
   }
-  return { innerRadius: 45, outerRadius: 80 }; // Épaisseur: 35px (normal)
+  return { innerRadius: 45, outerRadius: 80 }; // Thickness: 35px (normal)
 }
 
 export function HitDistributionChart({
@@ -61,7 +60,7 @@ export function HitDistributionChart({
   data: { zone: string; hits: number }[];
 }) {
   const chartData = data.slice(0, 15);
-  // Par défaut, la première zone qui a le plus haut score
+  // By default, the first zone with the highest score
   const [selectedZone, setSelectedZone] = useState<string | null>(
     chartData.length > 0 ? chartData[0].zone : null,
   );
@@ -70,7 +69,7 @@ export function HitDistributionChart({
 
   return (
     <div className="flex flex-col w-full h-full">
-      {/* Récapitulatif mobile/PC au-dessus du graphe */}
+      {/* Mobile/PC summary above the chart */}
       <div className="mb-4 text-center min-h-6">
         {selectedData ? (
           <p className="text-sm-2 font-bold">
@@ -80,7 +79,7 @@ export function HitDistributionChart({
           </p>
         ) : (
           <p className="text-sm font-medium text-foreground-soft italic">
-            Clique sur un bâtonnet pour afficher les détails
+            Cliquez sur un bâtonnet pour afficher les détails
           </p>
         )}
       </div>
@@ -172,7 +171,7 @@ export function WinRateChart({ wins, games }: { wins: number; games: number }) {
       height={chartHeight}
     >
       {/* <p className="absolute text-center top-0 left-0 right-0 subtitle">
-        Victoires vs Défaites
+        Wins vs Losses
       </p> */}
       <PieChart>
         <Pie
@@ -186,8 +185,8 @@ export function WinRateChart({ wins, games }: { wins: number; games: number }) {
           stroke="none"
           labelLine={false}
         >
-          <Cell fill="#2454ff" /> {/* Victoires */}
-          <Cell fill="#4b5563" /> {/* Défaites */}
+          <Cell fill="#2454ff" /> {/* Wins */}
+          <Cell fill="#4b5563" /> {/* Losses */}
         </Pie>
         <Tooltip
           contentStyle={{
@@ -279,7 +278,7 @@ export function Podium({ targets }: { targets: string[] }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Petit délai pour lancer l'animation après le montage du composant
+    // Small delay to start the animation after component mounts
     const timer = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);

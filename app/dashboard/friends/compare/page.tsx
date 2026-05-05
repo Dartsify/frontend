@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import CompareWithFriendDialog from "@/components/dialogs/compareWithFriendDialog";
 import Dialog from "@/components/dialogs/dialog";
@@ -10,6 +10,8 @@ import { getPlayer } from "@/lib/fastapi/users";
 import { useDialog } from "@/lib/hooks/useDialog";
 
 import { FriendStats, Stats } from "@/utils/types";
+import { UserDataContext } from "../../providers";
+import { utcConvert } from "@/utils/dates";
 
 function formatNumber(value?: number, digits = 0) {
   if (value === undefined || value === null) return "0";
@@ -17,13 +19,6 @@ function formatNumber(value?: number, digits = 0) {
     maximumFractionDigits: digits,
     minimumFractionDigits: digits,
   });
-}
-
-function formatDate(date?: string | Date) {
-  if (!date) return "Inconnue";
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return "Inconnue";
-  return parsed.toLocaleDateString("fr-FR");
 }
 
 function CompareStatRow({
@@ -104,6 +99,10 @@ export default function Compare() {
   const [friendData, setFriendData] = useState<FriendStats | null>(null);
 
   const dialogControls = useDialog();
+
+  const userDataContext = useContext(UserDataContext);
+  if (!userDataContext) return <div>Loading...</div>;
+  const { userData } = userDataContext;
 
   // Open the dialog on the first render of the component to show the user the compare with friend dialog directly when he arrives on this page without needing to click on a button to open the dialog
   useEffect(() => {
@@ -380,14 +379,31 @@ export default function Compare() {
                       friendValue={`@${friendData.username}`}
                     />
                     <CompareTextRow
+                      label="Cible préférée"
+                      myValue={myData.favorite_play_location || "-"}
+                      friendValue={friendStats.favorite_play_location || "-"}
+                    />
+                    <CompareTextRow
                       label="Âge"
-                      myValue="-"
+                      myValue={`${userData?.age || "-"}`}
                       friendValue={`${friendData.age || "-"}`}
                     />
                     <CompareTextRow
                       label="Compte créé"
-                      myValue="-"
-                      friendValue={formatDate(friendData.creation_date)}
+                      myValue={
+                        userData?.creation_date
+                          ? utcConvert(userData?.creation_date).format(
+                              "DD/MM/YYYY",
+                            )
+                          : "-"
+                      }
+                      friendValue={
+                        friendData.creation_date
+                          ? utcConvert(friendData.creation_date).format(
+                              "DD/MM/YYYY",
+                            )
+                          : "-"
+                      }
                     />
                   </ul>
                 </div>

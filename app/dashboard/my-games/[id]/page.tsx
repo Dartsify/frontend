@@ -2,8 +2,8 @@ import { getGame } from "@/lib/fastapi/games";
 
 import { statusBadge } from "@/utils/games";
 
-import FinishedGame from "@/components/pages/finishedGame";
 import InProgressGame from "@/components/pages/inProgressGame";
+import FinishedGameWrapper from "@/components/pages/finishedGameWrapper";
 
 export default async function Game({
   params,
@@ -39,7 +39,7 @@ export default async function Game({
         </div>
 
         <main className="main-container">
-          {status === "finished" && <FinishedGame {...data} />}
+          {status === "finished" && <FinishedGameWrapper {...data} />}
           {status === "in_progress" && <InProgressGame {...data} />}
         </main>
       </div>

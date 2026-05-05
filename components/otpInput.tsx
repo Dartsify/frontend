@@ -19,7 +19,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
   ) => {
     const value = e.target.value;
 
-    // n'autoriser qu'un seul chiffre
+    // allow only one digit
     if (!value.match(/^\d?$/)) return;
 
     const newOtp = [...otp];
@@ -29,7 +29,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
     const code = newOtp.join("");
     onChangeCode?.(code);
 
-    // focus case suivante si un chiffre est entré
+    // focus next input if a digit is entered
     if (value && index < length - 1) {
       inputsRef.current[index + 1]?.focus();
     }
@@ -46,7 +46,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
 
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, ""); // garder que les chiffres
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, ""); // keep only digits
     const newOtp = [...otp];
 
     for (let i = 0; i < Math.min(pasted.length, length); i++) {
@@ -57,7 +57,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
     const code = newOtp.join("");
     onChangeCode?.(code);
 
-    // focus sur la dernière case remplie ou la fin
+    // focus on the last filled input or the end
     const lastIndex = Math.min(pasted.length - 1, length - 1);
     inputsRef.current[lastIndex]?.focus();
   };

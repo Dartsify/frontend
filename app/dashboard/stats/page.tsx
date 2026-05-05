@@ -127,7 +127,6 @@ export default async function StatsPage() {
             <p className="subtitle">Visualisez où vous touchez la cible.</p>
             <div className="content flex-1 w-full flex items-center justify-center">
               {heatmapData && heatmapData.length > 0 ? (
-                // L'affichage est désormais corrigé avec la fonction de mapping ultra-précise du backend
                 <Dartboard
                   size={320}
                   points={heatmapData.map((p) =>

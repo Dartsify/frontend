@@ -133,6 +133,7 @@ export type Stats = {
   total_100_plus: number;
   cursed_target: string;
   favorite_targets: string[];
+  favorite_play_location: string;
 };
 
 export type FriendStats = {
@@ -153,6 +154,7 @@ export type FriendStats = {
     total_180s: number;
     total_100_plus: number;
     cursed_target: string;
+    favorite_play_location: string;
   };
 };
 
@@ -189,6 +191,17 @@ export type FriendRequestNotification = FriendRequest & {
 export type DashboardNotification =
   | PendingGameNotification
   | FriendRequestNotification;
+
+export interface ZoneStat {
+  zone: string;
+  total_hits: number;
+  number: Record<string, number>;
+}
+
+export type GameStats = {
+  game_id: number;
+  zone_stats: ZoneStat[];
+};
 
 // Requests
 
