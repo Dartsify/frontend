@@ -25,21 +25,31 @@ export default async function Game({
 
   const { status, mode } = data;
 
-  const { text: statusText, color: statusColor } = statusBadge(status);
+  const { text: statusText, color: statusColor } = statusBadge(status); // Status badge to show in the header
 
   return (
     <>
       <div>
+        {/* Header */}
         <div className="flex items-center justify-between">
           <h1>Partie de {mode}</h1>
-          <div className={`badge badge-neutral`}>
-            <div className={`badge-disc ${statusColor}`} />
-            <p>{statusText}</p>
+          <div className="flex items-center gap-3">
+            {/* Status badge */}
+            <div className={`badge badge-neutral`}>
+              <div className={`badge-disc ${statusColor}`} />
+              <p>{statusText}</p>
+            </div>
+            {/* ID badge */}
+            <div className={`badge badge-neutral`}>
+              <p className="text-foreground-soft">{id}</p>
+            </div>
           </div>
         </div>
 
         <main className="main-container">
+          {/* If the the game's status is finished -> show the finished game wrapper (which gets more data and shows diff sections for a finished game) */}
           {status === "finished" && <FinishedGameWrapper {...data} />}
+          {/* if the game's status is in_progress -> we show a in_progress game component */}
           {status === "in_progress" && <InProgressGame {...data} />}
         </main>
       </div>

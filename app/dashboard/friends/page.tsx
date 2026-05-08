@@ -1,29 +1,45 @@
 import AddFriend from "@/components/addFriend";
-import FriendsListSection from "@/components/sections/friendsListSection";
-import FriendsRequestsSection from "@/components/sections/friendsRequestsSection";
+import ErrorPageText from "@/components/errorPageText";
+import FriendsListSection from "@/components/sections/friends/friendsListSection";
+import FriendsRequestsSection from "@/components/sections/friends/friendsRequestsSection";
+import FriendsStatsSection from "@/components/sections/friends/friendsStatsSection";
 
-import { getMyFriends, getMyFriendsRequests } from "@/lib/fastapi/players";
+import {
+  getFriendsStatsSummary,
+  getMyFriends,
+  getMyFriendsRequests,
+} from "@/lib/fastapi/players";
 
 export default async function Friends() {
-  const myFriendsRequests = await getMyFriendsRequests();
-  const myFriends = await getMyFriends();
+  const [myFriendsRequests, myFriends, friendsStatsSummary] = await Promise.all(
+    [getMyFriendsRequests(), getMyFriends(), getFriendsStatsSummary()],
+  );
 
   const { data: friendsRequestsData, error: friendsRequestsError } =
     myFriendsRequests;
   const { data: friendsData, error: friendsError } = myFriends;
+  const { data: friendsStatsSummaryData, error: friendsStatsSummaryError } =
+    friendsStatsSummary;
 
   if (friendsRequestsError || !friendsRequestsData) {
     if (typeof friendsRequestsError === "string") {
-      return <div>Error: {friendsRequestsError}</div>;
+      return ErrorPageText(friendsRequestsError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   if (friendsError || !friendsData) {
     if (typeof friendsError === "string") {
-      return <div>Error: {friendsError}</div>;
+      return ErrorPageText(friendsError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
+  }
+
+  if (friendsStatsSummaryError || !friendsStatsSummaryData) {
+    if (typeof friendsStatsSummaryError === "string") {
+      return ErrorPageText(friendsStatsSummaryError);
+    }
+    return ErrorPageText("Erreur Inconnue");
   }
 
   return (
@@ -34,7 +50,8 @@ export default async function Friends() {
       </div>
 
       <main className="main-container">
-        <FriendsRequestsSection friends={friendsRequestsData} />
+        <FriendsRequestsSection friendsRequests={friendsRequestsData} />
+        <FriendsStatsSection statsSummary={friendsStatsSummaryData} />
         <FriendsListSection friends={friendsData} />
       </main>
     </div>

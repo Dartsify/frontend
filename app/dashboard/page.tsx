@@ -16,6 +16,7 @@ import { getGames } from "@/lib/fastapi/games";
 import { DashboardNotification, Game } from "@/utils/types";
 import { calendarConvert, utcConvert } from "@/utils/dates";
 import { statusBadge } from "@/utils/games";
+import ErrorPageText from "@/components/errorPageText";
 
 export default async function Dashboard() {
   // API calls
@@ -43,30 +44,30 @@ export default async function Dashboard() {
   // Handle errors for each API call
   if (statsError || !statsData) {
     if (typeof statsError === "string") {
-      return <div>Error: {statsError}</div>;
+      return ErrorPageText(statsError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   if (lastGamesError || !lastGamesData) {
     if (typeof lastGamesError === "string") {
-      return <div>Error: {lastGamesError}</div>;
+      return ErrorPageText(lastGamesError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   if (pendingGamesError || !pendingGamesData) {
     if (typeof pendingGamesError === "string") {
-      return <div>Error: {pendingGamesError}</div>;
+      return ErrorPageText(pendingGamesError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   if (friendsRequestsError || !friendsRequestsData) {
     if (typeof friendsRequestsError === "string") {
-      return <div>Error: {friendsRequestsError}</div>;
+      return ErrorPageText(friendsRequestsError);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   // Data of the notifications (given to the NotificationsSection component) with a type property to know the type of notification (pending game or friend request)
@@ -159,9 +160,10 @@ export default async function Dashboard() {
               )}
             </div>
             <div className="card col-span-2 md:col-span-2 lg:col-span-4">
-              <h3>Dernières parties de la semaine</h3>
+              <h3>Dernières parties</h3>
               <p className="subtitle">
-                Découvrez vos dernières parties et suivez votre progression.
+                Découvrez vos trois dernières parties et suivez votre
+                progression.
               </p>
               <div className="content w-full">
                 {lastGamesData.length === 0 ? (

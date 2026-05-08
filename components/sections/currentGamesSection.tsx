@@ -8,6 +8,7 @@ import { gameHostName, statusBadge } from "@/utils/games";
 import { getGame } from "@/lib/fastapi/games";
 
 import Timer from "../timer";
+import ErrorPageText from "../errorPageText";
 
 const listItem = async (game: Game, index: number) => {
   // const { id, status, target_id, start_date, participants } = game;
@@ -17,9 +18,9 @@ const listItem = async (game: Game, index: number) => {
 
   if (error || !data) {
     if (typeof error === "string") {
-      return <div>Error: {error}</div>;
+      return ErrorPageText(error);
     }
-    return <div>Error: Erreur Inconnue</div>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   const {

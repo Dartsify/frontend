@@ -1,9 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import gsap from "gsap"; // <-- import GSAP
+import { useGSAP } from "@gsap/react"; // <-- import the hook from our React package
 
 import autodarts from "@/public/autodarts.png";
 
 import Button from "@/components/buttons/styleButtons/button";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP); // register the hook to avoid React version discrepancies
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   return (

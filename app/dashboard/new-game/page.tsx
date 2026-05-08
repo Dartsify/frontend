@@ -18,6 +18,7 @@ import PlayersCard from "@/components/cards/newGame/playersCard";
 
 import { isHost } from "@/utils/games";
 import { GameMode } from "@/utils/types";
+import ErrorPageText from "@/components/errorPageText";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
   "Êtes-vous sûr de vouloir quitter cette page ? Vous devrez rejoindre la partie depuis la page Mes Parties.";
@@ -264,9 +265,9 @@ export default function NewGame() {
   // If an error has been set show error
   if (gameError) {
     if (typeof gameError === "string") {
-      return <p>Erreur : {gameError}</p>;
+      return ErrorPageText(gameError);
     }
-    return <p>Erreur</p>;
+    return ErrorPageText("Erreur Inconnue");
   }
 
   return (

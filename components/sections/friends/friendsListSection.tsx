@@ -2,18 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Swords, X } from "lucide-react";
 
 import { Friend } from "@/utils/types";
 
 import { useDialog } from "@/lib/hooks/useDialog";
 
-import Dialog from "../dialogs/dialog";
-import FriendDialog from "../dialogs/friendDialog";
-import DeleteFriendConfirmationDialog from "../dialogs/deleteFriendConfirmationDialog";
-import IconButton from "../buttons/actionButtons/iconButton";
-import InlineIconButton from "../buttons/actionButtons/inlineIconButton";
-import Link from "next/link";
+import Dialog from "../../dialogs/dialog";
+import FriendDialog from "../../dialogs/friendDialog";
+import DeleteFriendConfirmationDialog from "../../dialogs/deleteFriendConfirmationDialog";
 
 export default function FriendsListSection({ friends }: { friends: Friend[] }) {
   const [friendData, setFriendData] = useState<Friend | null>(null);
@@ -85,7 +83,7 @@ export default function FriendsListSection({ friends }: { friends: Friend[] }) {
             type="button"
             className="btn btn-inline"
           >
-            <Swords size={18} /> Se comparer
+            <Swords size={18} /> Me comparer
           </Link>
         </div>
         {friends.length === 0 ? (

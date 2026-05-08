@@ -14,7 +14,8 @@ import {
   WinRateChart,
   HitMissChart,
   Podium,
-} from "./charts";
+} from "../../../components/charts/charts";
+import ErrorPageText from "@/components/errorPageText";
 
 export default async function StatsPage() {
   const [statsRes, zonesStatsRes, heatmapRes] = await Promise.all([
@@ -24,19 +25,8 @@ export default async function StatsPage() {
   ]);
 
   if (statsRes.error || zonesStatsRes.error || heatmapRes.error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
-        <h1 className="text-2xl font-bold text-red-500">
-          Erreur lors de la récupération des statistiques
-        </h1>
-        {statsRes.error && <p className="text-gray-500">{statsRes.error}</p>}
-        {zonesStatsRes.error && (
-          <p className="text-gray-500">{zonesStatsRes.error}</p>
-        )}
-        {heatmapRes.error && (
-          <p className="text-gray-500">{heatmapRes.error}</p>
-        )}
-      </div>
+    return ErrorPageText(
+      statsRes.error || zonesStatsRes.error || heatmapRes.error,
     );
   }
 
@@ -63,9 +53,6 @@ export default async function StatsPage() {
   const sortedZonesStats = [...hitDistribution]
     .sort((a, b) => b.hits - a.hits)
     .slice(0, 15);
-
-  const maxZoneCount =
-    sortedZonesStats.length > 0 ? sortedZonesStats[0].hits : 1;
 
   return (
     <div>

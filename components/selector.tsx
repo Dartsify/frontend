@@ -85,7 +85,7 @@ export default function Selector({
   };
 
   return (
-    <div ref={selectorRef} className={`relative ${width} my-1`}>
+    <div ref={selectorRef} className={`relative ${width} my-1 z-100`}>
       <div
         onClick={handleToggleOpen}
         // Padding of the container + elem in the dropdown : x : 1 + 1.5 / y : 1 + 1

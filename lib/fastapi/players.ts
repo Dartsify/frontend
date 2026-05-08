@@ -10,6 +10,7 @@ import {
   Stats,
   ZonesStats,
   HeatmapData,
+  FriendStatsSummary,
 } from "@/utils/types";
 
 export const getMyFriends = async (search?: string) => {
@@ -403,6 +404,46 @@ export const getPendingInvitations = async () => {
     }
 
     return { data: data as PendingInvitation[] };
+  } catch (error) {
+    console.log(error);
+    return { error: "Erreur réseau" };
+  }
+};
+
+export const getFriendsStatsSummary = async () => {
+  const token = await getToken();
+
+  if (!token) {
+    return { error: "No auth token found" };
+  }
+
+  try {
+    const res = await fetch(buildApiUrl(`/players/me/friends/stats_summary`), {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      throw new Error("Failed to parse response from server.");
+    }
+
+    if (!res.ok) {
+      return {
+        error:
+          data.detail ||
+          "Failed to get friends stats summary. Please try again.",
+      };
+    }
+
+    return { data: data as FriendStatsSummary[] };
   } catch (error) {
     console.log(error);
     return { error: "Erreur réseau" };

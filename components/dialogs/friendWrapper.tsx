@@ -33,8 +33,6 @@ export default function FriendWrapper({
 
         const { data, error } = res;
 
-        // TODO : Quand on affiche le dialog avec les infos de la personne, il faut garder la souris sur l'élément pour qu'il ne disparaisse pas
-
         if (error) {
           alert(
             typeof error === "string"

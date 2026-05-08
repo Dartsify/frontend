@@ -13,16 +13,16 @@ import {
 const BUTTON_SCROLL_STEP = 2;
 
 export default function FriendsRequestsSection({
-  friends,
+  friendsRequests,
 }: {
-  friends: FriendRequest[];
+  friendsRequests: FriendRequest[];
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   const scrollRafRef = useRef<number | null>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0); // keep current index in state to manage button states and scroll position
 
-  const [data, setData] = useState<FriendRequest[]>(friends);
+  const [data, setData] = useState<FriendRequest[]>(friendsRequests);
 
   const scrollToIndex = (nextIndex: number) => {
     // Scroll the list to the target index and update currentIndex state
@@ -215,7 +215,7 @@ export default function FriendsRequestsSection({
       </div>
 
       {data.length === 0 ? (
-        friends.length === 0 ? (
+        friendsRequests.length === 0 ? (
           <p>
             <i>Aucune demande d'ami en attente.</i>
           </p>

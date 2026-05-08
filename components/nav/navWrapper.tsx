@@ -1,12 +1,15 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
+
 import NavBar from "@/components/nav/navBar";
 import VerticalSeparator from "@/components/verticalSeparator";
+
 import { routeNames, routesWithColoredHeader } from "@/utils/routes";
-import { ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
-import React, { useEffect, useState } from "react";
+
 import Footer from "./footer";
 
 export default function NavWrapper({
@@ -17,6 +20,7 @@ export default function NavWrapper({
   const pathname = usePathname();
   const segments = useSelectedLayoutSegments();
   const [open, setOpen] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const storedOpen = localStorage.getItem("sidebarOpen");
@@ -36,10 +40,18 @@ export default function NavWrapper({
 
   return (
     <div className="flex h-screen">
+      {/* Navbar shown at right of the screen */}
       <NavBar isOpen={open} />
-      <div className="overflow-scroll flex-1 min-h-screen flex flex-col">
+
+      {/* Content of the page */}
+      <div
+        className="overflow-scroll flex-1 min-h-screen flex flex-col"
+        onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 50)} // Set scrolled to true if we scrolled more than 50px, otherwise set it to false -> set diff style for the header
+      >
+        {/* Nav header shown at the top of the content */}
         <div
-          className={`horizontal-p vertical-p w-full flex gap-3 items-center border-border top-0 z-10 ${isRouteWithColoredHeader ? "fixed text-foreground-light" : "sticky bg-background text-foreground"}`}
+          className={`horizontal-p vertical-p w-full flex gap-3 items-center top-0 z-10 transition-colors duration-300 border-b-2 ${scrolled ? "border-border" : "border-transparent"} ${isRouteWithColoredHeader ? "fixed text-foreground-light" : "sticky bg-background text-foreground"}`}
+          id="nav-header"
         >
           <button
             type="button"
@@ -56,12 +68,17 @@ export default function NavWrapper({
                   {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}
                   {index > 0 && <ChevronRight size={16} className="mx-3" />}
                   {index === segments.length - 1 ? (
+                    // The last segment is not a link
                     <span
                       className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
                     >
-                      {routeNames[segment] || "Page Inconnue"}
+                      {/* If the previous segment is "my-games", means we are in a details game page -> show a specific text */}
+                      {segments[index - 1] === "my-games"
+                        ? `Détails de la partie ${segment}`
+                        : routeNames[segment] || "Page Inconnue"}
                     </span>
                   ) : (
+                    // Show the previous segments as links to their respective pages
                     <Link
                       href={`/dashboard/${segment}`}
                       className="cursor-pointer"
@@ -72,16 +89,19 @@ export default function NavWrapper({
                 </React.Fragment>
               );
             })}
+
+            {/* Shows "Accueil" if no segment */}
             {segments.length === 0 && (
               <span
                 className={`font-semibold ${isRouteWithColoredHeader ? "text-foreground-light" : "text-foreground"}`}
               >
-                {/* Affiche "Accueil" si aucun segment */}
                 {routeNames[""]}
               </span>
             )}
           </h3>
         </div>
+
+        {/* Main content area */}
         <div className={`flex flex-col flex-1`}>
           <div className={`flex-1 ${isRouteWithColoredHeader ? "" : ""}`}>
             {children}

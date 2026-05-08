@@ -15,15 +15,6 @@ import {
   YAxis,
 } from "recharts";
 
-const COLORS = [
-  "#2454ff",
-  "#ff4040",
-  "#ffcf24",
-  "#0dd951",
-  "#8b24ff",
-  "#ff248a",
-];
-
 // Hook to detect an md screen (vs large screen) and adapt the chart heights accordingly.
 function useMdScreenChartLayout(
   size = 1000,
@@ -54,13 +45,137 @@ function getChartRadii(isMdScreen: boolean) {
   return { innerRadius: 45, outerRadius: 80 }; // Thickness: 35px (normal)
 }
 
+export function GamesPlayedDistributionChart({
+  data,
+}: {
+  data: { name: string; games: number; wins: number }[];
+}) {
+  const chartData = data.slice(0, 15);
+  // State to track which bar the user clicked on -> defaults to the first zone.
+  const [selectedZone, setSelectedZone] = useState<string | null>(
+    chartData.length > 0 ? chartData[0].name : null,
+  );
+
+  const selectedData = chartData.find((d) => d.name === selectedZone);
+
+  return (
+    <div className="flex flex-col w-full h-full">
+      {/* Dynamic textual summary above the chart showing the currently selected zone */}
+      <div className="mb-4 text-center min-h-6">
+        {selectedData ? (
+          <p className="text-sm-2 font-bold">
+            Zone sélectionnée :{" "}
+            <span className="text-[#2454ff]">{selectedData.name}</span> —{" "}
+            {selectedData.wins} victoires sur {selectedData.games} parties
+            jouées
+          </p>
+        ) : (
+          <p className="text-sm font-medium text-foreground-soft italic">
+            Cliquez sur un bâtonnet pour afficher les détails
+          </p>
+        )}
+      </div>
+
+      {/* ResponsiveContainer makes the chart adapt to its parent div's width */}
+      <ResponsiveContainer width="100%" height={300}>
+        {/* Main wrapper for the bar chart */}
+        <BarChart
+          data={chartData}
+          margin={{ top: 20, right: 20, left: -20, bottom: 0 }}
+          onClick={(state: any) => {
+            // Update selected zone when clicking on a bar or its axis area
+            if (
+              state &&
+              state.activePayload &&
+              state.activePayload.length > 0
+            ) {
+              setSelectedZone(state.activePayload[0].payload.name);
+            }
+          }}
+        >
+          {/* Light dashed lines in the background for visual reference */}
+          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
+
+          {/* Horizontal axis representing the zones (e.g. "20", "19") */}
+          <XAxis
+            dataKey="name"
+            name="Nom"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12, fill: "#6b7280" }}
+            dy={10}
+          />
+
+          {/* Vertical axis representing the number of hits */}
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12, fill: "#6b7280" }}
+            dx={-10}
+          />
+
+          {/* The tooltip that appears when hovering over a bar */}
+          <Tooltip
+            cursor={{ fill: "#f3f4f6" }}
+            contentStyle={{
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+            }}
+          />
+          <Bar
+            dataKey="games"
+            name="Parties jouées" // We change the en name "games" to "Parties jouées"
+            radius={[4, 4, 0, 0]}
+            isAnimationActive={true}
+            animationDuration={1500}
+            animationEasing="ease-out"
+            onClick={(data: any) => {
+              setSelectedZone(data.name);
+            }}
+          >
+            {/* Map over each element to give it a specific color. Selected bar is blue, others are gray */}
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.name === selectedZone ? "#2454ff" : "#9ca3af"}
+                className="cursor-pointer transition-colors duration-200"
+              />
+            ))}
+          </Bar>
+          <Bar
+            dataKey="wins"
+            name="Parties gagnées" // We change the en name "wins" to "Parties gagnées"
+            radius={[4, 4, 0, 0]}
+            isAnimationActive={true}
+            animationDuration={1500}
+            animationEasing="ease-out"
+            onClick={(data: any) => {
+              setSelectedZone(data.name);
+            }}
+          >
+            {/* Map over each element to give it a specific color. Selected bar is blue, others are gray */}
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.name === selectedZone ? "#2454ff" : "#9ca3af"}
+                className="cursor-pointer transition-colors duration-200"
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export function HitDistributionChart({
   data,
 }: {
   data: { zone: string; hits: number }[];
 }) {
   const chartData = data.slice(0, 15);
-  // By default, the first zone with the highest score
+  // State to track which bar the user clicked on -> defaults to the first zone.
   const [selectedZone, setSelectedZone] = useState<string | null>(
     chartData.length > 0 ? chartData[0].zone : null,
   );
@@ -69,7 +184,7 @@ export function HitDistributionChart({
 
   return (
     <div className="flex flex-col w-full h-full">
-      {/* Mobile/PC summary above the chart */}
+      {/* Dynamic textual summary above the chart showing the currently selected zone */}
       <div className="mb-4 text-center min-h-6">
         {selectedData ? (
           <p className="text-sm-2 font-bold">
@@ -84,11 +199,14 @@ export function HitDistributionChart({
         )}
       </div>
 
+      {/* ResponsiveContainer makes the chart adapt to its parent div's width */}
       <ResponsiveContainer width="100%" height={300}>
+        {/* Main wrapper for the bar chart */}
         <BarChart
           data={chartData}
           margin={{ top: 20, right: 20, left: -20, bottom: 0 }}
           onClick={(state: any) => {
+            // Update selected zone when clicking on a bar or its axis area
             if (
               state &&
               state.activePayload &&
@@ -98,7 +216,10 @@ export function HitDistributionChart({
             }
           }}
         >
+          {/* Light dashed lines in the background for visual reference */}
           <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
+
+          {/* Horizontal axis representing the zones (e.g. "20", "19") */}
           <XAxis
             dataKey="zone"
             axisLine={false}
@@ -106,12 +227,16 @@ export function HitDistributionChart({
             tick={{ fontSize: 12, fill: "#6b7280" }}
             dy={10}
           />
+
+          {/* Vertical axis representing the number of hits */}
           <YAxis
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 12, fill: "#6b7280" }}
             dx={-10}
           />
+
+          {/* The tooltip that appears when hovering over a bar */}
           <Tooltip
             cursor={{ fill: "#f3f4f6" }}
             contentStyle={{
@@ -122,6 +247,7 @@ export function HitDistributionChart({
           />
           <Bar
             dataKey="hits"
+            name="Touches" // We change the en name "hits" to "Touches"
             radius={[4, 4, 0, 0]}
             isAnimationActive={true}
             animationDuration={1500}
@@ -130,6 +256,7 @@ export function HitDistributionChart({
               setSelectedZone(data.zone);
             }}
           >
+            {/* Map over each element to give it a specific color. Selected bar is blue, others are gray */}
             {chartData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
@@ -173,18 +300,21 @@ export function WinRateChart({ wins, games }: { wins: number; games: number }) {
       {/* <p className="absolute text-center top-0 left-0 right-0 subtitle">
         Wins vs Losses
       </p> */}
+      {/* PieChart behaves as a wrapper for circular charts  */}
       <PieChart>
+        {/* Pie draws the actual slices based on the 'value' dataKey */}
         <Pie
           data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={radii.innerRadius}
+          cx="50%" // Center X of the pie
+          cy="50%" // Center Y of the pie
+          innerRadius={radii.innerRadius} // Creates a donut shape instead of a solid pie
           outerRadius={radii.outerRadius}
-          paddingAngle={3}
-          dataKey="value"
+          paddingAngle={3} // Small gap between each slice
+          dataKey="value" // Value used to calculate the proportion of each slice
           stroke="none"
           labelLine={false}
         >
+          {/* Each Cell corresponds to a slice. They are mapped in order of our 'data' array */}
           <Cell fill="#2454ff" /> {/* Wins */}
           <Cell fill="#4b5563" /> {/* Losses */}
         </Pie>
@@ -195,6 +325,7 @@ export function WinRateChart({ wins, games }: { wins: number; games: number }) {
             boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
           }}
         />
+        {/* Legend automatically detects data names (e.g. "Victoires (XX%)") and adds colored dots below */}
         <Legend
           verticalAlign="bottom"
           height={40}

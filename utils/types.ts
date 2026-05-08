@@ -203,6 +203,15 @@ export type GameStats = {
   zone_stats: ZoneStat[];
 };
 
+export type FriendStatsSummary = {
+  username: string;
+  player_name: string;
+  stats: {
+    total_games_played: number;
+    total_wins: number;
+  };
+};
+
 // Requests
 
 export type FieldError = {

@@ -11,16 +11,7 @@ import PlayersCard from "../cards/newGame/playersCard";
 import { UserDataContext } from "@/app/dashboard/providers";
 
 export default function FinishedGame({ game }: { game: GameDetail }) {
-  const {
-    id,
-    participations,
-    mode,
-    start_date,
-    end_date,
-    creation_date,
-    target_location,
-    target_name,
-  } = game;
+  const { id } = game;
 
   const userDataContext = useContext(UserDataContext);
   if (!userDataContext) return <div>Loading...</div>;

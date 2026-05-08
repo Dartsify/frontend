@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Crown, Plus, X } from "lucide-react";
+import { Crown, Medal, Plus, X } from "lucide-react";
 
 import { isHost } from "@/utils/games";
 import { GameDetail, Participant, User } from "@/utils/types";
@@ -23,11 +23,25 @@ export default function PlayersCard({
   userData: User | null;
   editable?: boolean;
 }) {
-  const { participations, id } = gameData ?? {};
+  const { id, status: gameStatus } = gameData ?? {};
 
-  useEffect(() => {
-    console.log("gameData changed:", gameData);
-  }, [gameData]);
+  // Index of the winner (the player with the position 1 in the participations array)
+  const winnerIndex = gameData?.participations?.findIndex(
+    (participation) => participation.position === 1,
+  );
+
+  const baseParticipations = gameData?.participations ?? [];
+
+  // We check if the game is finished and if there is a winner
+  //  - Yes -> we sort the participations array to put the winner at the top
+  //  - No -> we keep the original order
+  const participations =
+    gameStatus === "finished" && winnerIndex !== undefined && winnerIndex !== -1
+      ? [
+          baseParticipations[winnerIndex],
+          ...baseParticipations.filter((_, index) => index !== winnerIndex),
+        ]
+      : gameData?.participations;
 
   const userIsHost = isHost(participations || [], userData);
 
@@ -38,7 +52,7 @@ export default function PlayersCard({
   };
 
   if (id === undefined || id === null) {
-    return <></>;
+    return;
   }
 
   const handleRemovePlayer = async (username: string) => {
@@ -66,15 +80,29 @@ export default function PlayersCard({
     return (
       <li key={index} className="">
         <div className="flex justify-between items-center py-1">
-          <div className="">
-            <PlayerName
-              player={item}
-              myUsername={userData?.username || ""}
-              showUsername={false}
-            />
-            <p className="text-foreground-soft text-sm font-medium -mt-1">
-              {userIsGuest(player_username) ? "Invité" : `@${player_username}`}
-            </p>
+          <div className="flex items-center gap-2">
+            {/* {winner === index && (
+              <Medal size={16} className="text-yellow-500 m-1" />
+            )} */}
+            {/* {gameStatus === "finished" && index === 0 && (
+              // <Medal size={16} className="text-yellow-500 m-1" />
+              <p className="text-xl font-black">1.</p>
+            )} */}
+            <div>
+              <PlayerName
+                player={item}
+                myUsername={userData?.username || ""}
+                showUsername={false}
+              />
+              <p className="text-foreground-soft text-sm font-medium -mt-1">
+                {userIsGuest(player_username)
+                  ? "Invité"
+                  : `@${player_username}`}
+              </p>
+            </div>
+            {/* {gameStatus === "finished" && index === 0 && (
+              <Medal size={20} className="text-yellow-500 m-1" />
+            )} */}
           </div>
 
           {userIsHost && !isMe && editable && (
@@ -90,7 +118,22 @@ export default function PlayersCard({
               />
             </button>
           )}
-          {is_host && <Crown size={16} className="text-yellow-500 m-1" />}
+          <div className="flex items-center gap-2">
+            {gameStatus === "finished" && index === 0 && (
+              <Medal
+                size={18}
+                className="text-yellow-500 m-1"
+                strokeWidth={2.2}
+              />
+            )}
+            {is_host && (
+              <Crown
+                size={18}
+                className="text-yellow-500 m-1"
+                strokeWidth={2.2}
+              />
+            )}
+          </div>
         </div>
 
         {participations && index !== participations.length - 1 && (
