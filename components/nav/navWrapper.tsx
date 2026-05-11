@@ -29,6 +29,18 @@ export default function NavWrapper({
     }
   }, []);
 
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      // On mobile, the window or document scrolls. We check the scroll position here.
+      if (window.innerWidth < 640) {
+        setScrolled(window.scrollY > 50);
+      }
+    };
+
+    window.addEventListener("scroll", handleWindowScroll);
+    return () => window.removeEventListener("scroll", handleWindowScroll);
+  }, []);
+
   const handleToggleOpenSidebar = () => {
     localStorage.setItem("sidebarOpen", JSON.stringify(!open));
 
@@ -39,14 +51,19 @@ export default function NavWrapper({
     routesWithColoredHeader.includes(pathname);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex sm:h-screen sm:overflow-visible">
       {/* Navbar shown at right of the screen */}
       <NavBar isOpen={open} />
 
       {/* Content of the page */}
       <div
-        className="overflow-scroll flex-1 min-h-screen flex flex-col"
-        onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 50)} // Set scrolled to true if we scrolled more than 50px, otherwise set it to false -> set diff style for the header
+        className="w-screen overflow-x-visible sm:overflow-scroll flex-1 min-h-screen flex flex-col"
+        onScroll={(e) => {
+          // Sur desktop (>= 640px), c'est cette div qui scroll
+          if (window.innerWidth >= 640) {
+            setScrolled(e.currentTarget.scrollTop > 50);
+          }
+        }}
       >
         {/* Nav header shown at the top of the content */}
         <div
@@ -56,11 +73,13 @@ export default function NavWrapper({
           <button
             type="button"
             onClick={handleToggleOpenSidebar}
-            className="cursor-pointer"
+            className="cursor-pointer hidden sm:block"
           >
             {open ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
-          <VerticalSeparator />
+          <div className="hidden sm:flex sm:h-full">
+            <VerticalSeparator />
+          </div>
           <h3 className="text-foreground-dark text-sm-2 flex items-center">
             {segments.map((segment, index) => {
               return (

@@ -3,7 +3,7 @@ import Link from "next/link";
 import gsap from "gsap"; // <-- import GSAP
 import { useGSAP } from "@gsap/react"; // <-- import the hook from our React package
 
-import autodarts from "@/public/autodarts.png";
+import dispositif from "@/public/dispositif.png";
 
 import Button from "@/components/buttons/styleButtons/button";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,7 +17,7 @@ export default function Home() {
       {/* Header -> image + CTA*/}
       <header className="gradient-bg-reverse grid grid-rows-[clamp(320px,50%,600px)_1fr] sm:grid-rows-none sm:grid-cols-[clamp(200px,50%,600px)_1fr] pt-15 pb-20 sm:py-15 items-center min-h-[60vh] text-white relative overflow-x-hidden">
         <Image
-          src={autodarts}
+          src={dispositif}
           height={600}
           alt="Cible de fléchettes"
           className="translate-x-1/5 sm:-translate-x-1/5 w-[50vw] min-w-80 sm:min-w-50 max-w-150 justify-self-end sm:justify-normal"

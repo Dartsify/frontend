@@ -69,7 +69,6 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
           <input
             type="text"
             inputMode="numeric"
-            // placeholder="•"
             maxLength={1}
             value={value}
             onChange={(e) => handleChange(e, index)}
@@ -77,7 +76,7 @@ export function OtpInput({ onChangeCode, otp, setOtp }: OtpInputProps) {
             ref={(el) => {
               inputsRef.current[index] = el;
             }}
-            className={`w-8 md:w-10 h-10.5 md:h-13 text-center text-lg ${value ? "bg-foreground-light-soft" : ""} border-2`}
+            className={`w-8 md:w-10 h-10.5 md:h-13 text-center font-bold md:font-medium text-sm md:text-lg ${value ? "bg-foreground-light-soft" : ""} border-2`}
           />
           {index == 2 && <span className="mx-2 font-bold">-</span>}
         </span>

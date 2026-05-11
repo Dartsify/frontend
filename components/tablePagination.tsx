@@ -32,7 +32,7 @@ export default function TablePagination({
   const uniquePages = pages.filter((val, i, arr) => val !== arr[i - 1]);
 
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2 mt-6 text-sm font-medium text-foreground-soft">
+    <div className="flex items-center justify-center gap-1 sm:gap-2 mt-2 text-sm font-medium text-foreground-soft">
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}

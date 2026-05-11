@@ -26,6 +26,18 @@ export default function Dialog({
   // Shared animation duration in seconds for GSAP tweens.
   const animationDuration = 0.3;
 
+  // Prevent background scrolling when dialog is open
+  useEffect(() => {
+    if (isOpen) {
+      window.scrollTo(0, 0); // Scroll to top to ensure dialog is fully visible
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     // If the overlay element is not mounted yet, nothing to animate.
     if (!veil.current) return;
@@ -141,7 +153,7 @@ export default function Dialog({
       {/* Outer dialog shell: style + animated height container. */}
       <div
         ref={dialogBody}
-        className={`p-5 bg-background rounded-lg absolute ${width} self-center border border-border shadow-xs h-0 overflow-hidden`}
+        className={`p-5 bg-background rounded-lg absolute ${width} self-center -translate-y-5 sm:translate-0 border border-border shadow-xs h-0 overflow-hidden`}
       >
         {/* Inner content wrapper measured by ResizeObserver. */}
         <div ref={dialogContent}>{children}</div>

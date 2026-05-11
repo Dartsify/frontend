@@ -129,12 +129,18 @@
   --animate-spin-alt: spin 1s cubic-bezier(0.25, 0.1, 0.15, 0.8) infinite;
 }
 
-
-
 body {
   background: var(--background);
   color: var(--foreground);
   border: var(--border);
+  /* padding-top: constant(safe-area-inset-top); */
+  /* iOS 11.0 */
+  /* padding-top: env(safe-area-inset-top); */
+  /* iOS 11.2+ */
+  /* padding-bottom: env(safe-area-inset-bottom); */
+  height: 100dvh;
+  height: 100vh;
+  position: relative;
 }
 
 @layer base {
@@ -162,7 +168,7 @@ body {
   }
 
   .vertical-p {
-    @apply py-5;
+    @apply py-2.5 sm:py-5;
   }
 
   .active-link {
