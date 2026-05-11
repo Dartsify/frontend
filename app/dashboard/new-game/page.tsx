@@ -19,6 +19,7 @@ import PlayersCard from "@/components/cards/newGame/playersCard";
 import { isHost } from "@/utils/games";
 import { GameMode } from "@/utils/types";
 import ErrorPageText from "@/components/errorPageText";
+import InfosCard from "@/components/cards/newGame/infosCard";
 
 const LEAVE_PAGE_WARNING_DEFAULT =
   "Êtes-vous sûr de vouloir quitter cette page ? Vous devrez rejoindre la partie depuis la page Mes Parties.";
@@ -273,7 +274,7 @@ export default function NewGame() {
   return (
     <>
       <div>
-        <header className="flex flex-col md:flex-row justify-between items-center">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <h1>Nouvelle partie</h1>
           <div className="flex gap-3 items-center">
             <button
@@ -319,7 +320,7 @@ export default function NewGame() {
             )}
           </section>
           <section className="default-section">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {/* We pass the userData props to prevent getting data from the providers again */}
               <ConfigCard
                 gameId={gameId}
@@ -327,6 +328,9 @@ export default function NewGame() {
                 userData={userData}
               />
               <TargetCard gameData={gameData} />
+              {gameData && (
+                <InfosCard gameData={gameData} onlyCreation={true} />
+              )}
             </div>
           </section>
           <section className="default-section">

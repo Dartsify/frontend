@@ -17,6 +17,7 @@ import { DashboardNotification, Game } from "@/utils/types";
 import { calendarConvert, utcConvert } from "@/utils/dates";
 import { statusBadge } from "@/utils/games";
 import ErrorPageText from "@/components/errorPageText";
+import Link from "next/link";
 
 export default async function Dashboard() {
   // API calls
@@ -92,32 +93,41 @@ export default async function Dashboard() {
 
     return (
       <li key={index} className="py-0">
-        <div className="flex justify-between items-center py-0">
-          <div className="">
-            <p className="font-medium">
-              Partie à {player_count} joueur{player_count !== 1 ? "s" : ""}
-            </p>
-            <p className="text-sm-2 font-medium text-foreground-soft leading-none">
-              {calendarConvert(creation_date)} à {target_location}
-            </p>
-          </div>
-          <div className="flex gap-2 items-center">
-            <div className="badge badge-neutral badge-xs">
-              <div className={`badge-disc-xs ${statusColor}`} />
-              <p>{statusText}</p>
+        <Link
+          href={
+            status === "waiting"
+              ? "/dashboard/new-game?game=" + game.id
+              : "/dashboard/my-games/" + game.id
+          }
+          className="cursor-pointer"
+        >
+          <div className="flex justify-between items-center py-0">
+            <div className="">
+              <p className="font-medium">
+                Partie à {player_count} joueur{player_count !== 1 ? "s" : ""}
+              </p>
+              <p className="text-sm-2 font-medium text-foreground-soft leading-none">
+                {calendarConvert(creation_date)} à {target_location}
+              </p>
             </div>
-            {status === "in_progress" && (
-              <div className="badge badge-brand badge-xs">
-                <TimerIcon size={12} />
-                <Timer time={utcConvert(start_date).valueOf()} />
+            <div className="flex gap-2 items-center">
+              <div className="badge badge-neutral badge-xs">
+                <div className={`badge-disc-xs ${statusColor}`} />
+                <p>{statusText}</p>
               </div>
-            )}
+              {status === "in_progress" && (
+                <div className="badge badge-brand badge-xs">
+                  <TimerIcon size={12} />
+                  <Timer time={utcConvert(start_date).valueOf()} />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {index !== lastGamesData.length - 1 && (
-          <HorizontalSeparator bg="bg-border mb-2" />
-        )}
+          {index !== lastGamesData.length - 1 && (
+            <HorizontalSeparator bg="bg-border mb-2" />
+          )}
+        </Link>
       </li>
     );
   };

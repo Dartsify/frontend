@@ -200,7 +200,7 @@ export default function InProgressGame(game: GameDetail) {
     return (
       <li
         key={index}
-        className={`card overflow-hidden ${index === currentPlayerIndex && "gradient-bg-light"} p-4 relative`}
+        className={`card overflow-hidden ${index === currentPlayerIndex && "gradient-bg-light"} p-4 relative w-full md:w-auto`}
       >
         <p className="text-foreground-soft text-sm-2 font-bold">
           {index + 1}. {player_name}
@@ -210,14 +210,14 @@ export default function InProgressGame(game: GameDetail) {
           {/* Current score */}
           <p className="font-black text-xl">{current_score}</p>
 
-          {/* Last 3 Scores */}
-          <div className="flex items-center gap-1.5">
+          {/* Last 3 Scores for md screens */}
+          <div className="hidden md:flex items-center gap-1.5">
             {[0, 1, 2].map((p, i) => {
               const pointData = item.last_3_points[i] ?? null;
               return (
                 <p
                   key={i}
-                  className="bg-foreground-light-soft rounded-md font-medium border border-border w-10 text-center py-2.5"
+                  className="bg-foreground-light-soft rounded-md font-medium border border-border w-8 md:w-10 text-center py-2 md:py-2.5"
                 >
                   {pointData?.total ?? "-"}
                 </p>
@@ -225,11 +225,26 @@ export default function InProgressGame(game: GameDetail) {
             })}
           </div>
 
-          {/* Number of darts */}
+          {/* Average score */}
           <div className="font-medium flex gap-0.5 items-center">
             <p>{current_average}</p>
             <CircleSlash2 size={16} />
           </div>
+        </div>
+
+        {/* Last 3 Scores for mobile */}
+        <div className="flex md:hidden items-center self-center gap-1.5 mt-3">
+          {[0, 1, 2].map((p, i) => {
+            const pointData = item.last_3_points[i] ?? null;
+            return (
+              <p
+                key={i}
+                className="bg-foreground-light-soft rounded-md font-medium border border-border w-8 md:w-10 text-center py-2 md:py-2.5"
+              >
+                {pointData?.total ?? "-"}
+              </p>
+            );
+          })}
         </div>
 
         <div className="absolute right-0 top-0 size-11 bg-foreground-light-soft [clip-path:polygon(100%_0,0_0,100%_100%)]">
@@ -254,20 +269,20 @@ export default function InProgressGame(game: GameDetail) {
           />
         </div>
       )}
-      <div className="flex items-start gap-5">
-        <ul className="flex flex-col gap-3 flex-1">
+      <div className="flex flex-col-reverse md:flex-row items-start gap-5">
+        <ul className="grid grid-cols-2 md:flex md:flex-col gap-3 flex-1 w-full md:w-auto">
           {participations.map((p, index) => listItem(p, index))}
         </ul>
 
         {transitionPhase === "showing-text" ? (
-          <div className="card w-2/3 overflow-hidden gradient-bg-light sticky top-18 flex flex-col items-center justify-center p-8 text-center min-h-75 relative">
+          <div className="card w-full md:w-2/3 overflow-hidden gradient-bg-light sticky top-18 flex flex-col items-center justify-center p-8 text-center min-h-75">
             <h3 className="text-2xl font-black mb-4">
               {isRoundTransition ? "Nouveau Tour !" : "Tour Suivant !"}
             </h3>
             <p className="text-xl font-bold">{transitionMessage}</p>
           </div>
         ) : transitionPhase === "game-finished" ? (
-          <div className="card w-2/3 overflow-hidden gradient-bg-light sticky top-18 flex flex-col items-center justify-center p-8 text-center min-h-75 relative">
+          <div className="card w-full md:w-2/3 overflow-hidden gradient-bg-light sticky top-18 flex flex-col items-center justify-center p-8 text-center min-h-75">
             <h3 className="text-2xl font-black mb-4">Bravo ! 🎯</h3>
             <p className="text-xl font-bold">
               La partie est terminée, chargement des statistiques...
@@ -275,7 +290,7 @@ export default function InProgressGame(game: GameDetail) {
           </div>
         ) : (
           <div
-            className={`card w-2/3 overflow-hidden gradient-bg-light sticky top-18`}
+            className={`card w-full md:w-2/3 overflow-hidden gradient-bg-light md:sticky top-18`}
           >
             <h3 className="card-title">Tour {current_turn_number}</h3>
             <p className="card-subtitle text-base">
@@ -314,12 +329,23 @@ export default function InProgressGame(game: GameDetail) {
               )}
 
               <div className="mt-5">
-                <Dartboard
-                  size={450}
-                  points={board_hits.current_player.map((i) =>
-                    mapBackendToDartboard(i.x, i.y),
-                  )}
-                />
+                <div className="hidden md:block">
+                  <Dartboard
+                    size={450}
+                    points={board_hits.current_player.map((i) =>
+                      mapBackendToDartboard(i.x, i.y),
+                    )}
+                  />
+                </div>
+
+                <div className="block md:hidden">
+                  <Dartboard
+                    size={300}
+                    points={board_hits.current_player.map((i) =>
+                      mapBackendToDartboard(i.x, i.y),
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </div>

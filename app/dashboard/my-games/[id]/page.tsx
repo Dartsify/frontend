@@ -31,7 +31,7 @@ export default async function Game({
     <>
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
           <h1>Partie de {mode}</h1>
           <div className="flex items-center gap-3">
             {/* Status badge */}
