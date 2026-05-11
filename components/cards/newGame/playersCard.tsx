@@ -105,19 +105,6 @@ export default function PlayersCard({
             )} */}
           </div>
 
-          {userIsHost && !isMe && editable && (
-            <button
-              type="button"
-              className="btn btn-xs btn-ghost btn-destructive-hover group"
-              onClick={() => handleRemovePlayer(player_username)}
-            >
-              {" "}
-              <X
-                size={16}
-                className="stroke-red-500 group-hover:stroke-foreground-light transition-colors duration-300"
-              />
-            </button>
-          )}
           <div className="flex items-center gap-2">
             {gameStatus === "finished" && index === 0 && (
               <Medal
@@ -132,6 +119,20 @@ export default function PlayersCard({
                 className="text-yellow-500 m-1"
                 strokeWidth={2.2}
               />
+            )}
+
+            {userIsHost && !isMe && editable && (
+              <button
+                type="button"
+                className="btn btn-xs btn-ghost btn-destructive-hover group"
+                onClick={() => handleRemovePlayer(player_username)}
+              >
+                {" "}
+                <X
+                  size={16}
+                  className="stroke-red-500 group-hover:stroke-foreground-light transition-colors duration-300"
+                />
+              </button>
             )}
           </div>
         </div>

@@ -9,6 +9,7 @@ export default function TargetCard({
     <div className="card">
       <h3>{gameData?.target_name || "Cible"}</h3>
       <p className="subtitle">Informations sur la cible sélectionnée.</p>
+
       <ul className="content">
         <li>
           <b>Identifiant :</b> {gameData?.target_id || "N/A"}

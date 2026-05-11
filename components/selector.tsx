@@ -85,7 +85,8 @@ export default function Selector({
   };
 
   return (
-    <div ref={selectorRef} className={`relative ${width} my-1 z-100`}>
+    // z-9 bc dialog is z-10, we want the selector to be below the dialog
+    <div ref={selectorRef} className={`relative ${width} my-1 z-9`}>
       <div
         onClick={handleToggleOpen}
         // Padding of the container + elem in the dropdown : x : 1 + 1.5 / y : 1 + 1

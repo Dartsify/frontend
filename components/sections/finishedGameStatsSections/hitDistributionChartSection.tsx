@@ -41,14 +41,13 @@ export default function HitDistributionChartSection({
         hits: i.total_hits,
       }));
     } else {
-      //   const selectedPlayerUsername =
-      //     participations[selectedIndex - 1].player_username; // -1 because the first option is "Global" and then we have the players in order
-      const selectedPlayerNamer = participationsName[selectedIndex - 1];
+      const selectedPlayerUsername =
+        participations[selectedIndex - 1].player_username; // -1 because the first option is "Global" and then we have the players in order
 
       nextChartData = data.zone_stats
         .map((i: ZoneStat) => ({
           zone: i.zone.toString(),
-          hits: i.number[selectedPlayerNamer] || 0, // If the player didn't hit this zone at all, it won't be in the "number" object, so we return 0 in this case
+          hits: i.number[selectedPlayerUsername] || 0, // If the player didn't hit this zone at all, it won't be in the "number" object, so we return 0 in this case
         }))
         .sort((a, b) => b.hits - a.hits); // We sort the zones by number of hits for this player to have a more relevant chart (the most hit zones will be first)
     }

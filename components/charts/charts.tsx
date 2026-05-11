@@ -50,6 +50,8 @@ export function GamesPlayedDistributionChart({
 }: {
   data: { name: string; games: number; wins: number }[];
 }) {
+  const { isMdScreen, chartHeight } = useMdScreenChartLayout();
+
   const chartData = data.slice(0, 15);
   // State to track which bar the user clicked on -> defaults to the first zone.
   const [selectedZone, setSelectedZone] = useState<string | null>(
@@ -67,7 +69,7 @@ export function GamesPlayedDistributionChart({
             Zone sélectionnée :{" "}
             <span className="text-[#2454ff]">{selectedData.name}</span> —{" "}
             {selectedData.wins} victoires sur {selectedData.games} parties
-            jouées
+            jouées {isMdScreen.toString()}
           </p>
         ) : (
           <p className="text-sm font-medium text-foreground-soft italic">
@@ -77,7 +79,7 @@ export function GamesPlayedDistributionChart({
       </div>
 
       {/* ResponsiveContainer makes the chart adapt to its parent div's width */}
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMdScreen ? 200 : 300}>
         {/* Main wrapper for the bar chart */}
         <BarChart
           data={chartData}
@@ -174,6 +176,8 @@ export function HitDistributionChart({
 }: {
   data: { zone: string; hits: number }[];
 }) {
+  const { isMdScreen, chartHeight } = useMdScreenChartLayout();
+
   const chartData = data.slice(0, 15);
   // State to track which bar the user clicked on -> defaults to the first zone.
   const [selectedZone, setSelectedZone] = useState<string | null>(
@@ -200,7 +204,7 @@ export function HitDistributionChart({
       </div>
 
       {/* ResponsiveContainer makes the chart adapt to its parent div's width */}
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMdScreen ? 200 : 300}>
         {/* Main wrapper for the bar chart */}
         <BarChart
           data={chartData}

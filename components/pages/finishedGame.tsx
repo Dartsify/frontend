@@ -9,6 +9,7 @@ import TargetCard from "../cards/newGame/targetCard";
 import PlayersCard from "../cards/newGame/playersCard";
 
 import { UserDataContext } from "@/app/dashboard/providers";
+import InfosCard from "../cards/newGame/infosCard";
 
 export default function FinishedGame({ game }: { game: GameDetail }) {
   const { id } = game;
@@ -20,7 +21,7 @@ export default function FinishedGame({ game }: { game: GameDetail }) {
   return (
     <>
       <section className="default-section">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* We pass the userData props to prevent getting data from the providers again */}
           <ConfigCard
             gameId={id}
@@ -29,6 +30,7 @@ export default function FinishedGame({ game }: { game: GameDetail }) {
             editable={false}
           />
           <TargetCard gameData={game} />
+          <InfosCard gameData={game} />
         </div>
       </section>
       <section className="default-section">

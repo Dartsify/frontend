@@ -112,7 +112,7 @@ export default async function StatsPage() {
           <div className="card">
             <h3>Heatmap de la cible</h3>
             <p className="subtitle">Visualisez où vous touchez la cible.</p>
-            <div className="content flex-1 w-full flex items-center justify-center">
+            {/* <div className="content flex-1 w-full flex items-center justify-center">
               {heatmapData && heatmapData.length > 0 ? (
                 <Dartboard
                   size={320}
@@ -125,6 +125,11 @@ export default async function StatsPage() {
                   Pas assez de données pour la heatmap
                 </p>
               )}
+            </div> */}
+            <div className="content">
+              <p className="text-gray-500 italic flex items-center justify-center">
+                Bientôt
+              </p>
             </div>
           </div>
 

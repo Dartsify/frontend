@@ -45,7 +45,9 @@ export default function FriendWrapper({
           return;
         }
 
-        setPlayerData(data);
+        if (data) {
+          setPlayerData(data as unknown as Friend);
+        }
 
         dialogControls.open();
       };

@@ -35,7 +35,7 @@ export default function FriendsStatsSection({
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mb-3">
         <div className="card card-xs">
           <h4>Total amis</h4>
-          <p>{statsSummary.length}</p>
+          <p>{statsSummary.length - 1}</p>
         </div>
 
         <div className="card card-xs">

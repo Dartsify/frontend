@@ -20,11 +20,6 @@ import ErrorPageText from "@/components/errorPageText";
 
 export default async function Dashboard() {
   // API calls
-  // const myStats = await getMyStats();
-  // const lastGames = await getGames({ limit: 3 });
-  // const pendingGames = await getPendingInvitations();
-  // const friendsRequests = await getMyFriendsRequests();
-
   const [myStats, lastGames, pendingGames, friendsRequests] = await Promise.all(
     [
       getMyStats(),
