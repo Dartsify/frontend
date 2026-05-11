@@ -1,6 +1,7 @@
 type DartPoint = {
   x: number;
   y: number;
+  color?: string;
 };
 
 type DartboardProps = {
@@ -164,7 +165,12 @@ export default function Dartboard({
 
         return (
           <g key={`marker-${index}-${p.x}-${p.y}`}>
-            <circle cx={markerX} cy={markerY} r={2.2} fill="#2454ffff" />
+            <circle
+              cx={markerX}
+              cy={markerY}
+              r={2.2}
+              fill={p.color || "#2454ffff"}
+            />
           </g>
         );
       })}

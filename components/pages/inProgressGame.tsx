@@ -332,18 +332,28 @@ export default function InProgressGame(game: GameDetail) {
                 <div className="hidden md:block">
                   <Dartboard
                     size={450}
-                    points={board_hits.current_player.map((i) =>
-                      mapBackendToDartboard(i.x, i.y),
-                    )}
+                    points={board_hits.current_player.map((i, index) => ({
+                      ...mapBackendToDartboard(i.x, i.y),
+                      color:
+                        index <=
+                        board_hits.current_player.length - current_dart_number
+                          ? "rgba(36,83,255,0.40)"
+                          : undefined,
+                    }))}
                   />
                 </div>
 
                 <div className="block md:hidden">
                   <Dartboard
                     size={300}
-                    points={board_hits.current_player.map((i) =>
-                      mapBackendToDartboard(i.x, i.y),
-                    )}
+                    points={board_hits.current_player.map((i, index) => ({
+                      ...mapBackendToDartboard(i.x, i.y),
+                      color:
+                        index <=
+                        board_hits.current_player.length - current_dart_number
+                          ? "rgba(36,83,255,0.40)"
+                          : undefined,
+                    }))}
                   />
                 </div>
               </div>

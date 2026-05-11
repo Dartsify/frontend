@@ -51,14 +51,14 @@ export const isHost = (
 
 // Constantes de calibration (Camera 1 par défaut, d'après les valeurs du backend OpenCV)
 const CAMERA_CALIBRATION = {
-  CENTER_X: 624,
-  CENTER_Y: 325,
+  CENTER_X: 642,
+  CENTER_Y: 356,
   R_BULL_INNER: 8,
-  R_BULL_OUTER: 22,
-  R_TRIPLE_INNER: 138,
-  R_TRIPLE_OUTER: 151,
-  R_DOUBLE_INNER: 227,
-  R_DOUBLE_OUTER: 247,
+  R_BULL_OUTER: 24,
+  R_TRIPLE_INNER: 139,
+  R_TRIPLE_OUTER: 155,
+  R_DOUBLE_INNER: 235,
+  R_DOUBLE_OUTER: 251,
 };
 
 // Dimensions physiques réelles en millimètres (comme dans Dartboard.tsx)

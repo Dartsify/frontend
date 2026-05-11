@@ -19,7 +19,7 @@ export default function LastThreeScores({ scores }: { scores: Point[] }) {
         return (
           <div
             key={i}
-            className="h-13.5 md:h-22 w-10 md:w-15 bg-foreground-light rounded-md text-2xl font-black border border-border text-center leading-7 items-center justify-center flex"
+            className="h-18 md:h-22 w-13 md:w-15 bg-foreground-light rounded-md text-2xl font-black border border-border text-center leading-7 items-center justify-center flex"
             onClick={() => alert("Edit point : not implemented yet")}
           >
             <p>
