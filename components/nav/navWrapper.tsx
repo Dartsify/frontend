@@ -51,13 +51,13 @@ export default function NavWrapper({
     routesWithColoredHeader.includes(pathname);
 
   return (
-    <div className="flex sm:h-screen sm:overflow-visible">
+    <div className="flex md:h-screen md:overflow-visible">
       {/* Navbar shown at right of the screen */}
       <NavBar isOpen={open} />
 
       {/* Content of the page */}
       <div
-        className="w-screen overflow-x-visible sm:overflow-scroll flex-1 min-h-screen flex flex-col"
+        className="w-screen overflow-x-visible md:overflow-scroll flex-1 min-h-screen flex flex-col"
         onScroll={(e) => {
           // Sur desktop (>= 640px), c'est cette div qui scroll
           if (window.innerWidth >= 640) {
@@ -73,11 +73,11 @@ export default function NavWrapper({
           <button
             type="button"
             onClick={handleToggleOpenSidebar}
-            className="cursor-pointer hidden sm:block"
+            className="cursor-pointer hidden md:block"
           >
             {open ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
-          <div className="hidden sm:flex sm:h-full">
+          <div className="hidden md:flex md:h-full">
             <VerticalSeparator />
           </div>
           <h3 className="text-foreground-dark text-sm-2 flex items-center">

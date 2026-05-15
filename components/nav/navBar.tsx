@@ -52,7 +52,7 @@ export default function NavBar({ isOpen }: { isOpen: boolean }) {
 
   return (
     <div
-      className={`hidden sm:flex gradient-bg flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${
+      className={`hidden md:flex gradient-bg flex-col py-2 h-screen border-r border-border text-foreground-light transition-all duration-300 ease-in-out ${
         isOpen ? "w-50 md:w-60 px-4" : "w-15 md:w-20 px-1 md:px-2"
       }`}
       id="navbar"
