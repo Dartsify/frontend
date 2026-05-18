@@ -1,8 +1,13 @@
 import Dartboard from "@/components/dartboard";
-import { GameDetail } from "@/utils/types";
-import PlayersListItem from "./playersListItem";
 import LastThreeScores from "@/components/lastThreeScores";
+import PointKeyboardDialog from "@/components/dialogs/pointKeyboardDialog";
+import Dialog from "@/components/dialogs/dialog";
+
+import { GameDetail } from "@/utils/types";
 import { mapBackendToDartboard } from "@/utils/games";
+
+import PlayersListItem from "./playersListItem";
+import { useDialog } from "@/lib/hooks/useDialog";
 
 export default function DefaultInProgressGame({
   currentPlayerIndex,
@@ -38,6 +43,8 @@ export default function DefaultInProgressGame({
     board_hits,
   } = displayedData; // We are sure that gameData is not null bc we initialize the gameData in the stream with the given snapshot
 
+  const dialogControls = useDialog();
+
   return (
     <>
       {/* Loading indicator between turn players */}
@@ -67,7 +74,7 @@ export default function DefaultInProgressGame({
         {transitionPhase === "showing-text" ? (
           <div className="card w-full md:w-2/3 overflow-hidden gradient-bg-light sticky top-18 flex flex-col items-center justify-center p-8 text-center min-h-75">
             <h3 className="text-2xl font-black mb-4">
-              {isRoundTransition ? "Nouveau Tour !" : "Tour Suivant !"}
+              {isRoundTransition ? "Nouveau Tour !" : "Prochain Joueur !"}
             </h3>
             <p className="text-xl font-bold">{transitionMessage}</p>
           </div>
@@ -98,6 +105,8 @@ export default function DefaultInProgressGame({
                     ? []
                     : participations[currentPlayerIndex]?.last_3_points || []
                 }
+                gameId={id}
+                dialogControls={dialogControls}
               />
 
               {participations[currentPlayerIndex]?.checkout_suggestion.length >
@@ -119,7 +128,7 @@ export default function DefaultInProgressGame({
               )}
 
               <div className="mt-5">
-                <div className="hidden md:block">
+                <div className="hidden lg:block">
                   <Dartboard
                     size={450}
                     points={board_hits.current_player.map((i, index) => ({
@@ -133,7 +142,7 @@ export default function DefaultInProgressGame({
                   />
                 </div>
 
-                <div className="block md:hidden">
+                <div className="block lg:hidden">
                   <Dartboard
                     size={300}
                     points={board_hits.current_player.map((i, index) => ({
@@ -151,6 +160,11 @@ export default function DefaultInProgressGame({
           </div>
         )}
       </div>
+
+      {/* Point keyboard */}
+      <Dialog dialogControls={dialogControls}>
+        <PointKeyboardDialog dialogControls={dialogControls} />
+      </Dialog>
     </>
   );
 }

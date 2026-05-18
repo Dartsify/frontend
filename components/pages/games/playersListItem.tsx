@@ -9,6 +9,7 @@ export default function PlayersListItem(
   actualPlayerIndex: number,
   dartsData: { current_turn_number: number; current_dart_number: number },
   currentPlayerIndex: number,
+  position?: number,
 ) {
   const { player_name, current_score, current_average } = item;
   const { current_turn_number, current_dart_number } = dartsData;
@@ -25,6 +26,7 @@ export default function PlayersListItem(
       return (current_turn_number - 1) * 3;
     }
   };
+
   return (
     <li
       key={index}
@@ -53,11 +55,22 @@ export default function PlayersListItem(
           })}
         </div>
 
-        {/* Average score */}
-        <div className="font-medium flex gap-0.5 items-center">
-          <p>{current_average}</p>
-          <CircleSlash2 size={16} />
-        </div>
+        {!!!position ? (
+          // Average score
+          <div className="font-medium flex gap-0.5 items-center">
+            <p>{current_average}</p>
+            <CircleSlash2 size={16} />
+          </div>
+        ) : (
+          // Position
+          <div className="">
+            <p
+              className={`${position === 1 ? "text-yellow-400" : position === 2 ? "text-gray-400" : position === 3 ? "text-amber-600" : "text-foreground font-medium text-xl"} font-black text-2xl`}
+            >
+              {position}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Last 3 Scores for mobile */}

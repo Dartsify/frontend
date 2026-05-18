@@ -11,6 +11,7 @@ import VerticalSeparator from "@/components/verticalSeparator";
 import { routeNames, routesWithColoredHeader } from "@/utils/routes";
 
 import Footer from "./footer";
+import MobileBottomNav from "./mobileBottomNav";
 
 export default function NavWrapper({
   children,
@@ -128,6 +129,8 @@ export default function NavWrapper({
           <Footer />
         </div>
       </div>
+
+      <MobileBottomNav />
     </div>
   );
 }

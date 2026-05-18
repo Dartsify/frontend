@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 
 export default function Dialog({
   children,
-  width = "w-auto",
+  width = "w-5/6 max-w-150",
   dialogControls,
 }: {
   children: React.ReactNode;

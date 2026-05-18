@@ -168,7 +168,7 @@ export default function Dartboard({
             <circle
               cx={markerX}
               cy={markerY}
-              r={2.2}
+              r={3}
               fill={p.color || "#2454ffff"}
             />
           </g>

@@ -354,7 +354,7 @@ export default function AddPlayersToGameDialog({
         <div className="footer">
           <button
             type="button"
-            className={`btn btn-destructive`}
+            className={`btn btn-destructive-soft`}
             onClick={dialogControls.close}
           >
             Annuler

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Crown, Medal, Plus, X } from "lucide-react";
 
 import { isHost } from "@/utils/games";
@@ -23,11 +22,15 @@ export default function PlayersCard({
   userData: User | null;
   editable?: boolean;
 }) {
-  const { id, status: gameStatus } = gameData ?? {};
+  const { id, status: gameStatus, mode } = gameData ?? {};
 
   // Index of the winner (the player with the position 1 in the participations array)
   const winnerIndex = gameData?.participations?.findIndex(
     (participation) => participation.position === 1,
+  );
+
+  const participationsSorted = [...(gameData?.participations ?? [])].sort(
+    (a, b) => b.current_score - a.current_score,
   );
 
   const baseParticipations = gameData?.participations ?? [];
@@ -73,21 +76,30 @@ export default function PlayersCard({
   };
 
   const listItem = (item: Participant, index: number) => {
-    const { player_name, player_username, status, is_host } = item;
+    const { player_name, player_username, status, is_host, current_score } =
+      item;
 
     const isMe = player_username === userData?.username;
+
+    const indexInSorted = participationsSorted.findIndex(
+      (ps) => ps.player_username === item.player_username,
+    );
+
+    const position = indexInSorted + 1;
 
     return (
       <li key={index} className="">
         <div className="flex justify-between items-center py-1">
           <div className="flex items-center gap-2">
-            {/* {winner === index && (
-              <Medal size={16} className="text-yellow-500 m-1" />
-            )} */}
-            {/* {gameStatus === "finished" && index === 0 && (
-              // <Medal size={16} className="text-yellow-500 m-1" />
-              <p className="text-xl font-black">1.</p>
-            )} */}
+            {/* If the game is finished and the mode is perso, show the position of each player */}
+            {gameStatus === "finished" && mode === "perso" && (
+              <p
+                className={`${position === 1 ? "text-yellow-400" : position === 2 ? "text-gray-400" : position === 3 ? "text-amber-600" : "text-foreground font-medium text-xl"} font-black text-2xl mr-2`}
+              >
+                {position}
+              </p>
+            )}
+
             <div>
               <PlayerName
                 player={item}
@@ -106,13 +118,7 @@ export default function PlayersCard({
           </div>
 
           <div className="flex items-center gap-2">
-            {gameStatus === "finished" && index === 0 && (
-              <Medal
-                size={18}
-                className="text-yellow-500 m-1"
-                strokeWidth={2.2}
-              />
-            )}
+            {/* Show host badge */}
             {is_host && (
               <Crown
                 size={18}
@@ -121,6 +127,23 @@ export default function PlayersCard({
               />
             )}
 
+            {/* Show medal for the winner for finished games */}
+            {gameStatus === "finished" && index === 0 && (
+              <Medal
+                size={18}
+                className="text-yellow-500 m-1"
+                strokeWidth={2.2}
+              />
+            )}
+
+            {/* Show score */}
+            {gameStatus === "finished" && (
+              <p className={"font-medium text-xl text-foreground"}>
+                {current_score}
+              </p>
+            )}
+
+            {/* Show the remove player button if the user is the host */}
             {userIsHost && !isMe && editable && (
               <button
                 type="button"

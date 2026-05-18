@@ -21,7 +21,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="flex bg-brand fixed bottom-0 left-0 right-0 md:hidden pt-4 pb-[calc(12px+env(safe-area-inset-bottom))] px-4 justify-between items-center rounded-t-2xl shadow-[0_-4px_10px_rgba(0,0,0,0.1)] z-9">
+    <div className="flex bg-brand fixed bottom-0 left-0 right-0 md:hidden pt-4 pb-[calc(12px+env(safe-area-inset-bottom))] px-4 justify-between items-center rounded-b-none rounded-t-2xl shadow-[0_-4px_10px_rgba(0,0,0,0.1)] z-9">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         const Icon = item.icon;

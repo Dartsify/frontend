@@ -6,7 +6,16 @@ export type DialogControls = {
   close: () => void;
   toggleOpen: () => void;
   back?: () => void;
-  enter?: ({ username, id }: { username?: string; id?: number }) => void;
+  enter?: ({
+    username,
+    id,
+    point,
+  }: {
+    username?: string;
+    id?: number;
+    point?: Point;
+  }) => void;
+  setEnter: (action: DialogControls["enter"]) => void;
 };
 
 export type SelectorControls = {
@@ -18,9 +27,18 @@ export type SelectorControls = {
   handleToggleOpen: () => void;
 };
 
+export type KeyboardControls = {
+  open: () => void;
+  close: () => void;
+  isOpen: boolean;
+  selectedPoint: Point | null;
+  setSelectedPoint: (point: Point | null) => void;
+  handleToggleOpen: () => void;
+};
+
 // Data
 
-export type GameMode = "501" | "custom-dartsify" | "301";
+export type GameMode = "501" | "301" | "perso";
 
 export type User = {
   username: string;

@@ -33,6 +33,7 @@ export default function FinishedGame({ game }: { game: GameDetail }) {
           <InfosCard gameData={game} />
         </div>
       </section>
+
       <section className="default-section">
         <PlayersCard gameData={game} userData={userData} editable={false} />
       </section>

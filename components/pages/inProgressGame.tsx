@@ -1,21 +1,17 @@
 "use client";
 
-import { CircleSlash2 } from "lucide-react";
-
-import Dartboard from "../dartboard";
-import LastThreeScores from "../lastThreeScores";
-
-import { GameDetail, Participant } from "@/utils/types";
-
-import { useGameStream } from "@/lib/hooks/useGameStream";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mapBackendToDartboard } from "@/utils/games";
+
+import { GameDetail } from "@/utils/types";
+
+import { useGameStream } from "@/lib/hooks/useGameStream";
+
 import DefaultInProgressGame from "./games/defaultInProgressGame";
 import CustomInProgressGame from "./games/customInProgressGame";
 
-const transitionDuration = 2500; // Time we show the text in ms
-const freezeBoardDuration = 1500; // Time we show the board before text in ms
+const transitionDuration = 1500; // Time we show the text in ms
+const freezeBoardDuration = 3000; // Time we show the board before text in ms
 
 export default function InProgressGame(game: GameDetail) {
   const router = useRouter();
@@ -186,9 +182,27 @@ export default function InProgressGame(game: GameDetail) {
     (p) => p.player_username === current_player_username,
   );
 
-  if (mode === "custom-dartsify")
+  // We show two different pages according to the game mode
+  if (mode === "perso")
     return (
-      <CustomInProgressGame
+      <>
+        <CustomInProgressGame
+          currentPlayerIndex={currentPlayerIndex}
+          actualPlayerIndex={actualPlayerIndex}
+          displayedData={displayedData}
+          transitionPhase={transitionPhase}
+          isRoundTransition={isRoundTransition}
+          transitionMessage={transitionMessage}
+          animateTurnTransition={animateTurnTransition}
+          transitionDuration={transitionDuration}
+          freezeBoardDuration={freezeBoardDuration}
+        />
+      </>
+    );
+
+  return (
+    <>
+      <DefaultInProgressGame
         currentPlayerIndex={currentPlayerIndex}
         actualPlayerIndex={actualPlayerIndex}
         displayedData={displayedData}
@@ -199,19 +213,6 @@ export default function InProgressGame(game: GameDetail) {
         transitionDuration={transitionDuration}
         freezeBoardDuration={freezeBoardDuration}
       />
-    );
-
-  return (
-    <DefaultInProgressGame
-      currentPlayerIndex={currentPlayerIndex}
-      actualPlayerIndex={actualPlayerIndex}
-      displayedData={displayedData}
-      transitionPhase={transitionPhase}
-      isRoundTransition={isRoundTransition}
-      transitionMessage={transitionMessage}
-      animateTurnTransition={animateTurnTransition}
-      transitionDuration={transitionDuration}
-      freezeBoardDuration={freezeBoardDuration}
-    />
+    </>
   );
 }

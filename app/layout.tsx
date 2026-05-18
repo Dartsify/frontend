@@ -6,7 +6,6 @@ import moment from "moment";
 import "moment/locale/fr";
 
 import "./globals.css";
-import MobileBottomNav from "@/components/nav/mobileBottomNav";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -64,7 +63,6 @@ export default function RootLayout({
         {children}
         {/* <Footer />  // TODO : add a footer to main layout */}
         {/* !!!! Footer is also shown in sub folders ! Need to limit this to the main layout (not dashboard) */}
-        <MobileBottomNav />
       </body>
     </html>
   );

@@ -16,7 +16,7 @@ export const games = [
     name: "Custom Dartsify",
     description:
       "Un jeu de fléchettes spécialement conçu par Dartsify pour encore plus de fun !",
-    slug: "custom-dartsify",
+    slug: "perso",
   },
   {
     name: "301",
