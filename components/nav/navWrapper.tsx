@@ -99,7 +99,9 @@ export default function NavWrapper({
                 return (
                   <React.Fragment key={segment}>
                     {/* {index > 0 && <span className="mx-3"> {">"} </span>} */}
-                    {index > 0 && <ChevronRight size={16} className="mx-3" />}
+                    {index > 0 && (
+                      <ChevronRight size={16} className="mx-1 md:mx-3" />
+                    )}
                     {index === segments.length - 1 ? (
                       // The last segment is not a link
                       <span
@@ -138,7 +140,9 @@ export default function NavWrapper({
             href={"/dashboard/account"}
             className="flex sm:hidden gap-2 items-center cursor-pointer"
           >
-            <p className="text-foreground-soft font-bold">{name}</p>
+            {segments.length < 3 && (
+              <p className="text-foreground-soft font-bold">{name}</p>
+            )}
 
             <div className="rounded-md relative w-5 h-5 overflow-hidden outline outline-border">
               <Image
