@@ -13,7 +13,7 @@ export default function HomeHeader() {
 
   return (
     <header>
-      <h1>Bonjour {username} 👋</h1>
+      <h1>Bonjour @{username} 👋</h1>
     </header>
   );
 }

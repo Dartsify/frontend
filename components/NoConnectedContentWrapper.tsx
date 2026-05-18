@@ -44,7 +44,7 @@ export default function NoConnectedContentWrapper({
           <div>
             <header>
               {/* If the user that is a guest with a token, we can show his registered name */}
-              <h1>Bonjour {guest && name} 👋</h1>
+              <h1>Bonjour {guest && "@" + name} 👋</h1>
             </header>
             <main className="main-container">
               <div className="card card-sm">
