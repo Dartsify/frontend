@@ -1,0 +1,28 @@
+const routes: { [key: string]: string } = {
+  "/dashboard": "Accueil",
+  "/dashboard/new-game": "Nouvelle Partie",
+  "/dashboard/stats": "Statistiques",
+  "/dashboard/my-games": "Mes Parties",
+  // "/dashboard/groups-players": "Groupes de Joueurs",
+  "/dashboard/friends": "Amis",
+  "/dashboard/account": "Mon Compte",
+  "/dashboard/groups-players/create": "Créer un Groupe de Joueurs",
+  "/know-more": "En apprendre plus",
+};
+
+const routeNames: { [key: string]: string } = {
+  "": "Accueil",
+  "new-game": "Nouvelle Partie",
+  stats: "Statistiques",
+  "my-games": "Mes Parties",
+  "groups-players": "Groupes de Joueurs",
+  friends: "Amis",
+  account: "Mon Compte",
+  create: "Créer",
+  "know-more": "En apprendre plus",
+  compare: "Me comparer",
+};
+
+const routesWithColoredHeader: [string] = ["/"];
+
+export { routes, routeNames, routesWithColoredHeader };
